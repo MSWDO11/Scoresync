@@ -18,11 +18,13 @@ export async function applyAutoStatus(eventId, event) {
   else                                                 newStatus = 'upcoming';
 
   if (newStatus !== event.status) {
-    await updateDoc(doc(db, EVENTS, eventId), { status: newStatus });
+    await updateDoc(doc(db, "events", eventId), { status: newStatus });
     event.status = newStatus;
   }
   return event.status;
 }
+
+const EVENTS = "events";
 
 // ─── List all events ──────────────────────────────────────────────────────────
 export const listEvents = async (req, res) => {
@@ -123,7 +125,7 @@ export const showEvent = async (req, res) => {
     const PAYMENT_TYPES = ['pageant','talent','cultural','choral','dance','culinary','booth','sports','academic','other'];
     event.isPaymentType = PAYMENT_TYPES.includes(event.type);
     // Flag whether this event type uses prizes/rules
-    const PRIZE_TYPES = ['pageant','talent','choral','dance','culinary','academic','other'];
+    const PRIZE_TYPES = ['pageant','talent','choral','dance','culinary','academic'];
     event.isPrizeType = PRIZE_TYPES.includes(event.type);
     // Flag for finance management (admin + organizer)
     event.canManageFinance = ['admin','organizer'].includes(req.session.userRole);
@@ -168,7 +170,7 @@ export const editEventPage = async (req, res) => {
     if (!snap.exists()) return res.redirect("/events");
     const event = { id: snap.id, ...snap.data() };
     const PAYMENT_TYPES = ['pageant','talent','cultural','choral','dance','culinary','booth','sports','academic','other'];
-    const PRIZE_TYPES   = ['pageant','talent','choral','dance','culinary','academic','other'];
+    const PRIZE_TYPES   = ['pageant','talent','choral','dance','culinary','academic'];
     res.render("events/edit", {
       title:         `Edit — ${event.name}`,
       event,
