@@ -263,6 +263,20 @@ document.querySelectorAll('input[name="role"]').forEach(radio => {
     });
   });
 });
+
+// Auto-select role from URL query string (?role=judge)
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  const preRole = params.get('role');
+  if (preRole) {
+    const radio = document.querySelector('input[name="role"][value="' + preRole + '"]');
+    if (radio) {
+      radio.checked = true;
+      radio.dispatchEvent(new Event('change'));
+      radio.closest('.cursor-pointer')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
+})();
 </script>
 </body>
 </html>
