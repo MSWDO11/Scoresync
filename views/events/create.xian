@@ -198,6 +198,17 @@
           </div>
         </div>
 
+        <!-- Payment QR Code toggle + card (opt-in) -->
+        <div class="hidden" id="payment-qr-toggle-wrap">
+          <button type="button"
+            onclick="document.getElementById('payment-qr-card').classList.remove('hidden');document.getElementById('payment-qr-toggle-wrap').classList.add('hidden')"
+            class="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition"
+            style="background:rgba(16,185,129,0.08);color:#6ee7b7;border:2px dashed rgba(16,185,129,0.3)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/><line x1="12" y1="14" x2="12" y2="18"/><line x1="10" y1="16" x2="14" y2="16"/></svg>
+            Add Payment QR Code (optional)
+          </button>
+        </div>
+
         <!-- Payment QR Code Card -->
         <div class="card-flat hidden" id="payment-qr-card" style="border-color:#d1fae5">
           <div class="px-6 py-4 border-b border-emerald-100 flex items-center gap-3">
@@ -335,17 +346,16 @@ function handleEventType(sel) {
     prizesCard.classList.toggle('hidden', !PRIZE_TYPES.includes(type));
   }
 
-  // Payment QR — show only for paid event types
-  const paymentCard = document.getElementById('payment-qr-card');
-  if (paymentCard) {
-    paymentCard.classList.toggle('hidden', !PAYMENT_TYPES.includes(type));
-  }
+  // Payment QR — show toggle button for payment types, not the card directly
+  const paymentCard   = document.getElementById('payment-qr-card');
+  const paymentToggle = document.getElementById('payment-qr-toggle-wrap');
+  const isPayment = PAYMENT_TYPES.includes(type);
+  if (paymentCard)   paymentCard.classList.add('hidden');       // always keep card hidden until toggled
+  if (paymentToggle) paymentToggle.classList.toggle('hidden', !isPayment);
 
-  // Event QR placeholder — also only show for payment types
+  // Event QR placeholder — hide always (generated after save)
   const eventQrCard = document.getElementById('event-qr-card');
-  if (eventQrCard) {
-    eventQrCard.classList.toggle('hidden', !PAYMENT_TYPES.includes(type));
-  }
+  if (eventQrCard) eventQrCard.classList.add('hidden');
 }
 
 // Run on page load with default selected type

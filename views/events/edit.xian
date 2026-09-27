@@ -155,7 +155,18 @@
           </div>
         </div>
 
-        <div class="card-flat" id="payment-qr-edit-card" style="border-color:#d1fae5;{{#unless isPaymentType}}display:none{{/unless}}">
+        <!-- Add Payment QR toggle — only visible for payment-applicable types when no QR yet -->
+        <div id="payment-qr-toggle-wrap" style="{{#if event.paymentQR}}display:none{{/if}}{{#unless isPaymentType}}display:none{{/unless}}">
+          <button type="button" id="show-payment-qr-btn"
+            onclick="document.getElementById('payment-qr-edit-card').style.display='';document.getElementById('payment-qr-toggle-wrap').style.display='none'"
+            class="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition"
+            style="background:rgba(16,185,129,0.08);color:#6ee7b7;border:2px dashed rgba(16,185,129,0.3)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/><line x1="12" y1="14" x2="12" y2="18"/><line x1="10" y1="16" x2="14" y2="16"/></svg>
+            Add Payment QR Code (optional)
+          </button>
+        </div>
+
+        <div class="card-flat" id="payment-qr-edit-card" style="border-color:#d1fae5;{{#if event.paymentQR}}{{else}}display:none{{/if}}">
           <div class="px-6 py-4 border-b border-emerald-100 flex items-center gap-3">
             <div class="w-8 h-8 grad-green rounded-lg flex items-center justify-center shadow-sm">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
@@ -321,9 +332,13 @@ function handleEventType(sel) {
   const prizesCard = document.getElementById('prizes-rules-card');
   if (prizesCard) prizesCard.classList.toggle('hidden', !PRIZE_TYPES.includes(type));
 
-  // Payment QR card (right column)
-  const paymentCard = document.getElementById('payment-qr-edit-card');
-  if (paymentCard) paymentCard.classList.toggle('hidden', !PAYMENT_TYPES.includes(type));
+  // Payment QR card (right column) — only show toggle, not the card itself
+  const paymentCard   = document.getElementById('payment-qr-edit-card');
+  const paymentToggle = document.getElementById('payment-qr-toggle-wrap');
+  const hasQR = !!(paymentCard && paymentCard.querySelector('#edit-qr-b64') && document.getElementById('edit-qr-b64')?.value);
+  if (paymentToggle) paymentToggle.style.display = (!PAYMENT_TYPES.includes(type) || hasQR) ? 'none' : '';
+  // Only auto-hide the card if it has no QR — never forcibly hide it if user already opened it
+  if (paymentCard && !hasQR) paymentCard.style.display = PAYMENT_TYPES.includes(type) ? 'none' : 'none';
 }
 
 /* ── Init on load ── */
