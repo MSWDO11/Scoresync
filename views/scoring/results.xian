@@ -13,7 +13,7 @@
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
         </div>
         <div class="min-w-0">
-          <div class="font-extrabold text-slate-900 text-sm truncate">Official Results — {{event.name}}</div>
+          <div class="font-extrabold text-sm truncate" style="color:#e2e8f0">Official Results — {{event.name}}</div>
           <div class="text-xs text-slate-400">
             <span class="font-semibold text-blue-600">{{judgeCount}}</span> judge(s) &bull;
             <span class="font-semibold text-purple-600">{{ranked.length}}</span> contestant(s) &bull;
@@ -23,15 +23,15 @@
       </div>
       <div class="flex items-center gap-2 flex-shrink-0">
         <!-- Auto-refresh -->
-        <div class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs">
+        <div class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1)">
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
-          <select id="autoRefreshInterval" class="bg-transparent font-bold text-blue-600 outline-none cursor-pointer text-xs">
+          <select id="autoRefreshInterval" class="font-bold text-blue-400 outline-none cursor-pointer text-xs" style="background:transparent">
             <option value="0">No refresh</option>
             <option value="5" selected>5s</option>
             <option value="10">10s</option>
             <option value="30">30s</option>
           </select>
-          <span id="refreshCountdown" class="font-mono text-slate-400 min-w-[22px] text-right">5s</span>
+          <span id="refreshCountdown" class="font-mono min-w-[22px] text-right" style="color:#64748b">5s</span>
         </div>
         {{#if isAdmin}}
         <a href="/events/{{event.id}}/scoring" class="btn-sm btn-sm-purple text-xs">
@@ -87,20 +87,20 @@
     </div>
 
     <!-- Podium Blocks -->
-    <div class="px-6 py-8 bg-gradient-to-b from-slate-50 to-white">
+    <div class="px-6 py-8" style="background:#0d1526">
       <div class="flex items-end justify-center gap-3 max-w-2xl mx-auto">
 
         <!-- 2nd Place -->
         {{#each ranked}}{{#if (eq rank 2)}}
         <div class="flex-1 text-center max-w-[180px]">
           <div class="text-4xl mb-2 animate-fadeup-1">🥈</div>
-          <div class="rounded-2xl p-4 border-2 border-slate-200 bg-white shadow-sm hover:shadow-md transition">
-            <div class="text-[10px] text-slate-400 uppercase font-black tracking-widest mb-1">2nd Place</div>
+          <div class="rounded-2xl p-4 border-2 shadow-sm hover:shadow-md transition" style="border-color:rgba(100,116,139,0.4);background:#1a2035">
+            <div class="text-[10px] uppercase font-black tracking-widest mb-1" style="color:#94a3b8">2nd Place</div>
             <div class="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-extrabold mx-auto mb-2 shadow" style="background:linear-gradient(135deg,#64748b,#94a3b8)">{{number}}</div>
-            <div class="font-extrabold text-slate-800 text-sm leading-tight">{{name}}</div>
-            {{#if barangay}}<div class="text-slate-400 text-[11px] mt-0.5">Brgy. {{barangay}}</div>{{/if}}
-            <div class="text-2xl font-black text-slate-700 mt-3 leading-none">{{finalScoreDisplay}}<span class="text-sm font-normal text-slate-400">%</span></div>
-            <div class="mt-2 h-1.5 rounded-full bg-slate-100 overflow-hidden">
+            <div class="font-extrabold text-sm leading-tight" style="color:#e2e8f0">{{name}}</div>
+            {{#if barangay}}<div class="text-[11px] mt-0.5" style="color:#94a3b8">Brgy. {{barangay}}</div>{{/if}}
+            <div class="text-2xl font-black mt-3 leading-none" style="color:#cbd5e1">{{finalScoreDisplay}}<span class="text-sm font-normal" style="color:#64748b">%</span></div>
+            <div class="mt-2 h-1.5 rounded-full overflow-hidden" style="background:rgba(255,255,255,0.08)">
               <div class="h-full rounded-full bg-slate-400 transition-all duration-700" style="width:{{finalScoreDisplay}}%"></div>
             </div>
           </div>
@@ -130,13 +130,13 @@
         {{#each ranked}}{{#if (eq rank 3)}}
         <div class="flex-1 text-center max-w-[180px]">
           <div class="text-4xl mb-2 animate-fadeup-1">🥉</div>
-          <div class="rounded-2xl p-4 border-2 border-orange-200 bg-orange-50 shadow-sm hover:shadow-md transition">
-            <div class="text-[10px] text-orange-500 uppercase font-black tracking-widest mb-1">3rd Place</div>
+          <div class="rounded-2xl p-4 border-2 shadow-sm hover:shadow-md transition" style="border-color:rgba(249,115,22,0.4);background:#1c1408">
+            <div class="text-[10px] text-orange-400 uppercase font-black tracking-widest mb-1">3rd Place</div>
             <div class="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-extrabold mx-auto mb-2 shadow" style="background:linear-gradient(135deg,#92400e,#f97316)">{{number}}</div>
-            <div class="font-extrabold text-slate-800 text-sm leading-tight">{{name}}</div>
-            {{#if barangay}}<div class="text-slate-400 text-[11px] mt-0.5">Brgy. {{barangay}}</div>{{/if}}
-            <div class="text-2xl font-black text-orange-600 mt-3 leading-none">{{finalScoreDisplay}}<span class="text-sm font-normal text-orange-300">%</span></div>
-            <div class="mt-2 h-1.5 rounded-full bg-orange-100 overflow-hidden">
+            <div class="font-extrabold text-sm leading-tight" style="color:#e2e8f0">{{name}}</div>
+            {{#if barangay}}<div class="text-[11px] mt-0.5" style="color:#94a3b8">Brgy. {{barangay}}</div>{{/if}}
+            <div class="text-2xl font-black text-orange-500 mt-3 leading-none">{{finalScoreDisplay}}<span class="text-sm font-normal text-orange-700">%</span></div>
+            <div class="mt-2 h-1.5 rounded-full overflow-hidden" style="background:rgba(255,255,255,0.08)">
               <div class="h-full rounded-full bg-orange-400 transition-all duration-700" style="width:{{finalScoreDisplay}}%"></div>
             </div>
           </div>
@@ -151,7 +151,7 @@
   <!-- ── Full Ranked List with Criteria Bars ── -->
   <div class="space-y-3 animate-fadeup-1">
     <div class="flex items-center justify-between px-1">
-      <h3 class="font-extrabold text-slate-800 text-base flex items-center gap-2">
+      <h3 class="font-extrabold text-base flex items-center gap-2" style="color:#e2e8f0">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
         Full Standings
       </h3>
@@ -180,16 +180,16 @@
 
         <!-- Name + barangay -->
         <div class="flex-1 min-w-0">
-          <div class="font-extrabold text-slate-900 text-sm leading-tight truncate">{{name}}</div>
-          {{#if barangay}}<div class="text-slate-400 text-xs mt-0.5">Brgy. {{barangay}}{{#if age}} &bull; {{age}} yrs{{/if}}</div>{{/if}}
+          <div class="font-extrabold text-sm leading-tight truncate" style="color:#e2e8f0">{{name}}</div>
+          {{#if barangay}}<div class="text-xs mt-0.5" style="color:#64748b">Brgy. {{barangay}}{{#if age}} &bull; {{age}} yrs{{/if}}</div>{{/if}}
           <!-- Mini criteria bars -->
           <div class="flex gap-1 mt-2 flex-wrap">
             {{#each breakdown}}
             <div class="flex items-center gap-1" title="{{name}}: {{avg}} pts ({{weighted}}%)">
-              <div class="h-1.5 rounded-full overflow-hidden" style="width:48px;background:#f1f5f9">
+              <div class="h-1.5 rounded-full overflow-hidden" style="width:48px;background:rgba(255,255,255,0.08)">
                 <div class="h-full rounded-full transition-all duration-700" style="width:{{barPct}}%;background:{{color}}"></div>
               </div>
-              <span class="text-[10px] text-slate-400 font-medium">{{weighted}}%</span>
+              <span class="text-[10px] font-medium" style="color:#64748b">{{weighted}}%</span>
             </div>
             {{/each}}
           </div>
@@ -206,7 +206,7 @@
       </div>
 
       <!-- Score progress bar (full width) -->
-      <div class="h-1.5 bg-slate-100">
+      <div class="h-1.5" style="background:rgba(255,255,255,0.06)">
         <div class="h-full transition-all duration-700
           {{#if (eq rank 1)}}{{else}}{{/if}}"
           style="width:{{finalScoreDisplay}}%;background:{{#if (eq rank 1)}}linear-gradient(90deg,#f59e0b,#fbbf24){{else}}{{#if (eq rank 2)}}linear-gradient(90deg,#64748b,#94a3b8){{else}}{{#if (eq rank 3)}}linear-gradient(90deg,#f97316,#fb923c){{else}}linear-gradient(90deg,#2563eb,#60a5fa){{/if}}{{/if}}{{/if}}">
@@ -255,7 +255,7 @@
       </thead>
       <tbody>
         {{#each ranked}}
-        <tr class="{{#if (eq rank 1)}}bg-yellow-50/60{{/if}}{{#if (eq rank 2)}}bg-slate-50/60{{/if}}">
+        <tr class="{{#if (eq rank 1)}}ring-1 ring-inset ring-yellow-500/20{{/if}}{{#if (eq rank 2)}}ring-1 ring-inset ring-slate-500/20{{/if}}" style="{{#if (eq rank 1)}}background:rgba(217,119,6,0.08){{else}}{{#if (eq rank 2)}}background:rgba(100,116,139,0.05){{/if}}{{/if}}">
           <td class="text-center">
             <span class="inline-flex items-center justify-center w-8 h-8 rounded-full text-sm font-black
               {{#if (eq rank 1)}}text-white{{else}}{{#if (eq rank 2)}}text-white{{else}}{{#if (eq rank 3)}}text-white{{else}}bg-slate-100 text-slate-500{{/if}}{{/if}}{{/if}}"
@@ -265,15 +265,15 @@
           </td>
           <td class="font-mono text-slate-400 text-sm text-center">{{number}}</td>
           <td>
-            <div class="font-extrabold text-slate-900 text-sm">{{name}}</div>
-            {{#if age}}<div class="text-slate-400 text-xs">{{age}} yrs</div>{{/if}}
+            <div class="font-extrabold text-sm" style="color:#e2e8f0">{{name}}</div>
+            {{#if age}}<div class="text-xs" style="color:#64748b">{{age}} yrs</div>{{/if}}
           </td>
-          <td class="text-slate-500 text-sm hidden sm:table-cell">{{barangay}}</td>
+          <td class="text-sm hidden sm:table-cell" style="color:#64748b">{{barangay}}</td>
           {{#each breakdown}}
           <td class="text-center px-3">
-            <div class="font-extrabold text-slate-800 text-sm">{{avg}}</div>
+            <div class="font-extrabold text-sm" style="color:#e2e8f0">{{avg}}</div>
             <div class="text-[10px] font-bold" style="color:{{color}}">{{weighted}}%</div>
-            <div class="mt-1 h-1 rounded-full bg-slate-100 overflow-hidden w-16 mx-auto">
+            <div class="mt-1 h-1 rounded-full overflow-hidden w-16 mx-auto" style="background:rgba(255,255,255,0.08)">
               <div class="h-full rounded-full" style="width:{{barPct}}%;background:{{color}}"></div>
             </div>
           </td>
@@ -308,29 +308,29 @@
       <span class="badge badge-purple text-xs">{{judgeCount}} judges</span>
     </div>
     {{#each judgeBreakdown}}
-    <div class="px-5 py-4 border-t border-slate-50 first:border-0">
+    <div class="px-5 py-4 first:border-0" style="border-top:1px solid rgba(255,255,255,0.06)">
       <div class="flex items-center gap-3 mb-3">
         <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-extrabold flex-shrink-0 shadow-sm grad-purple">
           {{initial}}
         </div>
         <div>
-          <div class="font-bold text-slate-800 text-sm">{{judgeName}}</div>
-          <div class="text-[11px] text-slate-400">{{scoredCount}} / {{totalContestants}} contestants scored</div>
+          <div class="font-bold text-sm" style="color:#e2e8f0">{{judgeName}}</div>
+          <div class="text-[11px]" style="color:#64748b">{{scoredCount}} / {{totalContestants}} contestants scored</div>
         </div>
         <div class="ml-auto">
-          <div class="h-1.5 rounded-full bg-slate-100 w-24 overflow-hidden">
+          <div class="h-1.5 rounded-full w-24 overflow-hidden" style="background:rgba(255,255,255,0.08)">
             <div class="h-full rounded-full bg-purple-400 transition-all" style="width:{{completionPct}}%"></div>
           </div>
-          <div class="text-[10px] text-purple-600 font-bold text-right mt-0.5">{{completionPct}}% done</div>
+          <div class="text-[10px] text-purple-400 font-bold text-right mt-0.5">{{completionPct}}% done</div>
         </div>
       </div>
       <!-- Top 3 scores by this judge -->
       <div class="flex flex-wrap gap-2">
         {{#each topScores}}
-        <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-50 border border-slate-100 text-xs">
-          <span class="font-bold text-slate-700">{{contestantName}}</span>
-          <span class="text-slate-400">&bull;</span>
-          <span class="font-extrabold text-purple-600">{{score}}%</span>
+        <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08)">
+          <span class="font-bold" style="color:#e2e8f0">{{contestantName}}</span>
+          <span style="color:#475569">&bull;</span>
+          <span class="font-extrabold text-purple-400">{{score}}%</span>
         </div>
         {{/each}}
       </div>
@@ -342,12 +342,12 @@
   {{else}}
   <!-- ── No Scores Yet ── -->
   <div class="card-flat animate-fadeup-1 overflow-hidden">
-    <div class="px-6 py-16 text-center" style="background:linear-gradient(135deg,#f8fafc,#eff6ff)">
-      <div class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-5 shadow-sm" style="background:linear-gradient(135deg,#e0e7ff,#dbeafe)">
-        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#93c5fd" stroke-width="1.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+    <div class="px-6 py-16 text-center" style="background:linear-gradient(135deg,#0d1526,#111827)">
+      <div class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-5 shadow-sm" style="background:linear-gradient(135deg,#1e3a8a,#1e2d5a)">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="1.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
       </div>
-      <h3 class="font-extrabold text-slate-800 text-lg mb-2">No scores yet</h3>
-      <p class="text-slate-500 text-sm max-w-xs mx-auto">Judges need to submit scores before results can be displayed here.</p>
+      <h3 class="font-extrabold text-lg mb-2" style="color:#e2e8f0">No scores yet</h3>
+      <p class="text-sm max-w-xs mx-auto" style="color:#64748b">Judges need to submit scores before results can be displayed here.</p>
       {{#if isAdmin}}
       <a href="/events/{{event.id}}/scoring" class="btn-primary mt-6 inline-flex">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
