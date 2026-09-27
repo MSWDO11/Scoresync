@@ -8,6 +8,9 @@ import hbs from "hbs";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 import { injectUser } from "./middleware/auth.js";
+import { db } from "./models/firebaseConfig.js";
+import { collection, getDocs, updateDoc, doc } from "firebase/firestore";
+import { applyAutoStatus } from "./controllers/eventController.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname  = dirname(__filename);
@@ -99,8 +102,26 @@ app.use((req, res) => {
 
 export default app;
 
+// ─── Background status poller — runs every 60s ───────────────────────────────
+async function pollEventStatuses() {
+  try {
+    const snap = await getDocs(collection(db, "events"));
+    const events = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    await Promise.all(
+      events
+        .filter(e => e.date && e.status !== 'cancelled')
+        .map(e => applyAutoStatus(e.id, e))
+    );
+  } catch (err) {
+    console.error("Status poll error:", err.message);
+  }
+}
+
 if (!process.env.ELECTRON) {
-  app.listen(PORT, () =>
-    console.log(`🏆 ScoreSync running at http://localhost:${PORT}`)
-  );
+  app.listen(PORT, () => {
+    console.log(`🏆 ScoreSync running at http://localhost:${PORT}`);
+    // Start background poller immediately, then every 60 seconds
+    pollEventStatuses();
+    setInterval(pollEventStatuses, 60 * 1000);
+  });
 }
