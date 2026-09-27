@@ -682,19 +682,28 @@ if (window.location.hash === '#finance') {
   const eventStatus  = "{{event.status}}";
   if (!eventDate) return;
 
-  const now      = new Date();
-  const startDt  = new Date(eventDate + 'T' + (eventTime || '00:00'));
-  const endDt    = eventEndTime ? new Date(eventDate + 'T' + eventEndTime) : null;
+  const now = new Date();
+
+  // Parse as PHT (UTC+8) to match server-side logic
+  function parsePHT(date, time) {
+    if (!date) return null;
+    const t = time || '00:00';
+    const dt = new Date(date + 'T' + t + ':00+08:00');
+    return isNaN(dt) ? null : dt;
+  }
+
+  const startDt = parsePHT(eventDate, eventTime);
+  const endDt   = eventEndTime ? parsePHT(eventDate, eventEndTime) : null;
 
   function scheduleReload(dt, label) {
-    if (!dt || isNaN(dt)) return;
+    if (!dt) return;
     const ms = dt - now;
-    if (ms > 0 && ms < 24 * 3600 * 1000) { // within 24h
-      console.log('[ScoreSync] Scheduling reload at ' + label + ' in ' + Math.round(ms/1000) + 's');
-      setTimeout(() => window.location.reload(), ms);
-    } else if (ms <= 0) {
-      // Already passed but page hasn't reloaded — reload now
+    if (ms <= 0) {
+      // Already passed — reload immediately so server updates status
       window.location.reload();
+    } else if (ms < 24 * 3600 * 1000) {
+      console.log('[ScoreSync] Auto-reload scheduled at ' + label + ' in ' + Math.round(ms / 1000) + 's');
+      setTimeout(() => window.location.reload(), ms);
     }
   }
 
