@@ -319,7 +319,8 @@
   {{/if}}
   {{/if}}
 
-  <!-- Event URL QR Code Card (event-dependent) -->
+  <!-- Event URL QR Code Card — only for admin/organizer -->
+  {{#if canManageFinance}}
   <div class="section-card animate-fadeup-2">
     <div class="section-header">
       <h2>
@@ -352,10 +353,12 @@
       </div>
     </div>
   </div>
+  {{/if}}
 
   <!-- ═══════════════════════════════════════════════
        EVENT INCOME & EXPENSE TRACKER
        ═══════════════════════════════════════════════ -->
+  {{#if canManageFinance}}
   <div id="finance" class="animate-fadeup-2">
 
     <!-- KPI summary row -->
@@ -583,6 +586,7 @@
 
     </div><!-- /finance card -->
   </div><!-- /finance section -->
+  {{/if}}
 
 </main>
 </div>
