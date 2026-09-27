@@ -322,7 +322,8 @@
   {{/if}}
   {{/if}}
 
-  <!-- Event URL QR Code Card — only for admin/organizer -->
+  <!-- Event URL QR Code Card — only show when a payment QR has been uploaded -->
+  {{#if event.paymentQR}}
   {{#if canManageFinance}}
   <div class="section-card animate-fadeup-2">
     <div class="section-header">
@@ -357,15 +358,16 @@
     </div>
   </div>
   {{/if}}
+  {{/if}}{{!-- /event.paymentQR --}}
 
   <!-- ═══════════════════════════════════════════════
        EVENT INCOME & EXPENSE TRACKER
        ═══════════════════════════════════════════════ -->
   {{#if canManageFinance}}
+  {{#if finance.entries.length}}
   <div id="finance" class="animate-fadeup-2">
 
-    <!-- KPI summary row — only show when there are actual entries -->
-    {{#if finance.entries.length}}
+    <!-- KPI summary row -->
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
 
       <!-- Total Income -->
@@ -409,7 +411,6 @@
       </div>
 
     </div>
-    {{/if}}{{!-- end finance.entries.length KPI block --}}
 
     <!-- Main finance card -->
     <div class="rounded-2xl overflow-hidden" style="background:#111827;border:1px solid rgba(255,255,255,0.07)">
@@ -591,7 +592,8 @@
 
     </div><!-- /finance card -->
   </div><!-- /finance section -->
-  {{/if}}
+  {{/if}}{{!-- /finance.entries.length --}}
+  {{/if}}{{!-- /canManageFinance --}}
 
 </main>
 </div>
