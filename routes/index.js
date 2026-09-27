@@ -66,7 +66,7 @@ router.get( "/events/:id",            requireAuth,                              
 router.get( "/events/:id/edit",       requireAuth, requireRole("admin","organizer"),     editEventPage);
 router.post("/events/:id/update",     requireAuth, requireRole("admin","organizer"),     updateEvent);
 router.post("/events/:id/status",     requireAuth, requireRole("admin","organizer"),     updateEventStatus);
-router.post("/events/:id/delete",     requireAuth, requireRole("admin"),                 deleteEvent);
+router.post("/events/:id/delete",     requireAuth, requireRole("admin","organizer"),     deleteEvent);
 
 // ─── Contestants (admin, organizer & encoder can mutate) ──────────────────────
 import {
