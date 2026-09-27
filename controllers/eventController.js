@@ -167,14 +167,18 @@ export const editEventPage = async (req, res) => {
     const snap = await getDoc(doc(db, EVENTS, req.params.id));
     if (!snap.exists()) return res.redirect("/events");
     const event = { id: snap.id, ...snap.data() };
+    const PAYMENT_TYPES = ['pageant','talent','cultural','choral','dance','culinary','booth','sports','academic','other'];
+    const PRIZE_TYPES   = ['pageant','talent','choral','dance','culinary','academic','other'];
     res.render("events/edit", {
-      title:       `Edit — ${event.name}`,
+      title:         `Edit — ${event.name}`,
       event,
-      userName:    req.session.userName,
-      userRole:    req.session.userRole,
-      userInitial: (req.session.userName || "U")[0].toUpperCase(),
-      isAdmin:     req.session.userRole === "admin",
-      isOrganizer: req.session.userRole === "organizer",
+      userName:      req.session.userName,
+      userRole:      req.session.userRole,
+      userInitial:   (req.session.userName || "U")[0].toUpperCase(),
+      isAdmin:       req.session.userRole === "admin",
+      isOrganizer:   req.session.userRole === "organizer",
+      isPaymentType: PAYMENT_TYPES.includes(event.type),
+      isPrizeType:   PRIZE_TYPES.includes(event.type),
     });
   } catch (err) {
     req.flash("error_msg", "Could not load event.");
