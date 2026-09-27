@@ -139,7 +139,7 @@
         style="background:#111827;border:1px solid rgba(16,185,129,0.2);box-shadow:0 4px 20px rgba(0,0,0,0.4)">
 
         <!-- Event card header -->
-        <div class="px-5 py-4 relative overflow-hidden" style="background:linear-gradient(135deg,#064e3b,#065f46)">
+        <div class="px-5 py-4 relative overflow-hidden" style="background:{{themeGradient theme}}">
           <div class="absolute -right-4 -top-4 w-20 h-20 rounded-full" style="background:rgba(255,255,255,0.05)"></div>
           <div class="relative flex items-start justify-between gap-2">
             <div class="flex-1 min-w-0">

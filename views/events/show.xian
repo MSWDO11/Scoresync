@@ -10,7 +10,7 @@
 
   <!-- Hero card -->
   <div class="card-flat overflow-hidden animate-fadeup">
-    <div class="px-7 py-6 relative overflow-hidden" style="background:linear-gradient(135deg,#1e3a8a,#2563eb)">
+    <div class="px-7 py-6 relative overflow-hidden" style="background:{{themeGradient event.theme}}">
       <div class="absolute top-0 right-0 w-48 h-48 rounded-full translate-x-16 -translate-y-16" style="background:rgba(255,255,255,0.05)"></div>
       <div class="relative">
         <div class="breadcrumb mb-3" style="color:rgba(147,197,253,0.8)">

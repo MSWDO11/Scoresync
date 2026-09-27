@@ -28,7 +28,7 @@
       style="background:#111827;border:1px solid rgba(255,255,255,0.08);box-shadow:0 2px 12px rgba(0,0,0,0.3)">
       <!-- Card Header -->
       <div class="px-5 py-4 relative overflow-hidden"
-        style="background:linear-gradient(135deg,#1e3a8a,#2563eb)">
+        style="background:{{themeGradient theme}}">
         <div class="absolute top-0 right-0 w-24 h-24 rounded-full translate-x-8 -translate-y-8" style="background:rgba(255,255,255,0.06)"></div>
         <div class="relative flex items-start justify-between gap-2">
           <div class="flex-1 min-w-0">

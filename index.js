@@ -48,6 +48,19 @@ hbs.registerHelper("lt",  (a, b) => Number(a) < Number(b));
 hbs.registerHelper("lte", (a, b) => Number(a) <= Number(b));
 hbs.registerHelper("not", (a)    => !a);
 
+// Theme → gradient mapping for event cards
+const THEME_GRADIENTS = {
+  blue:   "linear-gradient(135deg,#1e3a8a,#2563eb)",
+  purple: "linear-gradient(135deg,#4c1d95,#7c3aed)",
+  green:  "linear-gradient(135deg,#064e3b,#059669)",
+  gold:   "linear-gradient(135deg,#92400e,#d97706)",
+  rose:   "linear-gradient(135deg,#881337,#e11d48)",
+  slate:  "linear-gradient(135deg,#1e293b,#475569)",
+};
+hbs.registerHelper("themeGradient", (theme) =>
+  THEME_GRADIENTS[theme] || THEME_GRADIENTS.blue
+);
+
 // Criteria colour by index (used in scoring pages)
 const CRITERIA_COLORS = ["#2563eb","#7c3aed","#059669","#dc2626","#d97706","#0891b2","#be185d","#65a30d"];
 hbs.registerHelper("criteriaColor", (idx) => CRITERIA_COLORS[Number(idx) % CRITERIA_COLORS.length]);

@@ -184,7 +184,7 @@
               <td class="py-3.5 px-4 sm:px-6">
                 <div class="flex items-center gap-3">
                   <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm"
-                    style="background:linear-gradient(135deg,#1e3a8a,#2563eb)">
+                    style="background:{{themeGradient theme}}">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="#fbbf24"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
                   </div>
                   <div>
