@@ -12,6 +12,7 @@ export const addContestantPage = async (req, res) => {
   try {
     const eSnap = await getDoc(doc(db, "events", req.params.eventId));
     if (!eSnap.exists()) return res.redirect("/events");
+    const PAYMENT_TYPES = ['pageant','talent','cultural','choral','dance','culinary','booth','sports','academic','other'];
     res.render("contestants/create", {
       title: "Add Contestant",
       event: { id: eSnap.id, ...eSnap.data() },
@@ -20,6 +21,7 @@ export const addContestantPage = async (req, res) => {
       userInitial: (req.session.userName || "U")[0].toUpperCase(),
       isAdmin: req.session.userRole === "admin",
       isOrganizer: req.session.userRole === "organizer",
+      isPaymentType: PAYMENT_TYPES.includes(eSnap.data().type),
     });
   } catch (err) {
     req.flash("error_msg", "Could not load event.");
@@ -66,6 +68,7 @@ export const editContestantPage = async (req, res) => {
       getDoc(doc(db, "events", eventId, "contestants", id)),
     ]);
     if (!eSnap.exists() || !cSnap.exists()) return res.redirect(`/events/${eventId}`);
+    const PAYMENT_TYPES = ['pageant','talent','cultural','choral','dance','culinary','booth','sports','academic','other'];
     res.render("contestants/edit", {
       title: "Edit Contestant",
       event:      { id: eSnap.id, ...eSnap.data() },
@@ -75,6 +78,7 @@ export const editContestantPage = async (req, res) => {
       userInitial: (req.session.userName || "U")[0].toUpperCase(),
       isAdmin: req.session.userRole === "admin",
       isOrganizer: req.session.userRole === "organizer",
+      isPaymentType: PAYMENT_TYPES.includes(eSnap.data().type),
     });
   } catch (err) {
     req.flash("error_msg", "Could not load contestant.");
