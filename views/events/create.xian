@@ -77,8 +77,15 @@
           </div>
           <div class="px-6 py-5 space-y-4">
             <div class="grid grid-cols-2 gap-4">
-              <div><label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Date</label><input type="date" name="date" id="event-date" onchange="autoSetStatus(this)" class="form-input-bare"/></div>
-              <div><label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Time</label><input type="time" name="time" class="form-input-bare"/></div>
+              <div><label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Date</label><input type="date" name="date" id="event-date" onchange="autoSetStatus()" class="form-input-bare"/></div>
+              <div><label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Start Time</label><input type="time" name="time" id="event-time" onchange="autoSetStatus()" class="form-input-bare"/></div>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">End Time</label>
+                <input type="time" name="endTime" id="event-end-time" onchange="autoSetStatus()" class="form-input-bare"/>
+                <p class="text-[11px] mt-1" style="color:#475569">When event ends — auto-marks Completed.</p>
+              </div>
             </div>
 
             <!-- Venue dropdown + free-text fallback -->
@@ -256,29 +263,31 @@
 </main>
 </div>
 <script>
-/* ── Auto-set status from date ── */
-function autoSetStatus(dateInput) {
+/* ── Auto-set status from date + time + endTime ── */
+function autoSetStatus() {
   const statusSel = document.getElementById('event-status');
-  if (!statusSel || !dateInput.value) return;
-  // Don't override if user already manually changed to Cancelled
+  const dateEl    = document.getElementById('event-date');
+  const timeEl    = document.getElementById('event-time');
+  const endEl     = document.getElementById('event-end-time');
+  if (!statusSel || !dateEl || !dateEl.value) return;
   if (statusSel.value === 'cancelled') return;
 
-  const today     = new Date(); today.setHours(0,0,0,0);
-  const eventDate = new Date(dateInput.value); eventDate.setHours(0,0,0,0);
+  const now       = new Date();
+  const startStr  = dateEl.value + 'T' + (timeEl?.value || '00:00');
+  const startDt   = new Date(startStr);
+  const endDt     = (endEl?.value) ? new Date(dateEl.value + 'T' + endEl.value) : null;
 
-  if (eventDate > today)       statusSel.value = 'upcoming';
-  else if (+eventDate === +today) statusSel.value = 'ongoing';
-  else                          statusSel.value = 'completed';
+  if (endDt && now >= endDt)       statusSel.value = 'completed';
+  else if (now >= startDt)         statusSel.value = 'ongoing';
+  else                             statusSel.value = 'upcoming';
 }
 
 /* ── Set today as default date and auto-detect on load ── */
 document.addEventListener('DOMContentLoaded', () => {
   const dateEl = document.getElementById('event-date');
   if (dateEl && !dateEl.value) {
-    // Pre-fill with today's date
-    const today = new Date();
-    dateEl.value = today.toISOString().split('T')[0];
-    autoSetStatus(dateEl);
+    dateEl.value = new Date().toISOString().split('T')[0];
+    autoSetStatus();
   }
 });
 function handleVenueSelect(sel) {

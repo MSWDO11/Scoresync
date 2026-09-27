@@ -461,12 +461,33 @@ window.ScoreSyncTimer = (function () {
       remaining--;
       if (remaining === 10) beepWarn();
       if (remaining === 3)  { tone(660,'sine',0.08,0); tone(660,'sine',0.08,200); tone(660,'sine',0.08,400); }
-      if (remaining === 0)  beepFinal();
+      if (remaining === 0)  { beepFinal(); onEventTimerEnd(); }
     } else {
       overtime = true;
       remaining--;
     }
     draw();
+  }
+
+  /* ── Timer-end hook ── */
+  function onEventTimerEnd() {
+    // Show a log entry
+    const box = document.getElementById('st-log-container');
+    const emp = document.getElementById('st-log-empty');
+    if (emp) emp.classList.add('hidden');
+    const cnt = document.getElementById('st-log-count');
+    if (box) {
+      const row = document.createElement('div');
+      row.className = 'flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-bold';
+      row.style.cssText = 'background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.3);color:#6ee7b7';
+      row.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Stage timer reached 00:00 — event duration complete';
+      box.insertBefore(row, box.firstChild);
+      if (cnt) cnt.textContent = parseInt(cnt.textContent || '0') + 1;
+    }
+    // Stop the timer
+    clearInterval(tid); tid = null; running = false;
+    // Auto-record finance entry via page-level callback
+    if (typeof window._onTimerEventEnd === 'function') window._onTimerEventEnd();
   }
 
   /* ── Public API ── */

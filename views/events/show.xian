@@ -232,6 +232,17 @@
     </div>
   </div>
 
+  <!-- ══ Stage Timer — only visible when event is ongoing ══ -->
+  {{#if (eq event.status 'ongoing')}}
+  <div class="animate-fadeup-1"
+    data-event-id="{{event.id}}"
+    data-event-date="{{event.date}}"
+    data-event-time="{{event.time}}"
+    data-event-end-time="{{event.endTime}}">
+    {{> countdown_timer }}
+  </div>
+  {{/if}}
+
   {{#if event.prizes}}
   {{#if event.isPrizeType}}
   <div class="grid lg:grid-cols-2 gap-5 animate-fadeup-2">
@@ -259,8 +270,8 @@
   <!-- Payment QR Code Card — only for paid event types that have a QR uploaded -->
   {{#if event.paymentQR}}
   {{#if event.isPaymentType}}
-  <div class="section-card animate-fadeup-2" style="border-color:#a7f3d0">
-    <div class="section-header" style="background:#f0fdf4">
+  <div class="section-card animate-fadeup-2" style="border-color:rgba(16,185,129,0.3)">
+    <div class="section-header" style="background:rgba(16,185,129,0.08)">
       <h2>
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
         Payment QR Code
@@ -273,27 +284,27 @@
     </div>
     <div class="px-6 py-6 flex flex-col sm:flex-row items-center gap-6">
       <!-- QR Image -->
-      <div class="flex-shrink-0 p-3 bg-white rounded-2xl border border-emerald-100 shadow-sm">
+      <div class="flex-shrink-0 p-3 rounded-2xl shadow-sm" style="background:#fff;border:1px solid rgba(16,185,129,0.2)">
         <img src="{{event.paymentQR}}" alt="Payment QR Code" class="rounded-xl" style="width:160px;height:160px;object-fit:contain"/>
       </div>
       <!-- Details -->
       <div class="flex-1 space-y-3 text-center sm:text-left">
         <div>
-          <p class="text-xs text-slate-400 font-semibold uppercase tracking-wide">How to Pay</p>
-          <p class="text-sm text-slate-600 mt-1 leading-relaxed">Scan the QR code using your <span class="font-bold text-emerald-700">{{#if event.paymentMethod}}{{event.paymentMethod}}{{else}}payment app{{/if}}</span> to send your payment directly.</p>
+          <p class="text-xs font-semibold uppercase tracking-wide" style="color:#64748b">How to Pay</p>
+          <p class="text-sm mt-1 leading-relaxed" style="color:#94a3b8">Scan the QR code using your <span class="font-bold" style="color:#34d399">{{#if event.paymentMethod}}{{event.paymentMethod}}{{else}}payment app{{/if}}</span> to send your payment directly.</p>
         </div>
         {{#if event.paymentAccountName}}
         <div class="flex items-center gap-2 text-sm">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          <span class="text-slate-500">Account Name:</span>
-          <span class="font-bold text-slate-800">{{event.paymentAccountName}}</span>
+          <span style="color:#64748b">Account Name:</span>
+          <span class="font-bold" style="color:#e2e8f0">{{event.paymentAccountName}}</span>
         </div>
         {{/if}}
         {{#if event.paymentAccountNumber}}
         <div class="flex items-center gap-2 text-sm">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-          <span class="text-slate-500">Account No.:</span>
-          <span class="font-bold text-slate-800 font-mono tracking-wide">{{event.paymentAccountNumber}}</span>
+          <span style="color:#64748b">Account No.:</span>
+          <span class="font-bold font-mono tracking-wide" style="color:#e2e8f0">{{event.paymentAccountNumber}}</span>
         </div>
         {{/if}}
         <div class="flex gap-2 pt-1 justify-center sm:justify-start flex-wrap">
@@ -321,13 +332,13 @@
       </button>
     </div>
     <div class="px-6 py-6 flex flex-col sm:flex-row items-center gap-6">
-      <div class="flex-shrink-0 p-3 bg-white rounded-2xl border border-slate-100 shadow-sm">
+      <div class="flex-shrink-0 p-3 rounded-2xl shadow-sm" style="background:#fff;border:1px solid rgba(255,255,255,0.1)">
         <canvas id="event-qr-canvas" width="160" height="160"></canvas>
       </div>
       <div class="flex-1 space-y-2 text-center sm:text-left">
-        <p class="font-bold text-slate-800 text-sm">{{event.name}}</p>
-        <p class="text-xs text-slate-500 leading-relaxed">Scan this QR code to open the event page directly. Share it with judges, encoders, and participants for instant access.</p>
-        <div class="mt-2 px-3 py-2 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-500 font-mono break-all" id="qr-url-display"></div>
+        <p class="font-bold text-sm" style="color:#e2e8f0">{{event.name}}</p>
+        <p class="text-xs leading-relaxed" style="color:#64748b">Scan this QR code to open the event page directly. Share it with judges, encoders, and participants for instant access.</p>
+        <div class="mt-2 px-3 py-2 rounded-lg text-xs font-mono break-all" id="qr-url-display" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:#94a3b8"></div>
         <div class="flex gap-2 pt-1 justify-center sm:justify-start flex-wrap">
           <button onclick="copyEventUrl()" class="btn-sm btn-sm-gray text-xs">
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
@@ -646,6 +657,59 @@ if (window.location.hash === '#finance') {
       });
     };
   })();
+</script>
+
+<script>
+/* ── Auto-status: if endTime has passed, reload so server re-evaluates ── */
+(function() {
+  const timerEl  = document.querySelector('[data-event-end-time]');
+  if (!timerEl) return;
+  const date    = timerEl.dataset.eventDate;
+  const endTime = timerEl.dataset.eventEndTime;
+  const startTime = timerEl.dataset.eventTime;
+  if (!date) return;
+
+  const now     = new Date();
+  // If endTime is set and has passed → reload (server will set completed)
+  if (endTime) {
+    const endDt = new Date(date + 'T' + endTime);
+    if (now >= endDt) { window.location.reload(); return; }
+    // Schedule auto-reload exactly when endTime hits
+    const msLeft = endDt - now;
+    if (msLeft > 0 && msLeft < 12 * 3600 * 1000) {
+      setTimeout(() => window.location.reload(), msLeft);
+    }
+  }
+  // If startTime is set and has passed (but no endTime) → reload to confirm ongoing
+  if (startTime && !endTime) {
+    const startDt = new Date(date + 'T' + startTime);
+    if (now < startDt) {
+      const msLeft = startDt - now;
+      if (msLeft < 12 * 3600 * 1000) setTimeout(() => window.location.reload(), msLeft);
+    }
+  }
+})();
+
+/* ── Timer-end finance auto-record ── */
+window._timerEndRecorded = false;
+window._onTimerEventEnd = function() {
+  if (window._timerEndRecorded) return;
+  window._timerEndRecorded = true;
+  const timerEl = document.querySelector('[data-event-id]');
+  if (!timerEl) return;
+  const eventId = timerEl.dataset.eventId;
+  if (!eventId) return;
+  fetch('/events/' + eventId + '/finance', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+    body: JSON.stringify({
+      type:        'income',
+      category:    'Other',
+      description: 'Event ended (auto-recorded by Stage Timer)',
+      amount:      0,
+    }),
+  }).catch(() => {});
+};
 </script>
 {{> footer }}
 </body>

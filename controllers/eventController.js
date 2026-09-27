@@ -46,7 +46,7 @@ export const createEventPage = (req, res) => {
 // ─── Store new event ──────────────────────────────────────────────────────────
 export const storeEvent = async (req, res) => {
   const {
-    name, description, date, time, venue, type, status,
+    name, description, date, time, endTime, venue, type, status,
     organizer, maxContestants, prizes, rules, theme, notes,
     paymentMethod, paymentAccountName, paymentAccountNumber, paymentQR,
     otherType,
@@ -57,6 +57,7 @@ export const storeEvent = async (req, res) => {
       description:          description || "",
       date:                 date || "",
       time:                 time || "",
+      endTime:              endTime || "",
       venue:                venue || "",
       type:                 type || "pageant",
       otherType:            otherType || "",
@@ -101,6 +102,29 @@ export const showEvent = async (req, res) => {
     event.isPrizeType = PRIZE_TYPES.includes(event.type);
     // Flag for finance management (admin + organizer)
     event.canManageFinance = ['admin','organizer'].includes(req.session.userRole);
+
+    // ── Auto-status: update status in Firestore based on date/time/endTime ──
+    if (event.date && !['cancelled'].includes(event.status)) {
+      const now = new Date();
+      const startStr = event.date + (event.time ? 'T' + event.time : 'T00:00');
+      const endStr   = event.date + (event.endTime ? 'T' + event.endTime : null);
+      const startDt  = new Date(startStr);
+      const endDt    = event.endTime ? new Date(endStr) : null;
+
+      let newStatus = event.status;
+      if (endDt && now >= endDt) {
+        newStatus = 'completed';
+      } else if (now >= startDt) {
+        newStatus = 'ongoing';
+      } else {
+        newStatus = 'upcoming';
+      }
+
+      if (newStatus !== event.status) {
+        await updateDoc(doc(db, EVENTS, req.params.id), { status: newStatus });
+        event.status = newStatus;
+      }
+    }
 
     const [cSnap, crSnap, finance] = await Promise.all([
       getDocs(collection(db, EVENTS, req.params.id, "contestants")),
@@ -156,7 +180,7 @@ export const editEventPage = async (req, res) => {
 // ─── Update event ─────────────────────────────────────────────────────────────
 export const updateEvent = async (req, res) => {
   const {
-    name, description, date, time, venue, type, status,
+    name, description, date, time, endTime, venue, type, status,
     organizer, maxContestants, prizes, rules, theme, notes,
     paymentMethod, paymentAccountName, paymentAccountNumber, paymentQR,
     otherType,
@@ -164,6 +188,7 @@ export const updateEvent = async (req, res) => {
   try {
     await updateDoc(doc(db, EVENTS, req.params.id), {
       name, description, date, time, venue, type, status,
+      endTime:              endTime              || "",
       otherType:            otherType            || "",
       organizer:            organizer            || "",
       maxContestants:       maxContestants       || "",
