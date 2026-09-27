@@ -14,6 +14,8 @@ export const dashboardPage = async (req, res) => {
     // Count totals for admin
     let totalEvents = 0, totalUsers = 0, pendingCount = 0, ongoingCount = 0;
     let pendingUsers = [];
+    let ongoingEvents = [];
+    let judges = [];
 
     if (role === "admin") {
       const [evSnap, uSnap, ongoingSnap] = await Promise.all([
@@ -43,6 +45,26 @@ export const dashboardPage = async (req, res) => {
       totalUsers  = allUsers.filter(u => u.status !== "pending").length;
     }
 
+    // Organizer: load ongoing events + judges list
+    if (role === "organizer") {
+      const [ongoingSnap, allEvSnap, usersSnap] = await Promise.all([
+        getDocs(query(collection(db, "events"), where("status", "==", "ongoing"))),
+        getDocs(collection(db, "events")),
+        getDocs(query(collection(db, "users"), where("role", "==", "judge"))),
+      ]);
+      ongoingEvents = ongoingSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+      ongoingCount  = ongoingEvents.length;
+      totalEvents   = allEvSnap.size;
+      judges = usersSnap.docs.map(d => ({ id: d.id, ...d.data() }))
+        .filter(u => u.status === "active" || u.status === "approved" || !u.status)
+        .map(u => ({
+          id:      u.id,
+          name:    u.name || u.displayName || u.email || "Judge",
+          email:   u.email || "",
+          initial: (u.name || u.email || "J")[0].toUpperCase(),
+        }));
+    }
+
     const viewData = {
       title: "Dashboard",
       userName:    req.session.userName,
@@ -56,6 +78,8 @@ export const dashboardPage = async (req, res) => {
       totalEvents,
       totalUsers,
       ongoingCount,
+      ongoingEvents,
+      judges,
       pendingUsers,
       pendingCount,
     };
@@ -81,6 +105,8 @@ export const dashboardPage = async (req, res) => {
       totalEvents: 0,
       totalUsers: 0,
       ongoingCount: 0,
+      ongoingEvents: [],
+      judges: [],
     });
   }
 };
