@@ -74,11 +74,12 @@ export const dashboardPage = async (req, res) => {
       totalEvents   = allEvSnap.size;
       judges = usersSnap.docs.map(d => ({ id: d.id, ...d.data() }))
         .filter(u => u.status === "active" || u.status === "approved" || !u.status)
-        .map(u => ({
+        .map((u, idx) => ({
           id:      u.id,
           name:    u.name || u.displayName || u.email || "Judge",
+          alias:   `Judge ${idx + 1}`,
           email:   u.email || "",
-          initial: (u.name || u.email || "J")[0].toUpperCase(),
+          initial: String(idx + 1),
         }));
     }
 

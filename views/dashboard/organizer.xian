@@ -228,7 +228,7 @@
               style="background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.15);color:#93c5fd">
               <div class="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-extrabold text-white flex-shrink-0"
                 style="background:linear-gradient(135deg,#1e3a8a,#2563eb)">{{initial}}</div>
-              {{name}}
+              {{alias}}
             </div>
             {{/each}}
           </div>
@@ -367,8 +367,8 @@
           <div class="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-extrabold flex-shrink-0 shadow"
             style="background:linear-gradient(135deg,#1e3a8a,#2563eb)">{{initial}}</div>
           <div class="flex-1 min-w-0">
-            <div class="text-xs font-bold truncate" style="color:#e2e8f0">{{name}}</div>
-            {{#if email}}<div class="text-[10px] truncate" style="color:#475569">{{email}}</div>{{/if}}
+            <div class="text-xs font-bold truncate" style="color:#e2e8f0">{{alias}}</div>
+            <div class="text-[10px] truncate" style="color:#475569">Active judge</div>
           </div>
           <span class="flex-shrink-0 w-2 h-2 rounded-full bg-emerald-400"></span>
         </div>

@@ -181,7 +181,10 @@ export const resultsPage = async (req, res) => {
     });
 
     // ── Per-judge breakdown ──
-    const judgeBreakdown = Object.entries(judgeMap).map(([jId, jName]) => {
+    // ── Per-judge breakdown ──
+    const judgeEntries = Object.entries(judgeMap);
+    const judgeBreakdown = judgeEntries.map(([jId, jName], idx) => {
+      const alias = `Judge ${idx + 1}`;
       // Contestants this judge has scored (at least one criteria)
       const scoredContestantIds = new Set(
         allScores.filter(s => s.judgeId === jId).map(s => s.contestantId)
@@ -204,8 +207,9 @@ export const resultsPage = async (req, res) => {
 
       return {
         judgeId:          jId,
-        judgeName:        jName,
-        initial:          (jName || "J")[0].toUpperCase(),
+        judgeName:        jName,         // real name — only shown to admin
+        alias,                           // anonymous alias — shown to everyone else
+        initial:          String(idx + 1), // "1", "2", "3" — anonymous
         scoredCount,
         totalContestants: contestants.length,
         completionPct,
@@ -226,6 +230,7 @@ export const resultsPage = async (req, res) => {
       isAdmin:        req.session.userRole === "admin",
       isJudge:        req.session.userRole === "judge",
       isEncoder:      req.session.userRole === "encoder",
+      isOrganizer:    req.session.userRole === "organizer",
     });
   } catch (err) {
     console.error(err);

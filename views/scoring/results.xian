@@ -314,7 +314,11 @@
           {{initial}}
         </div>
         <div>
+          {{#if ../isAdmin}}
           <div class="font-bold text-sm" style="color:#e2e8f0">{{judgeName}}</div>
+          {{else}}
+          <div class="font-bold text-sm" style="color:#e2e8f0">{{alias}}</div>
+          {{/if}}
           <div class="text-[11px]" style="color:#64748b">{{scoredCount}} / {{totalContestants}} contestants scored</div>
         </div>
         <div class="ml-auto">
