@@ -64,7 +64,7 @@
       <a href="/events/{{event.id}}/criteria" class="btn-sm btn-sm-purple"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg> Criteria</a>
       <a href="/events/{{event.id}}/results" class="btn-sm btn-sm-green"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg> Results</a>
       <a href="/analytics?eventId={{event.id}}" class="btn-sm bg-purple-600 hover:bg-purple-700 text-white font-bold"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg> AI Score Audit</a>
-      <a href="#finance" onclick="document.getElementById('finance')?.scrollIntoView({behavior:'smooth'})" class="btn-sm bg-emerald-600 hover:bg-emerald-700 text-white font-bold"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> Finance</a>
+      {{#if event.isPaymentType}}<a href="#finance" onclick="document.getElementById('finance')?.scrollIntoView({behavior:'smooth'})" class="btn-sm bg-emerald-600 hover:bg-emerald-700 text-white font-bold"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> Finance</a>{{/if}}
       <form method="POST" action="/events/{{event.id}}/delete" class="inline" onsubmit="return confirm('Delete this event?')">
         <button type="submit" class="btn-sm btn-sm-red"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg> Delete</button>
       </form>
@@ -107,7 +107,7 @@
       <a href="/events/{{event.id}}/contestants/add" class="btn-sm btn-sm-blue"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg> Add Contestant</a>
       <a href="/events/{{event.id}}/criteria" class="btn-sm btn-sm-purple"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg> Criteria</a>
       <a href="/events/{{event.id}}/results" class="btn-sm btn-sm-green"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg> Results</a>
-      <a href="#finance" onclick="document.getElementById('finance')?.scrollIntoView({behavior:'smooth'})" class="btn-sm bg-emerald-600 hover:bg-emerald-700 text-white font-bold"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> Finance</a>
+      {{#if event.isPaymentType}}<a href="#finance" onclick="document.getElementById('finance')?.scrollIntoView({behavior:'smooth'})" class="btn-sm bg-emerald-600 hover:bg-emerald-700 text-white font-bold"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> Finance</a>{{/if}}
       <form method="POST" action="/events/{{event.id}}/delete" class="inline" onsubmit="return confirm('Delete this event? This cannot be undone.')">
         <button type="submit" class="btn-sm btn-sm-red"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg> Delete</button>
       </form>
@@ -327,6 +327,7 @@
 
   <!-- Event URL QR Code Card — only show when a payment QR has been uploaded -->
   {{#if event.paymentQR}}
+  {{#if event.isPaymentType}}
   {{#if canManageFinance}}
   <div class="section-card animate-fadeup-2">
     <div class="section-header">
@@ -361,12 +362,14 @@
     </div>
   </div>
   {{/if}}
+  {{/if}}{{!-- /event.isPaymentType --}}
   {{/if}}{{!-- /event.paymentQR --}}
 
   <!-- ═══════════════════════════════════════════════
        EVENT INCOME & EXPENSE TRACKER
        ═══════════════════════════════════════════════ -->
   {{#if canManageFinance}}
+  {{#if event.isPaymentType}}
   {{#if finance.entries.length}}
   <div id="finance" class="animate-fadeup-2">
 
@@ -596,6 +599,7 @@
     </div><!-- /finance card -->
   </div><!-- /finance section -->
   {{/if}}{{!-- /finance.entries.length --}}
+  {{/if}}{{!-- /event.isPaymentType --}}
   {{/if}}{{!-- /canManageFinance --}}
 
 </main>
