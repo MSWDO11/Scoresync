@@ -67,7 +67,9 @@ export const dashboardPage = async (req, res) => {
         getDocs(collection(db, "events")),
         getDocs(query(collection(db, "users"), where("role", "==", "judge"))),
       ]);
-      ongoingEvents = ongoingSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+      ongoingEvents = ongoingSnap.docs
+        .map(d => ({ id: d.id, ...d.data() }))
+        .filter(e => e.name && e.name.trim() !== ''); // skip corrupt/deleted stale docs
       ongoingCount  = ongoingEvents.length;
       totalEvents   = allEvSnap.size;
       judges = usersSnap.docs.map(d => ({ id: d.id, ...d.data() }))
