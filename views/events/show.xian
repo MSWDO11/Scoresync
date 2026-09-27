@@ -364,7 +364,8 @@
   {{#if canManageFinance}}
   <div id="finance" class="animate-fadeup-2">
 
-    <!-- KPI summary row -->
+    <!-- KPI summary row — only show when there are actual entries -->
+    {{#if finance.entries.length}}
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
 
       <!-- Total Income -->
@@ -408,6 +409,7 @@
       </div>
 
     </div>
+    {{/if}}{{!-- end finance.entries.length KPI block --}}
 
     <!-- Main finance card -->
     <div class="rounded-2xl overflow-hidden" style="background:#111827;border:1px solid rgba(255,255,255,0.07)">
