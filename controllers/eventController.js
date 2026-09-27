@@ -5,7 +5,24 @@ import {
   updateDoc, deleteDoc, query, orderBy, serverTimestamp,
 } from "firebase/firestore";
 
-const EVENTS = "events";
+// ─── Shared: compute and apply auto-status for a single event ────────────────
+export async function applyAutoStatus(eventId, event) {
+  if (!event.date || event.status === 'cancelled') return event.status;
+  const now      = new Date();
+  const startDt  = new Date(event.date + 'T' + (event.time    || '00:00'));
+  const endDt    = event.endTime ? new Date(event.date + 'T' + event.endTime) : null;
+
+  let newStatus;
+  if (endDt && !isNaN(endDt) && now >= endDt)        newStatus = 'completed';
+  else if (!isNaN(startDt)   && now >= startDt)       newStatus = 'ongoing';
+  else                                                 newStatus = 'upcoming';
+
+  if (newStatus !== event.status) {
+    await updateDoc(doc(db, EVENTS, eventId), { status: newStatus });
+    event.status = newStatus;
+  }
+  return event.status;
+}
 
 // ─── List all events ──────────────────────────────────────────────────────────
 export const listEvents = async (req, res) => {
@@ -13,6 +30,14 @@ export const listEvents = async (req, res) => {
     const q = query(collection(db, EVENTS), orderBy("createdAt", "desc"));
     const snap = await getDocs(q);
     const events = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+    // Auto-update status for all non-cancelled events based on date/time
+    await Promise.all(
+      events
+        .filter(e => e.date && e.status !== 'cancelled')
+        .map(e => applyAutoStatus(e.id, e))
+    );
+
     res.render("events/index", {
       title: "Events",
       events,
@@ -103,28 +128,8 @@ export const showEvent = async (req, res) => {
     // Flag for finance management (admin + organizer)
     event.canManageFinance = ['admin','organizer'].includes(req.session.userRole);
 
-    // ── Auto-status: update status in Firestore based on date/time/endTime ──
-    if (event.date && !['cancelled'].includes(event.status)) {
-      const now = new Date();
-      const startStr = event.date + (event.time ? 'T' + event.time : 'T00:00');
-      const endStr   = event.date + (event.endTime ? 'T' + event.endTime : null);
-      const startDt  = new Date(startStr);
-      const endDt    = event.endTime ? new Date(endStr) : null;
-
-      let newStatus = event.status;
-      if (endDt && now >= endDt) {
-        newStatus = 'completed';
-      } else if (now >= startDt) {
-        newStatus = 'ongoing';
-      } else {
-        newStatus = 'upcoming';
-      }
-
-      if (newStatus !== event.status) {
-        await updateDoc(doc(db, EVENTS, req.params.id), { status: newStatus });
-        event.status = newStatus;
-      }
-    }
+    // ── Auto-status: update Firestore if date/time/endTime says status changed ──
+    await applyAutoStatus(req.params.id, event);
 
     const [cSnap, crSnap, finance] = await Promise.all([
       getDocs(collection(db, EVENTS, req.params.id, "contestants")),

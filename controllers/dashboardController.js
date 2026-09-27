@@ -1,7 +1,8 @@
 import { db } from "../models/firebaseConfig.js";
 import {
-  collection, getDocs, query, orderBy, limit, where,
+  collection, getDocs, getDoc, doc, updateDoc, query, orderBy, limit, where,
 } from "firebase/firestore";
+import { applyAutoStatus } from "./eventController.js";
 
 export const dashboardPage = async (req, res) => {
   const role = req.session.userRole;
@@ -18,13 +19,18 @@ export const dashboardPage = async (req, res) => {
     let judges = [];
 
     if (role === "admin") {
-      const [evSnap, uSnap, ongoingSnap] = await Promise.all([
+      const [evSnap, uSnap] = await Promise.all([
         getDocs(collection(db, "events")),
         getDocs(collection(db, "users")),
-        getDocs(query(collection(db, "events"), where("status", "==", "ongoing"))),
       ]);
-      totalEvents = evSnap.size;
-      ongoingCount = ongoingSnap.size;
+      // Run auto-status on all events first
+      const allEvs = evSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+      await Promise.all(
+        allEvs.filter(e => e.date && e.status !== 'cancelled')
+              .map(e => applyAutoStatus(e.id, e))
+      );
+      totalEvents  = evSnap.size;
+      ongoingCount = allEvs.filter(e => e.status === 'ongoing').length;
 
       const allUsers = uSnap.docs.map(d => {
         const data = d.data();
@@ -47,6 +53,15 @@ export const dashboardPage = async (req, res) => {
 
     // Organizer: load ongoing events + judges list
     if (role === "organizer") {
+      // First: run auto-status on all events so Firestore is up-to-date
+      const allEvForStatus = await getDocs(query(collection(db, "events")));
+      await Promise.all(
+        allEvForStatus.docs
+          .map(d => ({ id: d.id, ...d.data() }))
+          .filter(e => e.date && e.status !== 'cancelled')
+          .map(e => applyAutoStatus(e.id, e))
+      );
+
       const [ongoingSnap, allEvSnap, usersSnap] = await Promise.all([
         getDocs(query(collection(db, "events"), where("status", "==", "ongoing"))),
         getDocs(collection(db, "events")),
