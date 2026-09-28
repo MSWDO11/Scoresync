@@ -3,19 +3,24 @@ import {
   collection, getDocs, getDoc, doc, setDoc, addDoc, updateDoc,
   query, where, serverTimestamp, orderBy
 } from "firebase/firestore";
-import { GoogleGenAI, Type } from "@google/genai";
-
-// Shared Gemini AI Client instance
-const getGeminiClient = () => {
-  return new GoogleGenAI({
-    apiKey: process.env.GEMINI_API_KEY,
-    httpOptions: {
-      headers: {
-        'User-Agent': 'aistudio-build',
-      }
+// ─── Lazy Gemini import — prevents startup crash if package fails to load ──────
+let _GoogleGenAI = null;
+async function getGeminiClient() {
+  if (!_GoogleGenAI) {
+    try {
+      const mod = await import("@google/genai");
+      _GoogleGenAI = mod.GoogleGenAI;
+    } catch (e) {
+      console.error("Failed to load @google/genai:", e.message);
+      return null;
     }
+  }
+  if (!process.env.GEMINI_API_KEY) return null;
+  return new _GoogleGenAI({
+    apiKey: process.env.GEMINI_API_KEY,
+    httpOptions: { headers: { 'User-Agent': 'aistudio-build' } }
   });
-};
+}
 
 // Helper: Calculate standard deviation and mean
 function calcStats(numbers) {
@@ -222,7 +227,8 @@ export const runAIAnalytics = async (req, res) => {
 
     if (process.env.GEMINI_API_KEY) {
       try {
-        const ai = getGeminiClient();
+        const ai = await getGeminiClient();
+        if (!ai) throw new Error("Gemini client unavailable");
 
         const prompt = `
 You are the Chief Tabulator and AI Scoring Auditor for LGU Municipal Festival Competitions.
