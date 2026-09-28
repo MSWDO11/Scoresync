@@ -1,9 +1,9 @@
 {{> head }}
-<body class="min-h-screen flex flex-col" style="background:#060b18">
+<body class="min-h-screen flex flex-col" style="background:#060b18;overflow-x:hidden">
 {{> navbar }}
 <div class="flex flex-1 overflow-hidden">
 {{> sidebar }}
-<main class="flex-1 overflow-y-auto pb-28" id="scoring-main">
+<main class="flex-1 overflow-y-auto overflow-x-hidden pb-32" id="scoring-main" style="min-width:0">
 
   <!-- ══ TOP BAR ══ -->
   <div class="sticky top-0 z-20 no-print" style="background:rgba(6,11,24,0.97);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,0.06)">
@@ -49,12 +49,12 @@
 
     <!-- Row 3: Criteria tabs (shown per contestant) -->
     {{#each contestants}}
-    <div class="criteria-tabs px-4 sm:px-6 py-2 flex items-center gap-2 overflow-x-auto" data-panel-idx="{{@index}}" style="{{#unless @first}}display:none{{/unless}};border-top:1px solid rgba(255,255,255,0.04)">
+    <div class="criteria-tabs px-4 sm:px-6 py-2 flex items-center gap-2 overflow-x-auto" data-panel-idx="{{@index}}" style="{{#unless @first}}display:none{{/unless}};border-top:1px solid rgba(255,255,255,0.04);-webkit-overflow-scrolling:touch;scrollbar-width:none">
       {{#each scores}}
       <button type="button"
         class="criteria-tab flex-shrink-0 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold transition-all border"
         data-panel="{{../id}}" data-tab-idx="{{@index}}"
-        style="background:rgba(255,255,255,0.05);color:#64748b;border-color:rgba(255,255,255,0.08)"
+        style="background:rgba(255,255,255,0.05);color:#64748b;border-color:rgba(255,255,255,0.08);white-space:nowrap"
         onclick="switchCriteria('{{../id}}', {{@index}})">
         <span class="tab-check hidden">✓</span>
         {{criteriaName}}
@@ -73,9 +73,9 @@
     <div class="contestant-panel" data-idx="{{@index}}" data-contestant-id="{{id}}">
 
       <!-- Contestant header -->
-      <div class="px-4 sm:px-6 py-4 flex items-center gap-4" style="border-bottom:1px solid rgba(255,255,255,0.05)">
+      <div class="px-4 sm:px-6 py-4 flex items-center gap-3 flex-wrap sm:flex-nowrap" style="border-bottom:1px solid rgba(255,255,255,0.05)">
         <!-- Photo thumbnail -->
-        <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl overflow-hidden flex-shrink-0 shadow-lg" style="border:2px solid rgba(99,102,241,0.3)">
+        <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl overflow-hidden flex-shrink-0 shadow-lg" style="border:2px solid rgba(99,102,241,0.3)">
           {{#if photo}}
           <img src="{{photo}}" alt="{{name}}" class="w-full h-full object-cover" style="object-position:center top"/>
           {{else}}
@@ -106,7 +106,7 @@
 
       <!-- ── Criteria panels (one per criteria, tabs switch between them) ── -->
       {{#each scores}}
-      <div class="criteria-panel px-4 sm:px-6 py-5 space-y-5"
+      <div class="criteria-panel px-4 sm:px-6 py-4 sm:py-5 space-y-4"
         data-contestant-id="{{../id}}" data-criteria-idx="{{@index}}"
         style="{{#unless @first}}display:none{{/unless}}">
 
@@ -126,11 +126,11 @@
         </div>
 
         <!-- Big score display -->
-        <div class="flex items-center justify-center gap-6">
+        <div class="flex items-center justify-center gap-4 flex-wrap">
           <div class="text-center">
             <div class="flex items-end justify-center gap-1">
               <span class="score-display font-black leading-none" style="font-size:3rem;color:#6366f1;font-variant-numeric:tabular-nums">{{#if value}}{{value}}{{else}}—{{/if}}</span>
-              <span class="text-xl font-bold mb-3" style="color:#374151">/{{maxScore}}</span>
+              <span class="text-lg font-bold mb-2" style="color:#374151">/{{maxScore}}</span>
             </div>
             <div class="text-xs font-bold uppercase tracking-wider" style="color:#374151">pts out of {{maxScore}}</div>
           </div>
@@ -151,13 +151,13 @@
         <div>
           <div class="text-[10px] font-extrabold uppercase tracking-wider mb-2" style="color:#374151">Your Score</div>
           <!-- Number pad rendered by JS -->
-          <div class="numpad-grid flex flex-wrap gap-2" data-max="{{maxScore}}"></div>
+          <div class="numpad-grid flex flex-wrap gap-2 max-w-full" data-max="{{maxScore}}"></div>
         </div>
 
         <!-- Fine-tune row -->
         <div>
           <div class="text-[10px] font-extrabold uppercase tracking-wider mb-2" style="color:#374151">Fine-tune</div>
-          <div class="flex flex-wrap gap-2">
+          <div class="flex flex-wrap gap-2 max-w-full">
             <button type="button" class="finetune-btn px-3 py-1.5 rounded-lg text-xs font-extrabold transition border" data-delta="0" style="background:rgba(255,255,255,0.05);color:#64748b;border-color:rgba(255,255,255,0.08)">+.0</button>
             <button type="button" class="finetune-btn px-3 py-1.5 rounded-lg text-xs font-extrabold transition border" data-delta="0.1" style="background:rgba(255,255,255,0.05);color:#64748b;border-color:rgba(255,255,255,0.08)">+.1</button>
             <button type="button" class="finetune-btn px-3 py-1.5 rounded-lg text-xs font-extrabold transition border" data-delta="0.2" style="background:rgba(255,255,255,0.05);color:#64748b;border-color:rgba(255,255,255,0.08)">+.2</button>
@@ -260,13 +260,14 @@
 
 <style>
 .numpad-btn {
-  width:52px; height:52px;
+  width:48px; height:48px;
   display:flex;align-items:center;justify-content:center;
-  border-radius:12px;font-weight:800;font-size:0.95rem;
+  border-radius:12px;font-weight:800;font-size:0.9rem;
   border:2px solid rgba(255,255,255,0.08);
   background:rgba(255,255,255,0.05);
   color:#64748b;cursor:pointer;transition:all 0.15s;flex-shrink:0;
 }
+@media (max-width:480px) { .numpad-btn { width:42px; height:42px; font-size:0.85rem; } }
 .numpad-btn:hover { background:rgba(99,102,241,0.18);border-color:rgba(99,102,241,0.4);color:#a5b4fc; }
 .numpad-btn.selected { background:rgba(99,102,241,0.9);border-color:#6366f1;color:#fff;box-shadow:0 4px 12px rgba(99,102,241,0.45);transform:scale(1.05); }
 .finetune-btn.selected { background:rgba(99,102,241,0.25) !important;color:#a5b4fc !important;border-color:rgba(99,102,241,0.5) !important; }
@@ -274,6 +275,13 @@
 .criteria-tab.done { background:rgba(16,185,129,0.12) !important;color:#6ee7b7 !important;border-color:rgba(16,185,129,0.35) !important; }
 .nav-dot.scored { background:rgba(16,185,129,0.25) !important;color:#6ee7b7 !important;border-color:rgba(16,185,129,0.5) !important; }
 .nav-dot.active-dot { background:rgba(99,102,241,0.25) !important;color:#a5b4fc !important;border-color:rgba(99,102,241,0.6) !important; }
+/* Hide scrollbars on overflow-x rows */
+.criteria-tabs::-webkit-scrollbar, main::-webkit-scrollbar { display:none; }
+.criteria-tabs { -ms-overflow-style:none; }
+/* Responsive score display */
+@media (max-width:480px) {
+  .score-display { font-size:2.2rem !important; }
+}
 </style>
 
 <script>
