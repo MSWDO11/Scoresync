@@ -9,8 +9,8 @@ import { fileURLToPath } from "url";
 import { dirname } from "path";
 import { injectUser } from "./middleware/auth.js";
 import { db } from "./models/firebaseConfig.js";
-import { collection, getDocs, updateDoc, doc } from "firebase/firestore";
-import { applyAutoStatus } from "./controllers/eventController.js";
+import { collection, getDocs } from "firebase/firestore";
+import { applyAutoStatus } from "./utils/autoStatus.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname  = dirname(__filename);

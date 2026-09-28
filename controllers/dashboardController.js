@@ -2,7 +2,7 @@ import { db } from "../models/firebaseConfig.js";
 import {
   collection, getDocs, getDoc, doc, updateDoc, query, orderBy, limit, where,
 } from "firebase/firestore";
-import { applyAutoStatus } from "./eventController.js";
+import { applyAutoStatus } from "../utils/autoStatus.js";
 
 export const dashboardPage = async (req, res) => {
   const role = req.session.userRole;

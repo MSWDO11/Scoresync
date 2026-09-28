@@ -4,32 +4,8 @@ import {
   collection, addDoc, getDocs, getDoc, doc,
   updateDoc, deleteDoc, query, orderBy, serverTimestamp,
 } from "firebase/firestore";
-
-// ─── Shared: compute and apply auto-status for a single event ────────────────
-export async function applyAutoStatus(eventId, event) {
-  if (!event.date || event.status === 'cancelled') return event.status;
-
-  const now = new Date();
-
-  // Parse as Philippine Standard Time (UTC+8) — events are always in PHT
-  // Appending +08:00 ensures server interprets times correctly regardless of server TZ
-  const startStr = event.date + 'T' + (event.time || '00:00') + ':00+08:00';
-  const endStr   = event.endTime ? event.date + 'T' + event.endTime + ':00+08:00' : null;
-
-  const startDt  = new Date(startStr);
-  const endDt    = endStr ? new Date(endStr) : null;
-
-  let newStatus;
-  if (endDt && !isNaN(endDt) && now >= endDt)    newStatus = 'completed';
-  else if (!isNaN(startDt) && now >= startDt)     newStatus = 'ongoing';
-  else                                             newStatus = 'upcoming';
-
-  if (newStatus !== event.status) {
-    await updateDoc(doc(db, "events", eventId), { status: newStatus });
-    event.status = newStatus;
-  }
-  return event.status;
-}
+import { applyAutoStatus } from "../utils/autoStatus.js";
+export { applyAutoStatus }; // re-export so existing code doesn't break
 
 const EVENTS = "events";
 
