@@ -103,7 +103,30 @@ export const dashboardPage = async (req, res) => {
     };
 
     if (role === "admin")     return res.render("dashboard/admin",     viewData);
-    if (role === "judge")     return res.render("dashboard/judge",     viewData);
+    if (role === "judge") {
+      // Load contestant + criteria counts per event for richer judge dashboard
+      const judgeEvents = await Promise.all(
+        recentEvents.map(async (ev) => {
+          try {
+            const [cSnap, crSnap, sSnap] = await Promise.all([
+              getDocs(collection(db, "events", ev.id, "contestants")),
+              getDocs(collection(db, "events", ev.id, "criteria")),
+              getDocs(collection(db, "events", ev.id, "scores")),
+            ]);
+            const myScores = sSnap.docs.filter(d => d.data().judgeId === req.session.userId);
+            const scoredIds = new Set(myScores.map(d => d.data().contestantId));
+            return {
+              ...ev,
+              contestantCount: cSnap.size,
+              criteriaCount:   crSnap.size,
+              myScoreCount:    scoredIds.size,
+              completionPct:   cSnap.size > 0 ? Math.round((scoredIds.size / cSnap.size) * 100) : 0,
+            };
+          } catch (_) { return ev; }
+        })
+      );
+      return res.render("dashboard/judge", { ...viewData, recentEvents: judgeEvents });
+    }
     if (role === "organizer") return res.render("dashboard/organizer", viewData);
     return res.render("dashboard/encoder", viewData);
   } catch (err) {

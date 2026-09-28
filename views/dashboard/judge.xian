@@ -8,95 +8,220 @@
   {{#if success_msg}}<div class="alert-success animate-fadeup">{{success_msg}}</div>{{/if}}
   {{#if error_msg}}<div class="alert-error animate-fadeup">{{error_msg}}</div>{{/if}}
 
-  <!-- Header -->
-  <div class="rounded-2xl p-5 sm:p-7 flex flex-col sm:flex-row sm:items-center justify-between gap-5 relative overflow-hidden animate-fadeup"
-    style="background:#111827;border:1px solid rgba(255,255,255,0.08)">
-    <div class="absolute -right-12 -top-12 w-64 h-64 rounded-full blur-3xl pointer-events-none" style="background:rgba(109,40,217,0.07)"></div>
-    <div class="relative z-10 space-y-2">
-      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-extrabold"
-        style="background:rgba(139,92,246,0.15);color:#c4b5fd;border:1px solid rgba(139,92,246,0.25)">
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-        Official Judge Panel
+  <!-- ── Hero Header ── -->
+  <div class="relative rounded-2xl overflow-hidden animate-fadeup"
+    style="background:linear-gradient(135deg,#1e1b4b 0%,#2e1065 40%,#1e3a8a 100%);border:1px solid rgba(139,92,246,0.25)">
+    <!-- Glow orbs -->
+    <div class="absolute -right-16 -top-16 w-64 h-64 rounded-full blur-3xl pointer-events-none" style="background:rgba(139,92,246,0.15)"></div>
+    <div class="absolute -left-8 -bottom-8 w-48 h-48 rounded-full blur-3xl pointer-events-none" style="background:rgba(37,99,235,0.12)"></div>
+
+    <div class="relative px-6 sm:px-8 py-7 flex flex-col sm:flex-row sm:items-center justify-between gap-5">
+      <div class="space-y-3">
+        <!-- Badge -->
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-extrabold"
+          style="background:rgba(139,92,246,0.2);color:#c4b5fd;border:1px solid rgba(139,92,246,0.35)">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          Official Judge Panel
+        </div>
+        <!-- Welcome -->
+        <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white leading-tight">
+          Welcome back, <span style="background:linear-gradient(90deg,#a78bfa,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent">{{userName}}</span> 👋
+        </h1>
+        <p class="text-sm font-medium" style="color:rgba(196,181,253,0.7)">Select an active event to score contestants — one at a time, in order.</p>
       </div>
-      <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight leading-tight" style="color:#f1f5f9">
-        Welcome, <span style="background:linear-gradient(90deg,#a78bfa,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent">{{userName}}</span> 👋
-      </h1>
-      <p class="text-sm font-medium" style="color:#475569">Select an assigned event below to submit official scores per contestant.</p>
+
+      <!-- Stats mini row -->
+      <div class="flex items-center gap-3 flex-wrap sm:flex-nowrap flex-shrink-0">
+        <div class="rounded-2xl px-5 py-4 text-center min-w-[90px]" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1)">
+          <div class="text-2xl font-black text-white">{{recentEvents.length}}</div>
+          <div class="text-[10px] font-bold uppercase tracking-wider mt-0.5" style="color:rgba(196,181,253,0.7)">Events</div>
+        </div>
+        <div class="rounded-2xl px-5 py-4 text-center min-w-[90px]" style="background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.2)">
+          {{#each recentEvents}}{{#if (eq status 'ongoing')}}<div class="text-2xl font-black" style="color:#6ee7b7">{{/if}}{{/each}}
+          <div class="text-2xl font-black" style="color:#6ee7b7">
+            {{#each recentEvents}}{{#if (eq status 'ongoing')}}✓{{/if}}{{/each}}
+          </div>
+          <div class="text-[10px] font-bold uppercase tracking-wider mt-0.5" style="color:rgba(110,231,183,0.7)">Active</div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- Instruction Banner -->
-  <div class="p-4 sm:p-5 rounded-2xl flex items-start gap-4 animate-fadeup-1"
-    style="background:rgba(139,92,246,0.08);border:1px solid rgba(139,92,246,0.2)">
-    <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl flex items-center justify-center flex-shrink-0 text-white shadow-md"
-      style="background:linear-gradient(135deg,#6d28d9,#4f46e5)">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+  <!-- ── Scoring Guideline Banner ── -->
+  <div class="rounded-2xl p-4 sm:p-5 flex items-start gap-4 animate-fadeup-1"
+    style="background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.2)">
+    <div class="w-10 h-10 rounded-2xl flex items-center justify-center flex-shrink-0 text-white shadow"
+      style="background:linear-gradient(135deg,#4f46e5,#7c3aed)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
     </div>
-    <div>
-      <h3 class="font-extrabold text-sm" style="color:#c4b5fd">Scoring Guidelines</h3>
-      <p class="text-xs font-medium mt-1 leading-relaxed" style="color:#7c3aed">
-        Click <span class="px-2 py-0.5 rounded font-bold text-[11px] text-white" style="background:#7c3aed">Score Now</span> on active events. Ensure scores adhere strictly to official percentage weights (0 to 100%).
+    <div class="flex-1">
+      <h3 class="font-extrabold text-sm" style="color:#a5b4fc">Scoring Guidelines</h3>
+      <p class="text-xs font-medium mt-1 leading-relaxed" style="color:#6366f1">
+        Click <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-bold text-white" style="background:#6366f1">
+          <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> Score Now
+        </span> on <strong style="color:#a5b4fc">Ongoing</strong> events only.
+        Scores are saved per contestant — one at a time. All criteria weights must add up to <strong style="color:#a5b4fc">100%</strong>.
+        Your scores are <strong style="color:#a5b4fc">anonymous</strong> to participants.
       </p>
     </div>
   </div>
 
-  <!-- Events List -->
-  <div class="rounded-2xl overflow-hidden animate-fadeup-2"
-    style="background:#111827;border:1px solid rgba(255,255,255,0.08)">
-    <div class="px-5 sm:px-6 py-4 flex items-center justify-between"
-      style="border-bottom:1px solid rgba(255,255,255,0.07);background:rgba(255,255,255,0.02)">
-      <div class="flex items-center gap-2.5">
-        <div class="w-8 h-8 rounded-xl flex items-center justify-center"
-          style="background:rgba(139,92,246,0.2);border:1px solid rgba(139,92,246,0.3)">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-        </div>
-        <h2 class="text-sm sm:text-base font-extrabold tracking-tight" style="color:#e2e8f0">Events Available for Scoring</h2>
-      </div>
+  <!-- ── Events List ── -->
+  <div class="space-y-4 animate-fadeup-2">
+    <div class="flex items-center justify-between px-1">
+      <h2 class="font-extrabold text-base" style="color:#e2e8f0">Events Available for Scoring</h2>
+      <span class="text-xs font-bold" style="color:#64748b">{{recentEvents.length}} event(s)</span>
     </div>
 
     {{#if recentEvents.length}}
-    <div>
+    <div class="space-y-3">
       {{#each recentEvents}}
-      <div class="p-4 sm:p-5 sm:px-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition"
-        style="border-top:1px solid rgba(255,255,255,0.05)"
-        onmouseover="this.style.background='rgba(139,92,246,0.05)'" onmouseout="this.style.background=''">
-        <div class="flex items-center gap-3 sm:gap-4">
-          <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl flex items-center justify-center flex-shrink-0 text-white shadow-sm"
-            style="background:linear-gradient(135deg,#4c1d95,#7c3aed)">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+
+      <div class="rounded-2xl overflow-hidden transition-all duration-300
+        {{#if (eq status 'ongoing')}}hover:-translate-y-0.5 hover:shadow-xl{{/if}}"
+        style="background:#111827;border:1px solid {{#if (eq status 'ongoing')}}rgba(16,185,129,0.3){{else}}{{#if (eq status 'completed')}}rgba(59,130,246,0.2){{else}}rgba(255,255,255,0.07){{/if}}{{/if}};box-shadow:{{#if (eq status 'ongoing')}}0 4px 24px rgba(16,185,129,0.1){{else}}none{{/if}}">
+
+        <div class="px-5 sm:px-6 py-4 flex flex-col sm:flex-row sm:items-center gap-4">
+
+          <!-- Event icon + info -->
+          <div class="flex items-center gap-4 flex-1 min-w-0">
+            <!-- Icon with theme gradient -->
+            <div class="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg"
+              style="background:{{themeGradient theme}}">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            </div>
+
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-0.5">
+                <h3 class="font-extrabold text-base truncate" style="color:#e2e8f0">{{name}}</h3>
+                {{#if (eq status 'ongoing')}}
+                <span class="flex-shrink-0 w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                {{/if}}
+              </div>
+              <div class="flex flex-wrap items-center gap-2 text-xs" style="color:#64748b">
+                {{#if venue}}<span class="flex items-center gap-1"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/></svg>{{venue}}</span>{{/if}}
+                {{#if date}}<span class="flex items-center gap-1"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>{{date}}{{#if time}} at {{time}}{{/if}}</span>{{/if}}
+                <span class="capitalize px-2 py-0.5 rounded-full text-[10px] font-bold" style="background:rgba(255,255,255,0.07);color:#94a3b8">{{#if (eq type 'other')}}{{#if otherType}}{{otherType}}{{else}}Other{{/if}}{{else}}{{type}}{{/if}}</span>
+              </div>
+
+              <!-- Stats row -->
+              {{#if contestantCount}}
+              <div class="flex items-center gap-3 mt-2 flex-wrap">
+                <span class="flex items-center gap-1.5 text-[11px] font-semibold" style="color:#94a3b8">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                  {{contestantCount}} contestant{{#if (gt contestantCount 1)}}s{{/if}}
+                </span>
+                <span class="flex items-center gap-1.5 text-[11px] font-semibold" style="color:#94a3b8">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                  {{criteriaCount}} criteri{{#if (gt criteriaCount 1)}}a{{else}}on{{/if}}
+                </span>
+                {{#if myScoreCount}}
+                <span class="flex items-center gap-1.5 text-[11px] font-bold" style="color:#6ee7b7">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#6ee7b7" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  {{myScoreCount}} scored
+                </span>
+                {{/if}}
+              </div>
+              {{/if}}
+
+              <!-- Completion progress bar (for ongoing) -->
+              {{#if (eq status 'ongoing')}}
+              {{#if contestantCount}}
+              <div class="mt-2.5">
+                <div class="flex justify-between text-[10px] mb-1" style="color:#64748b">
+                  <span>My progress</span>
+                  <span class="font-bold" style="color:#e2e8f0">{{completionPct}}%</span>
+                </div>
+                <div class="h-1.5 rounded-full overflow-hidden" style="background:rgba(255,255,255,0.08)">
+                  <div class="h-full rounded-full transition-all duration-700"
+                    style="width:{{completionPct}}%;background:{{#if (gte completionPct 100)}}#10b981{{else}}linear-gradient(90deg,#6366f1,#8b5cf6){{/if}}"></div>
+                </div>
+              </div>
+              {{/if}}
+              {{/if}}
+            </div>
           </div>
-          <div>
-            <h3 class="font-bold text-sm sm:text-base" style="color:#e2e8f0">{{name}}</h3>
-            <p class="text-xs mt-0.5" style="color:#475569">
-              {{#if venue}}{{venue}} &bull; {{/if}}{{date}}
-            </p>
+
+          <!-- Actions -->
+          <div class="flex items-center gap-2 self-end sm:self-center flex-shrink-0">
+            <span class="badge {{#if (eq status 'ongoing')}}badge-green{{else}}{{#if (eq status 'completed')}}badge-blue{{else}}{{#if (eq status 'cancelled')}}badge-red{{else}}badge-yellow{{/if}}{{/if}}{{/if}} capitalize text-xs">
+              {{status}}
+            </span>
+            {{#if (eq status 'ongoing')}}
+            <a href="/events/{{id}}/scoring"
+              class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-extrabold text-sm text-white transition active:scale-95 shadow-lg"
+              style="background:linear-gradient(135deg,#4f46e5,#7c3aed);box-shadow:0 4px 16px rgba(99,102,241,0.4)">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              Score Now
+            </a>
+            {{else}}{{#if (eq status 'completed')}}
+            <a href="/events/{{id}}/results" class="btn-sm btn-sm-blue text-xs">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+              View Results
+            </a>
+            {{else}}
+            <span class="btn-sm btn-sm-gray text-xs opacity-50 cursor-not-allowed">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              Not Started
+            </span>
+            {{/if}}{{/if}}
           </div>
         </div>
-        <div class="flex items-center gap-3 self-end sm:self-center flex-shrink-0">
-          <span class="badge {{#if (eq status 'ongoing')}}badge-green{{else}}{{#if (eq status 'completed')}}badge-blue{{else}}badge-yellow{{/if}}{{/if}} capitalize">{{status}}</span>
-          {{#if (eq status 'ongoing')}}
-          <a href="/events/{{id}}/scoring" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl font-bold text-xs text-white transition"
-            style="background:linear-gradient(135deg,#6d28d9,#7c3aed);box-shadow:0 4px 12px rgba(109,40,217,0.3)">
-            Score Now
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-          </a>
-          {{else}}
-          <a href="/events/{{id}}/results" class="btn-sm btn-sm-gray text-xs">View Results</a>
-          {{/if}}
-        </div>
+
+        <!-- Bottom accent bar for ongoing -->
+        {{#if (eq status 'ongoing')}}
+        <div class="h-0.5" style="background:linear-gradient(90deg,rgba(16,185,129,0),rgba(16,185,129,0.6),rgba(16,185,129,0))"></div>
+        {{/if}}
       </div>
+
       {{/each}}
     </div>
+
     {{else}}
-    <div class="py-16 text-center px-4">
-      <div class="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4"
-        style="background:rgba(139,92,246,0.10);border:1px solid rgba(139,92,246,0.15)">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#4b5563" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+    <!-- Empty state -->
+    <div class="rounded-2xl py-20 text-center px-4"
+      style="background:#111827;border:1px solid rgba(255,255,255,0.06)">
+      <div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5"
+        style="background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2)">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
       </div>
-      <h3 class="font-bold text-sm mb-1" style="color:#e2e8f0">No Scoring Events Available</h3>
-      <p class="text-xs max-w-xs mx-auto" style="color:#374151">Contact the administrator to assign scoring events to your account.</p>
+      <h3 class="font-bold text-base mb-2" style="color:#e2e8f0">No Scoring Events Available</h3>
+      <p class="text-sm max-w-xs mx-auto leading-relaxed" style="color:#475569">
+        No events are currently assigned for scoring. Contact the administrator to set up an event and assign you as judge.
+      </p>
     </div>
     {{/if}}
+  </div>
+
+  <!-- ── Quick Tips ── -->
+  <div class="grid sm:grid-cols-3 gap-3 animate-fadeup-2">
+    <div class="rounded-2xl p-4 flex items-start gap-3" style="background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.15)">
+      <div class="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5" style="background:rgba(99,102,241,0.15)">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#818cf8" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <div>
+        <div class="text-xs font-bold mb-0.5" style="color:#a5b4fc">Anonymous Scoring</div>
+        <p class="text-[11px] leading-relaxed" style="color:#475569">Your identity is hidden from participants. Results show Judge 1, 2, 3.</p>
+      </div>
+    </div>
+    <div class="rounded-2xl p-4 flex items-start gap-3" style="background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.15)">
+      <div class="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5" style="background:rgba(16,185,129,0.15)">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6ee7b7" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
+      </div>
+      <div>
+        <div class="text-xs font-bold mb-0.5" style="color:#6ee7b7">Draft Auto-Save</div>
+        <p class="text-[11px] leading-relaxed" style="color:#475569">Scores are saved locally as you type. No data loss on refresh.</p>
+      </div>
+    </div>
+    <div class="rounded-2xl p-4 flex items-start gap-3" style="background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.15)">
+      <div class="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5" style="background:rgba(245,158,11,0.15)">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fcd34d" stroke-width="2.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      </div>
+      <div>
+        <div class="text-xs font-bold mb-0.5" style="color:#fcd34d">Live Leaderboard</div>
+        <p class="text-[11px] leading-relaxed" style="color:#475569">Results update in real-time as all judges submit scores.</p>
+      </div>
+    </div>
   </div>
 
 </main>
