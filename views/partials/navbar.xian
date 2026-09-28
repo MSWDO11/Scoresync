@@ -28,8 +28,8 @@
   <div class="flex items-center gap-2 sm:gap-2.5 ml-auto flex-shrink-0">
 
     <!-- Role badge -->
-    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-extrabold border shadow-2xs
-      {{#if isAdmin}}bg-blue-50 text-blue-700 border-blue-200/80{{else}}{{#if isJudge}}bg-purple-50 text-purple-700 border-purple-200/80{{else}}bg-emerald-50 text-emerald-700 border-emerald-200/80{{/if}}{{/if}}">
+    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-extrabold"
+      style="{{#if isAdmin}}background:rgba(37,99,235,0.15);color:#93c5fd;border:1px solid rgba(37,99,235,0.3){{else}}{{#if isJudge}}background:rgba(139,92,246,0.15);color:#c4b5fd;border:1px solid rgba(139,92,246,0.3){{else}}{{#if isOrganizer}}background:rgba(245,158,11,0.15);color:#fcd34d;border:1px solid rgba(245,158,11,0.3){{else}}background:rgba(16,185,129,0.15);color:#6ee7b7;border:1px solid rgba(16,185,129,0.3){{/if}}{{/if}}{{/if}}">
       {{#if isAdmin}}
       <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1l3 6 6.5 1-4.8 4.5 1.2 6.5L12 16l-5.9 3 1.2-6.5L2.5 8 9 7z"/></svg>
       {{else}}{{#if isJudge}}

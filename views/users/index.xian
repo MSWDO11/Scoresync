@@ -20,7 +20,7 @@
   </div>
 
   {{#if notifyGmail}}
-  <div id="gmail-notify-banner" class="card-flat p-5 border-2 border-emerald-400 bg-emerald-50 flex flex-col md:flex-row md:items-center justify-between gap-4 animate-fadeup">
+  <div id="gmail-notify-banner" class="card-flat p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 animate-fadeup" style="border:1px solid rgba(16,185,129,0.3)">
     <div class="flex items-start gap-3">
       <div class="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center flex-shrink-0 shadow-sm">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
@@ -169,7 +169,7 @@
             <td class="text-slate-400 text-xs">{{createdAt}}</td>
             <td>
               <form method="POST" action="/users/{{id}}/role" class="flex items-center gap-2">
-                <select name="role" class="text-xs border border-slate-200 rounded-lg px-2 py-1.5 bg-white text-slate-700 focus:outline-none focus:ring-1 focus:ring-blue-400">
+                <select name="role" class="text-xs rounded-lg px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-blue-400 form-input-bare">
                   <option value="admin"     {{#if (eq role 'admin')}}selected{{/if}}>Admin</option>
                   <option value="judge"     {{#if (eq role 'judge')}}selected{{/if}}>Judge</option>
                   <option value="encoder"   {{#if (eq role 'encoder')}}selected{{/if}}>Participant</option>

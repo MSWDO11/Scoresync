@@ -1,4 +1,4 @@
-{{> head }}
+﻿{{> head }}
 <body class="min-h-screen flex flex-col" style="background:#0a0f1e">
 {{> navbar }}
 <div class="flex flex-1 overflow-hidden">
@@ -8,7 +8,7 @@
   {{#if success_msg}}<div class="alert-success animate-fadeup"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="flex-shrink-0"><polyline points="20 6 9 17 4 12"/></svg>{{success_msg}}</div>{{/if}}
   {{#if error_msg}}<div class="alert-error animate-fadeup"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="flex-shrink-0"><circle cx="12" cy="12" r="10"/></svg>{{error_msg}}</div>{{/if}}
 
-  <!-- ── Page Header ── -->
+  <!-- â”€â”€ Page Header â”€â”€ -->
   <div class="flex items-center justify-between animate-fadeup">
     <div class="page-header mb-0">
       <div class="breadcrumb"><a href="/dashboard">Dashboard</a></div>
@@ -19,7 +19,7 @@
       <!-- Event filter -->
       <form method="GET" action="/inventory">
         <select name="eventId" onchange="this.form.submit()" class="form-input-bare text-sm" style="min-width:180px">
-          <option value="">— All Events —</option>
+          <option value="">â€” All Events â€”</option>
           {{#each events}}
           <option value="{{id}}" {{#if (eq id ../filterEventId)}}selected{{/if}}>{{name}}</option>
           {{/each}}
@@ -44,7 +44,7 @@
     </div>
   </div>
 
-  <!-- ── KPI Cards Row ── -->
+  <!-- â”€â”€ KPI Cards Row â”€â”€ -->
   <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 animate-fadeup-1">
 
     <!-- Total Income -->
@@ -60,7 +60,7 @@
           </div>
           <span class="badge badge-green text-[10px]">+{{items.length}} entries</span>
         </div>
-        <div class="text-3xl font-black text-slate-900 tracking-tight">₱{{totalValue}}</div>
+        <div class="text-3xl font-black text-slate-900 tracking-tight">â‚±{{totalValue}}</div>
         <div class="mt-3 h-10" id="sparkline-income"></div>
       </div>
     </div>
@@ -96,14 +96,14 @@
           </div>
           <span class="badge badge-purple text-[10px]">average</span>
         </div>
-        <div class="text-3xl font-black text-slate-900 tracking-tight" id="kpi-avg">₱0.00</div>
+        <div class="text-3xl font-black text-slate-900 tracking-tight" id="kpi-avg">â‚±0.00</div>
         <div class="mt-3 h-10" id="sparkline-avg"></div>
       </div>
     </div>
 
   </div>
 
-  <!-- ── Main Content: Chart + Type Breakdown | Recent Records ── -->
+  <!-- â”€â”€ Main Content: Chart + Type Breakdown | Recent Records â”€â”€ -->
   <div class="grid lg:grid-cols-3 gap-5 animate-fadeup-1">
 
     <!-- LEFT 2/3: Bar Chart + Records Table -->
@@ -113,10 +113,10 @@
       <div class="card-flat p-5">
         <div class="flex items-center justify-between mb-4">
           <div>
-            <h2 class="font-extrabold text-slate-800 text-base">Income by Record</h2>
-            <p class="text-xs text-slate-400 mt-0.5">All ticket sales entries — bar height = total income</p>
+            <h2 class="font-extrabold text-base" style="color:#e2e8f0">Income by Record</h2>
+            <p class="text-xs mt-0.5" style="color:#64748b">All ticket sales entries â€” bar height = total income</p>
           </div>
-          <span class="badge badge-green text-xs" id="chart-total-badge">₱{{totalValue}} total</span>
+          <span class="badge badge-green text-xs" id="chart-total-badge">â‚±{{totalValue}} total</span>
         </div>
         <div style="height:200px;position:relative">
           <canvas id="income-bar-chart"></canvas>
@@ -128,7 +128,7 @@
         <div class="section-header">
           <h2>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v2z"/></svg>
-            {{#if selectedEvent}}{{selectedEvent.name}} — Records{{else}}All Records{{/if}}
+            {{#if selectedEvent}}{{selectedEvent.name}} â€” Records{{else}}All Records{{/if}}
             <span class="ml-2 badge badge-green text-[10px]">{{items.length}}</span>
           </h2>
           {{#if isAdmin}}
@@ -140,28 +140,29 @@
         </div>
 
         {{#if items.length}}
-        <div class="divide-y divide-slate-50">
+        <div class="divide-y" style="border-color:rgba(255,255,255,0.05)">
           {{#each items}}
-          <div class="px-5 py-3.5 flex items-center justify-between hover:bg-slate-50 transition group">
+          <div class="px-5 py-3.5 flex items-center justify-between transition group"
+            onmouseover="this.style.background='rgba(255,255,255,0.03)'" onmouseout="this.style.background=''">
             <div class="flex items-center gap-3">
               {{#if photo}}
-              <img src="{{photo}}" alt="" class="w-9 h-9 rounded-xl object-cover flex-shrink-0 border border-slate-100"/>
+              <img src="{{photo}}" alt="" class="w-9 h-9 rounded-xl object-cover flex-shrink-0" style="border:1px solid rgba(255,255,255,0.1)"/>
               {{else}}
-              <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 bg-emerald-50 border border-emerald-100">
+              <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style="background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.2)">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v2z"/></svg>
               </div>
               {{/if}}
               <div>
-                <div class="font-semibold text-slate-800 text-sm">{{ticketType}}</div>
-                <div class="text-slate-400 text-xs mt-0.5">
+                <div class="font-semibold text-sm" style="color:#e2e8f0">{{ticketType}}</div>
+                <div class="text-xs mt-0.5" style="color:#64748b">
                   {{#unless ../filterEventId}}{{eventName}} &bull; {{/unless}}
-                  {{quantity}} × ₱{{unitPrice}}
+                  {{quantity}} Ã— â‚±{{unitPrice}}
                   {{#if notes}} &bull; {{notes}}{{/if}}
                 </div>
               </div>
             </div>
             <div class="flex items-center gap-3 flex-shrink-0">
-              <span class="font-extrabold text-emerald-600 text-sm">+₱{{totalValue}}</span>
+              <span class="font-extrabold text-emerald-400 text-sm">+â‚±{{totalValue}}</span>
               {{#if ../isAdmin}}
               <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition">
                 <button type="button"
@@ -182,9 +183,9 @@
           {{/each}}
         </div>
         <!-- Footer total -->
-        <div class="px-5 py-3 flex items-center justify-between" style="border-top:2px solid #f1f5f9;background:#f8fafc">
-          <span class="text-xs font-extrabold text-slate-400 uppercase tracking-wide">Total · {{totalItems}} tickets</span>
-          <span class="font-black text-emerald-600 text-base">₱{{totalValue}}</span>
+        <div class="px-5 py-3 flex items-center justify-between" style="border-top:1px solid rgba(255,255,255,0.07);background:rgba(16,185,129,0.05)">
+          <span class="text-xs font-extrabold uppercase tracking-wide" style="color:#64748b">Total Â· {{totalItems}} tickets</span>
+          <span class="font-black text-emerald-400 text-base">â‚±{{totalValue}}</span>
         </div>
 
         {{else}}
@@ -209,14 +210,14 @@
       <!-- Donut: Income breakdown by type -->
       <div class="card-flat p-5">
         <div class="flex items-center justify-between mb-4">
-          <h2 class="font-extrabold text-slate-800 text-sm">Income Breakdown</h2>
+          <h2 class="font-extrabold text-sm" style="color:#e2e8f0">Income Breakdown</h2>
           <span class="text-xs text-slate-400">by type</span>
         </div>
         <div class="flex items-center justify-center my-2" style="height:160px;position:relative">
           <canvas id="income-donut"></canvas>
           <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
             <div class="text-xs font-bold text-slate-400">Total</div>
-            <div class="text-xl font-black text-slate-800" id="donut-center">₱{{totalValue}}</div>
+            <div class="text-xl font-black" style="color:#e2e8f0" id="donut-center">â‚±{{totalValue}}</div>
           </div>
         </div>
         <div id="donut-legend" class="space-y-2 mt-4"></div>
@@ -238,30 +239,31 @@
           <div class="px-5 py-3.5 flex items-center justify-between">
             <div class="flex items-center gap-3">
               <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0 grad-green shadow-sm">
-                {{#if photo}}<img src="{{photo}}" class="w-full h-full rounded-full object-cover"/>{{else}}₱{{/if}}
+                {{#if photo}}<img src="{{photo}}" class="w-full h-full rounded-full object-cover"/>{{else}}â‚±{{/if}}
               </div>
               <div>
-                <div class="font-semibold text-slate-800 text-sm">{{ticketType}}</div>
+                <div class="font-semibold text-sm" style="color:#e2e8f0">{{ticketType}}</div>
                 <div class="text-slate-400 text-xs">just now</div>
               </div>
             </div>
-            <span class="font-extrabold text-emerald-600 text-sm">+₱{{totalValue}}</span>
+            <span class="font-extrabold text-emerald-600 text-sm">+â‚±{{totalValue}}</span>
           </div>
           {{/if}}
           {{#unless @first}}
           {{#if @index}}
           {{#if (lte @index 6)}}
-          <div class="px-5 py-3 flex items-center justify-between hover:bg-slate-50 transition">
+          <div class="px-5 py-3 flex items-center justify-between transition"
+            onmouseover="this.style.background='rgba(255,255,255,0.03)'" onmouseout="this.style.background=''">
             <div class="flex items-center gap-3">
               <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0 grad-blue shadow-sm">
                 {{#if photo}}<img src="{{photo}}" class="w-full h-full rounded-full object-cover"/>{{else}}T{{/if}}
               </div>
               <div>
-                <div class="font-semibold text-slate-700 text-sm">{{ticketType}}</div>
-                <div class="text-slate-400 text-xs">{{#unless ../filterEventId}}{{eventName}}{{/unless}}</div>
+                <div class="font-semibold text-sm" style="color:#e2e8f0">{{ticketType}}</div>
+                <div class="text-xs" style="color:#64748b">{{#unless ../filterEventId}}{{eventName}}{{/unless}}</div>
               </div>
             </div>
-            <span class="font-extrabold text-emerald-600 text-sm">+₱{{totalValue}}</span>
+            <span class="font-extrabold text-emerald-400 text-sm">+â‚±{{totalValue}}</span>
           </div>
           {{/if}}
           {{/if}}
@@ -282,34 +284,34 @@
 </main>
 </div>
 
-<!-- ══ ADD RECORD MODAL ══ -->
-<div id="add-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden" style="background:rgba(0,0,0,0.55)">
+<!-- â•â• ADD RECORD MODAL â•â• -->
+<div id="add-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden" style="background:rgba(0,0,0,0.65);backdrop-filter:blur(4px)">
   <div class="card-flat w-full max-w-md mx-4 shadow-2xl">
-    <div class="px-6 py-4 border-b border-slate-100 flex items-center gap-3">
+    <div class="px-6 py-4 flex items-center gap-3" style="border-bottom:1px solid rgba(255,255,255,0.07)">
       <div class="w-8 h-8 grad-green rounded-lg flex items-center justify-center shadow-sm">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       </div>
       <div>
-        <h3 class="font-bold text-slate-800">Add Ticket / Income Record</h3>
-        <p class="text-slate-400 text-xs">Record ticket sales or other income</p>
+        <h3 class="font-bold" style="color:#e2e8f0">Add Ticket / Income Record</h3>
+        <p class="text-xs" style="color:#64748b">Record ticket sales or other income</p>
       </div>
-      <button onclick="closeAddModal()" class="ml-auto text-slate-400 hover:text-slate-700 transition">
+      <button onclick="closeAddModal()" class="ml-auto transition" style="color:#64748b">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
     <form method="POST" action="/inventory" class="px-6 py-5 space-y-4">
       <div>
-        <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Event <span class="text-red-500">*</span></label>
-        <select name="eventId" required class="form-input-bare bg-white">
-          <option value="">Select an event…</option>
+        <label class="block text-xs font-semibold uppercase tracking-wide mb-1.5" style="color:#64748b">Event <span class="text-red-500">*</span></label>
+        <select name="eventId" required class="form-input-bare">
+          <option value="">Select an eventâ€¦</option>
           {{#each events}}
           <option value="{{id}}" {{#if (eq id ../filterEventId)}}selected{{/if}}>{{name}}</option>
           {{/each}}
         </select>
       </div>
       <div>
-        <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Ticket / Income Type <span class="text-red-500">*</span></label>
-        <input type="text" name="ticketType" placeholder="e.g. General Admission, VIP, Sponsor Fee…" required class="form-input-bare"/>
+        <label class="block text-xs font-semibold uppercase tracking-wide mb-1.5" style="color:#64748b">Ticket / Income Type <span class="text-red-500">*</span></label>
+        <input type="text" name="ticketType" placeholder="e.g. General Admission, VIP, Sponsor Feeâ€¦" required class="form-input-bare"/>
       </div>
       <!-- Quick presets -->
       <div class="flex flex-wrap gap-1.5">
@@ -324,39 +326,41 @@
       </div>
       <div class="grid grid-cols-2 gap-3">
         <div>
-          <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Quantity</label>
+          <label class="block text-xs font-semibold uppercase tracking-wide mb-1.5" style="color:#64748b">Quantity</label>
           <input type="number" name="quantity" value="1" min="0" class="form-input-bare" oninput="calcPreview()"/>
         </div>
         <div>
-          <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Unit Price (₱)</label>
+          <label class="block text-xs font-semibold uppercase tracking-wide mb-1.5" style="color:#64748b">Unit Price (â‚±)</label>
           <input type="number" name="unitPrice" placeholder="0.00" min="0" step="0.01" id="add-unit-price" oninput="calcPreview()" class="form-input-bare"/>
         </div>
       </div>
       <!-- Live total -->
-      <div class="flex items-center justify-between px-4 py-3 rounded-xl bg-emerald-50 border border-emerald-100">
-        <span class="text-xs font-semibold text-emerald-700">Estimated Total</span>
-        <span id="add-total-preview" class="font-extrabold text-emerald-700 text-base">₱0.00</span>
+      <div class="flex items-center justify-between px-4 py-3 rounded-xl" style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2)">
+        <span class="text-xs font-semibold" style="color:#6ee7b7">Estimated Total</span>
+        <span id="add-total-preview" class="font-extrabold text-base" style="color:#6ee7b7">â‚±0.00</span>
       </div>
       <div>
-        <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Attachment <span class="text-slate-300 font-normal text-[10px] normal-case">optional</span></label>
+        <label class="block text-xs font-semibold uppercase tracking-wide mb-1.5" style="color:#64748b">Attachment <span class="font-normal text-[10px] normal-case" style="color:#374151">optional</span></label>
         <div id="inv-photo-dropzone" onclick="document.getElementById('inv-photo-file').click()"
-          class="flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer border-2 border-dashed border-emerald-200 bg-emerald-50 hover:bg-emerald-100 transition">
+          class="flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer border-2 border-dashed transition"
+          style="border-color:rgba(16,185,129,0.3);background:rgba(16,185,129,0.06)"
+          onmouseover="this.style.background='rgba(16,185,129,0.1)'" onmouseout="this.style.background='rgba(16,185,129,0.06)'">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
           <div>
-            <div class="text-xs font-semibold text-emerald-700">Upload receipt / QR</div>
-            <div class="text-[10px] text-slate-400">PNG/JPG · max 2MB</div>
+            <div class="text-xs font-semibold" style="color:#6ee7b7">Upload receipt / QR</div>
+            <div class="text-[10px]" style="color:#64748b">PNG/JPG Â· max 2MB</div>
           </div>
         </div>
         <input type="file" id="inv-photo-file" accept="image/*" class="hidden" onchange="handleInvPhoto(this)"/>
         <input type="hidden" name="photo" id="inv-photo-b64"/>
         <div id="inv-photo-preview" class="hidden mt-2 flex items-center gap-3">
-          <img id="inv-photo-img" src="" alt="" class="w-12 h-12 rounded-xl object-cover border border-slate-200"/>
+          <img id="inv-photo-img" src="" alt="" class="w-12 h-12 rounded-xl object-cover" style="border:1px solid rgba(255,255,255,0.1)"/>
           <button type="button" onclick="clearInvPhoto()" class="btn-sm btn-sm-red text-xs">Remove</button>
         </div>
       </div>
       <div>
-        <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Notes</label>
-        <textarea name="notes" rows="2" placeholder="e.g. Sold at gate, online pre-sale…" class="form-input-bare resize-none"></textarea>
+        <label class="block text-xs font-semibold uppercase tracking-wide mb-1.5" style="color:#64748b">Notes</label>
+        <textarea name="notes" rows="2" placeholder="e.g. Sold at gate, online pre-saleâ€¦" class="form-input-bare resize-none"></textarea>
       </div>
       <div class="flex gap-3 pt-1">
         <button type="submit" class="btn-primary flex-1 py-2.5 text-sm justify-center"
@@ -370,12 +374,12 @@
   </div>
 </div>
 
-<!-- ══ EDIT MODAL ══ -->
-<div id="edit-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden" style="background:rgba(0,0,0,0.55)">
+<!-- â•â• EDIT MODAL â•â• -->
+<div id="edit-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden" style="background:rgba(0,0,0,0.65);backdrop-filter:blur(4px)">
   <div class="card-flat w-full max-w-md mx-4 shadow-2xl">
-    <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-      <h3 class="font-bold text-slate-800">Edit Record</h3>
-      <button onclick="closeEditModal()" class="text-slate-400 hover:text-slate-700 transition">
+    <div class="px-6 py-4 flex items-center justify-between" style="border-bottom:1px solid rgba(255,255,255,0.07)">
+      <h3 class="font-bold" style="color:#e2e8f0">Edit Record</h3>
+      <button onclick="closeEditModal()" class="transition" style="color:#64748b">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
@@ -383,27 +387,27 @@
       <input type="hidden" name="eventId" id="edit-eventId"/>
       <input type="hidden" name="photo"   id="edit-photo-b64"/>
       <div>
-        <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Type <span class="text-red-500">*</span></label>
+        <label class="block text-xs font-semibold uppercase tracking-wide mb-1.5" style="color:#64748b">Type <span class="text-red-500">*</span></label>
         <input type="text" name="ticketType" id="edit-ticketType" required class="form-input-bare"/>
       </div>
       <div class="grid grid-cols-2 gap-3">
         <div>
-          <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Quantity</label>
+          <label class="block text-xs font-semibold uppercase tracking-wide mb-1.5" style="color:#64748b">Quantity</label>
           <input type="number" name="quantity" id="edit-quantity" min="0" class="form-input-bare"/>
         </div>
         <div>
-          <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Unit Price (₱)</label>
+          <label class="block text-xs font-semibold uppercase tracking-wide mb-1.5" style="color:#64748b">Unit Price (â‚±)</label>
           <input type="number" name="unitPrice" id="edit-unitPrice" min="0" step="0.01" class="form-input-bare"/>
         </div>
       </div>
       <div>
-        <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Notes</label>
+        <label class="block text-xs font-semibold uppercase tracking-wide mb-1.5" style="color:#64748b">Notes</label>
         <textarea name="notes" id="edit-notes" rows="2" class="form-input-bare resize-none"></textarea>
       </div>
       <div>
-        <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Attachment</label>
+        <label class="block text-xs font-semibold uppercase tracking-wide mb-1.5" style="color:#64748b">Attachment</label>
         <div id="edit-photo-existing" class="hidden mb-2">
-          <img id="edit-photo-img" src="" alt="" class="w-12 h-12 rounded-lg object-cover border border-slate-200"/>
+          <img id="edit-photo-img" src="" alt="" class="w-12 h-12 rounded-lg object-cover" style="border:1px solid rgba(255,255,255,0.1)"/>
         </div>
         <div class="flex gap-2">
           <button type="button" onclick="document.getElementById('edit-photo-file').click()" class="btn-sm btn-sm-gray text-xs flex-1 justify-center">Replace</button>
@@ -423,15 +427,15 @@
 .preset-pill {
   padding:4px 10px; border-radius:999px; font-size:0.7rem; font-weight:700;
   cursor:pointer; transition:all 0.15s;
-  background:#f8fafc; color:#475569; border:1px solid #e2e8f0;
+  background:rgba(255,255,255,0.06); color:#94a3b8; border:1px solid rgba(255,255,255,0.1);
 }
-.preset-pill:hover { background:#dcfce7; color:#166534; border-color:#bbf7d0; }
+.preset-pill:hover { background:rgba(16,185,129,0.12); color:#6ee7b7; border-color:rgba(16,185,129,0.3); }
 </style>
 
 <!-- Chart.js CDN -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
-/* ── Build chart data from server items ── */
+/* â”€â”€ Build chart data from server items â”€â”€ */
 const ITEMS = [
   {{#each items}}
   { label: "{{ticketType}}", total: {{totalValue}}, qty: {{quantity}}, price: {{unitPrice}} },
@@ -441,23 +445,23 @@ const ITEMS = [
 const TOTAL_VALUE = {{#if totalValue}}{{totalValue}}{{else}}0{{/if}};
 const TOTAL_QTY   = {{#if totalItems}}{{totalItems}}{{else}}0{{/if}};
 
-/* ── KPI avg ── */
+/* â”€â”€ KPI avg â”€â”€ */
 const avgEl = document.getElementById('kpi-avg');
 if (avgEl) {
   const avg = TOTAL_QTY > 0 ? (TOTAL_VALUE / TOTAL_QTY) : 0;
-  avgEl.textContent = '₱' + avg.toLocaleString('en-PH', {minimumFractionDigits:2, maximumFractionDigits:2});
+  avgEl.textContent = 'â‚±' + avg.toLocaleString('en-PH', {minimumFractionDigits:2, maximumFractionDigits:2});
 }
 
-/* ── Colour palette ── */
+/* â”€â”€ Colour palette â”€â”€ */
 const COLORS = ['#10b981','#f59e0b','#6366f1','#ef4444','#3b82f6','#8b5cf6','#ec4899','#14b8a6'];
 
-/* ── Bar chart ── */
+/* â”€â”€ Bar chart â”€â”€ */
 const barCtx = document.getElementById('income-bar-chart');
 if (barCtx && ITEMS.length) {
   new Chart(barCtx, {
     type: 'bar',
     data: {
-      labels: ITEMS.map(i => i.label.length > 16 ? i.label.slice(0,14)+'…' : i.label),
+      labels: ITEMS.map(i => i.label.length > 16 ? i.label.slice(0,14)+'â€¦' : i.label),
       datasets: [{
         data:            ITEMS.map(i => i.total),
         backgroundColor: ITEMS.map((_, idx) => COLORS[idx % COLORS.length] + '33'),
@@ -470,13 +474,13 @@ if (barCtx && ITEMS.length) {
     options: {
       responsive: true, maintainAspectRatio: false,
       plugins: { legend: { display: false }, tooltip: {
-        callbacks: { label: ctx => ' ₱' + ctx.parsed.y.toLocaleString('en-PH', {minimumFractionDigits:2}) }
+        callbacks: { label: ctx => ' â‚±' + ctx.parsed.y.toLocaleString('en-PH', {minimumFractionDigits:2}) }
       }},
       scales: {
         x: { grid: { display: false }, ticks: { font: { size: 11, weight: '600' }, color: '#94a3b8' } },
         y: { grid: { color: '#f1f5f9' }, ticks: {
           font: { size: 11 }, color: '#94a3b8',
-          callback: v => '₱' + (v >= 1000 ? (v/1000).toFixed(0)+'K' : v)
+          callback: v => 'â‚±' + (v >= 1000 ? (v/1000).toFixed(0)+'K' : v)
         }},
       },
     },
@@ -485,7 +489,7 @@ if (barCtx && ITEMS.length) {
   barCtx.parentElement.innerHTML = '<div class="flex items-center justify-center h-full text-slate-300 text-sm font-semibold">No data yet</div>';
 }
 
-/* ── Donut chart ── */
+/* â”€â”€ Donut chart â”€â”€ */
 const donutCtx = document.getElementById('income-donut');
 if (donutCtx && ITEMS.length) {
   // Group by label
@@ -505,7 +509,7 @@ if (donutCtx && ITEMS.length) {
       cutout: '70%',
       plugins: {
         legend: { display: false },
-        tooltip: { callbacks: { label: ctx => ' ₱' + ctx.parsed.toLocaleString('en-PH', {minimumFractionDigits:2}) } }
+        tooltip: { callbacks: { label: ctx => ' â‚±' + ctx.parsed.toLocaleString('en-PH', {minimumFractionDigits:2}) } }
       },
     },
   });
@@ -519,10 +523,10 @@ if (donutCtx && ITEMS.length) {
         <div class="flex items-center justify-between text-xs">
           <div class="flex items-center gap-2">
             <span class="w-2.5 h-2.5 rounded-full flex-shrink-0" style="background:${COLORS[i%COLORS.length]}"></span>
-            <span class="font-semibold text-slate-700 truncate max-w-[110px]">${lbl}</span>
+            <span class="font-semibold truncate max-w-[110px]" style="color:#94a3b8">${lbl}</span>
           </div>
           <div class="flex items-center gap-2">
-            <span class="font-bold text-slate-800">₱${values[i].toLocaleString('en-PH',{minimumFractionDigits:2})}</span>
+            <span class="font-bold" style="color:#e2e8f0">â‚±${values[i].toLocaleString('en-PH',{minimumFractionDigits:2})}</span>
             <span class="text-slate-400">${pct}%</span>
           </div>
         </div>`;
@@ -532,7 +536,7 @@ if (donutCtx && ITEMS.length) {
   donutCtx.parentElement.innerHTML = '<div class="flex items-center justify-center h-full text-slate-300 text-sm font-semibold">No data</div>';
 }
 
-/* ── Sparklines (mini bar) ── */
+/* â”€â”€ Sparklines (mini bar) â”€â”€ */
 ['sparkline-income','sparkline-tickets','sparkline-avg'].forEach((id,si) => {
   const el = document.getElementById(id);
   if (!el || !ITEMS.length) return;
@@ -547,7 +551,7 @@ if (donutCtx && ITEMS.length) {
   </svg>`;
 });
 
-/* ── Modals ── */
+/* â”€â”€ Modals â”€â”€ */
 function openAddModal()  { document.getElementById('add-modal').classList.remove('hidden'); }
 function closeAddModal() { document.getElementById('add-modal').classList.add('hidden'); }
 document.getElementById('add-modal').addEventListener('click', e => { if(e.target===document.getElementById('add-modal')) closeAddModal(); });
@@ -573,7 +577,7 @@ function calcPreview() {
   const qty   = parseFloat(document.querySelector('[name=quantity]')?.value || 0);
   const price = parseFloat(document.getElementById('add-unit-price')?.value || 0);
   const el    = document.getElementById('add-total-preview');
-  if (el) el.textContent = '₱' + (qty*price).toLocaleString('en-PH',{minimumFractionDigits:2});
+  if (el) el.textContent = 'â‚±' + (qty*price).toLocaleString('en-PH',{minimumFractionDigits:2});
 }
 document.querySelector('[name=quantity]')?.addEventListener('input', calcPreview);
 
