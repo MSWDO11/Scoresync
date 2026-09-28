@@ -106,7 +106,6 @@ export const dashboardPage = async (req, res) => {
     if (role === "judge")     return res.render("dashboard/judge",     viewData);
     if (role === "organizer") return res.render("dashboard/organizer", viewData);
     return res.render("dashboard/encoder", viewData);
-
   } catch (err) {
     console.error(err);
     // Fallback: render a simple dashboard without stats
