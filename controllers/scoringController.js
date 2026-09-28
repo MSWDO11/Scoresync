@@ -24,6 +24,18 @@ export const scoringPage = async (req, res) => {
 
     if (!eSnap.exists()) return res.redirect("/events");
 
+    const event = { id: eSnap.id, ...eSnap.data() };
+
+    // ── Block scoring when event is not ongoing (judges only — admin/organizer can always enter) ──
+    if (req.session.userRole === 'judge' && event.status !== 'ongoing') {
+      req.flash("error_msg",
+        event.status === 'upcoming'
+          ? `"${event.name}" has not started yet. Scoring opens when the event goes live.`
+          : `"${event.name}" has already ended. Scoring is now closed.`
+      );
+      return res.redirect("/dashboard");
+    }
+
     const event       = { id: eSnap.id, ...eSnap.data() };
     const contestants = cSnap.docs.map(d => ({ id: d.id, ...d.data() }));
     const criteria    = crSnap.docs.map((d, i) => ({
@@ -79,6 +91,17 @@ export const submitScores = async (req, res) => {
   const { eventId } = req.params;
   const judgeId     = req.session.userId;
   const { scores }  = req.body;
+
+  // Block submit if event is not ongoing (judges only)
+  try {
+    if (req.session.userRole === 'judge') {
+      const eSnap = await getDoc(doc(db, "events", eventId));
+      if (eSnap.exists() && eSnap.data().status !== 'ongoing') {
+        req.flash("error_msg", "Scoring is only allowed while the event is ongoing.");
+        return res.redirect("/dashboard");
+      }
+    }
+  } catch (_) {}
 
   try {
     const writes = [];
