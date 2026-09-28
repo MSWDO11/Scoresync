@@ -19,10 +19,14 @@ export const loginPage = (req, res) => {
 
 export const registerPage = (req, res) => {
   if (req.session.userId) {
-    if (req.session.userRole === "admin") return res.redirect("/users");
-    return res.redirect("/dashboard");
+    // Allow admin to access register page when explicitly adding a user (e.g. ?role=judge)
+    if (req.session.userRole === "admin" && !req.query.role) return res.redirect("/users");
+    if (req.session.userRole !== "admin") return res.redirect("/dashboard");
   }
-  res.render("register", { title: "Register" });
+  res.render("register", {
+    title: "Register",
+    preRole: req.query.role || "",
+  });
 };
 
 export const forgotPasswordPage = (req, res) =>

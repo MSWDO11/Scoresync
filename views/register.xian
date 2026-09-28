@@ -264,10 +264,9 @@ document.querySelectorAll('input[name="role"]').forEach(radio => {
   });
 });
 
-// Auto-select role from URL query string (?role=judge)
+// Auto-select role from URL query string or server-passed preRole
 (function() {
-  const params = new URLSearchParams(window.location.search);
-  const preRole = params.get('role');
+  const preRole = "{{preRole}}" || new URLSearchParams(window.location.search).get('role');
   if (preRole) {
     const radio = document.querySelector('input[name="role"][value="' + preRole + '"]');
     if (radio) {
