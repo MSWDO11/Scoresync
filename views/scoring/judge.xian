@@ -5,283 +5,227 @@
 {{> sidebar }}
 <main class="flex-1 overflow-y-auto pb-28" id="scoring-main">
 
-  <!-- ── Sticky Header ── -->
-  <div class="sticky top-0 z-20 px-4 sm:px-6 py-3 flex items-center justify-between gap-3 no-print"
-    style="background:rgba(6,11,24,0.97);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,0.06);box-shadow:0 4px 32px rgba(0,0,0,0.5)">
-    <div class="flex items-center gap-3 min-w-0">
-      <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 shadow"
-        style="background:linear-gradient(135deg,#4f46e5,#7c3aed)">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-      </div>
+  <!-- ══ TOP BAR ══ -->
+  <div class="sticky top-0 z-20 no-print" style="background:rgba(6,11,24,0.97);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,0.06)">
+
+    <!-- Row 1: Event + judge info + ring -->
+    <div class="px-4 sm:px-6 py-2.5 flex items-center justify-between gap-3">
       <div class="min-w-0">
-        <div class="font-extrabold text-sm truncate" style="color:#e2e8f0">Score Entry — {{event.name}}</div>
-        <div class="text-xs truncate" style="color:#475569">
-          Judge: <span class="font-semibold" style="color:#818cf8">{{userName}}</span>
-          &bull; <span id="hdr-criteria-count">{{criteria.length}}</span> criteria
-          &bull; <span id="hdr-contestant-pos">1</span>/{{contestants.length}} contestants
+        <div class="font-extrabold text-sm truncate" style="color:#e2e8f0">{{event.name}}</div>
+        <div class="text-xs" style="color:#475569">
+          Judge: <span style="color:#818cf8">{{userName}}</span>
+          &bull; Contestant <span id="hdr-pos" style="color:#e2e8f0">1</span> of {{contestants.length}}
+          &bull; <span id="hdr-scored" style="color:#6ee7b7">0</span> of {{contestants.length}} scored
         </div>
       </div>
-    </div>
-    <div class="flex items-center gap-2 flex-shrink-0">
-      <!-- Completion ring -->
-      <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs"
-        style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08)">
-        <svg id="completion-ring" width="30" height="30" viewBox="0 0 30 30">
-          <circle cx="15" cy="15" r="11" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="3"/>
-          <circle id="ring-progress" cx="15" cy="15" r="11" fill="none" stroke="#6366f1" stroke-width="3"
-            stroke-dasharray="69.12" stroke-dashoffset="69.12" stroke-linecap="round"
-            transform="rotate(-90 15 15)" style="transition:stroke-dashoffset 0.5s ease,stroke 0.3s"/>
-        </svg>
-        <span id="overall-pct" class="font-extrabold" style="color:#e2e8f0">0%</span>
-        <span style="color:#374151">done</span>
+      <div class="flex items-center gap-2 flex-shrink-0">
+        <div class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08)">
+          <svg id="completion-ring" width="28" height="28" viewBox="0 0 28 28">
+            <circle cx="14" cy="14" r="10" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="3"/>
+            <circle id="ring-progress" cx="14" cy="14" r="10" fill="none" stroke="#6366f1" stroke-width="3"
+              stroke-dasharray="62.83" stroke-dashoffset="62.83" stroke-linecap="round"
+              transform="rotate(-90 14 14)" style="transition:stroke-dashoffset 0.5s,stroke 0.3s"/>
+          </svg>
+          <span id="overall-pct" class="font-extrabold" style="color:#e2e8f0">0%</span>
+        </div>
+        <a href="/events/{{event.id}}/results" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold" style="background:rgba(16,185,129,0.15);color:#6ee7b7;border:1px solid rgba(16,185,129,0.3)">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          Live Results
+        </a>
       </div>
-      <a href="/events/{{event.id}}/results"
-        class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition"
-        style="background:rgba(16,185,129,0.15);color:#6ee7b7;border:1px solid rgba(16,185,129,0.3)">
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-        <span class="hidden sm:inline">Live Results</span>
-      </a>
     </div>
-  </div>
 
-  {{#if success_msg}}<div class="alert-success m-4 animate-fadeup">{{success_msg}}</div>{{/if}}
-  {{#if error_msg}}<div class="alert-error m-4 animate-fadeup">{{error_msg}}</div>{{/if}}
+    <!-- Row 2: Contestant nav dots -->
+    <div class="px-4 sm:px-6 py-2 flex items-center gap-1.5 overflow-x-auto" style="border-top:1px solid rgba(255,255,255,0.04)">
+      <span class="text-[10px] font-extrabold uppercase tracking-wider flex-shrink-0 mr-1" style="color:#374151">Go to:</span>
+      {{#each contestants}}
+      <button type="button"
+        class="nav-dot flex-shrink-0 min-w-[32px] h-8 px-2 rounded-full text-[11px] font-extrabold transition-all border"
+        data-idx="{{@index}}"
+        style="background:rgba(255,255,255,0.05);color:#475569;border-color:rgba(255,255,255,0.08)"
+        onclick="goToContestant({{@index}})">{{number}}</button>
+      {{/each}}
+    </div>
 
-  {{#if contestants.length}}
-
-  <!-- ── Contestant Nav Dots ── -->
-  <div class="px-4 sm:px-6 py-3 flex items-center gap-2 overflow-x-auto no-print"
-    style="border-bottom:1px solid rgba(255,255,255,0.04)">
-    <span class="text-[10px] font-extrabold uppercase tracking-widest flex-shrink-0" style="color:#374151">Jump:</span>
+    <!-- Row 3: Criteria tabs (shown per contestant) -->
     {{#each contestants}}
-    <button type="button"
-      class="nav-dot flex-shrink-0 w-8 h-8 rounded-full text-[11px] font-extrabold transition-all border-2"
-      data-idx="{{@index}}"
-      style="background:rgba(255,255,255,0.05);color:#475569;border-color:rgba(255,255,255,0.08)"
-      onclick="goToContestant({{@index}})">{{number}}</button>
+    <div class="criteria-tabs px-4 sm:px-6 py-2 flex items-center gap-2 overflow-x-auto" data-panel-idx="{{@index}}" style="{{#unless @first}}display:none{{/unless}};border-top:1px solid rgba(255,255,255,0.04)">
+      {{#each scores}}
+      <button type="button"
+        class="criteria-tab flex-shrink-0 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold transition-all border"
+        data-panel="{{../id}}" data-tab-idx="{{@index}}"
+        style="background:rgba(255,255,255,0.05);color:#64748b;border-color:rgba(255,255,255,0.08)"
+        onclick="switchCriteria('{{../id}}', {{@index}})">
+        <span class="tab-check hidden">✓</span>
+        {{criteriaName}}
+      </button>
+      {{/each}}
+    </div>
     {{/each}}
   </div>
 
-  <!-- ── Scoring Form ── -->
+  {{#if success_msg}}<div class="alert-success m-4">{{success_msg}}</div>{{/if}}
+  {{#if error_msg}}<div class="alert-error m-4">{{error_msg}}</div>{{/if}}
+
+  {{#if contestants.length}}
   <form id="scoringForm" method="POST" action="/events/{{event.id}}/scoring">
     {{#each contestants}}
-    <div class="contestant-panel" data-idx="{{@index}}" data-contestant-id="{{id}}" data-total-criteria="{{scores.length}}"
-      style="{{#unless @first}}display:none{{/unless}}">
+    <div class="contestant-panel" data-idx="{{@index}}" data-contestant-id="{{id}}">
 
-      <div class="p-4 sm:p-6 grid lg:grid-cols-5 gap-5 xl:gap-7">
-
-        <!-- ═══ LEFT: Contestant Card ═══ -->
-        <div class="lg:col-span-2">
-          <div class="rounded-3xl overflow-hidden sticky top-[68px]" style="background:#0d1526;border:1px solid rgba(255,255,255,0.08);box-shadow:0 20px 60px rgba(0,0,0,0.6)">
-
-            <!-- Photo area -->
-            <div class="relative overflow-hidden" style="aspect-ratio:3/4;background:linear-gradient(160deg,#0a1428,#0f1e3d)">
-              {{#if photo}}
-              <img src="{{photo}}" alt="{{name}}" class="absolute inset-0 w-full h-full object-cover" style="object-position:center top"/>
-              {{else}}
-              <div class="absolute inset-0 flex items-center justify-center">
-                <div class="w-28 h-28 rounded-full flex items-center justify-center text-white text-5xl font-black shadow-2xl"
-                  style="background:linear-gradient(135deg,#1e3a8a,#4f46e5)">{{number}}</div>
-              </div>
-              {{/if}}
-
-              <!-- Cinematic overlay -->
-              <div class="absolute inset-0" style="background:linear-gradient(0deg,rgba(6,11,24,0.92) 0%,rgba(6,11,24,0.3) 40%,rgba(6,11,24,0.05) 70%,transparent 100%)"></div>
-              <div class="absolute inset-0" style="background:linear-gradient(180deg,rgba(6,11,24,0.4) 0%,transparent 30%)"></div>
-
-              <!-- Number badge top-left -->
-              <div class="absolute top-4 left-4">
-                <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-white font-black text-sm shadow-xl"
-                  style="background:rgba(99,102,241,0.9);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.2)">{{number}}</div>
-              </div>
-
-              <!-- Score overlay top-right -->
-              <div class="absolute top-4 right-4">
-                <div class="px-3 py-2 rounded-2xl text-center" style="background:rgba(6,11,24,0.85);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.12)">
-                  <div class="contestant-total text-xl font-black leading-none" style="color:#a5b4fc">0.00%</div>
-                  <div class="text-[9px] font-bold uppercase tracking-widest mt-0.5" style="color:#374151">score</div>
-                </div>
-              </div>
-
-              <!-- Name overlay bottom -->
-              <div class="absolute bottom-0 left-0 right-0 px-5 py-5">
-                <div class="text-white font-extrabold text-2xl leading-tight tracking-tight">{{name}}</div>
-                <div class="text-sm mt-1 flex items-center gap-2 flex-wrap" style="color:rgba(255,255,255,0.6)">
-                  {{#if barangay}}<span>Brgy. {{barangay}}</span>{{/if}}
-                  {{#if age}}<span class="opacity-60">&bull;</span><span>{{age}} yrs</span>{{/if}}
-                </div>
-              </div>
-            </div>
-
-            <!-- Info section -->
-            <div class="px-5 py-4 space-y-3">
-              {{#if gender}}
-              <div class="flex items-center justify-between text-sm">
-                <span class="flex items-center gap-2" style="color:#475569">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M12 12v4M10 18h4"/></svg>Gender
-                </span>
-                <span class="font-semibold capitalize" style="color:#94a3b8">{{gender}}</span>
-              </div>
-              {{/if}}
-              {{#if platform}}
-              <div class="flex items-start justify-between gap-3 text-sm">
-                <span class="flex items-center gap-2 flex-shrink-0" style="color:#475569">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 9.5-9.5z"/></svg>Platform
-                </span>
-                <span class="font-semibold text-right" style="color:#94a3b8">{{platform}}</span>
-              </div>
-              {{/if}}
-              {{#if description}}
-              <div class="rounded-xl p-3 text-xs leading-relaxed" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);color:#64748b">
-                <span class="text-[10px] font-extrabold uppercase tracking-widest block mb-1.5" style="color:#374151">Bio</span>
-                {{description}}
-              </div>
-              {{/if}}
-
-              <!-- Fill progress -->
-              <div class="pt-1" style="border-top:1px solid rgba(255,255,255,0.05)">
-                <div class="flex justify-between text-[10px] mb-1.5" style="color:#374151">
-                  <span class="font-extrabold uppercase tracking-wider">Criteria Filled</span>
-                  <span class="contestant-fill-label font-extrabold" style="color:#e2e8f0">0 / {{scores.length}}</span>
-                </div>
-                <div class="h-2 rounded-full overflow-hidden" style="background:rgba(255,255,255,0.06)">
-                  <div class="contestant-fill-bar h-full rounded-full transition-all duration-500" style="width:0%;background:linear-gradient(90deg,#4f46e5,#7c3aed)"></div>
-                </div>
-              </div>
-            </div>
+      <!-- Contestant header -->
+      <div class="px-4 sm:px-6 py-4 flex items-center gap-4" style="border-bottom:1px solid rgba(255,255,255,0.05)">
+        <!-- Photo thumbnail -->
+        <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl overflow-hidden flex-shrink-0 shadow-lg" style="border:2px solid rgba(99,102,241,0.3)">
+          {{#if photo}}
+          <img src="{{photo}}" alt="{{name}}" class="w-full h-full object-cover" style="object-position:center top"/>
+          {{else}}
+          <div class="w-full h-full flex items-center justify-center font-black text-white text-lg" style="background:linear-gradient(135deg,#1e3a8a,#4f46e5)">{{number}}</div>
+          {{/if}}
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="text-[10px] font-extrabold uppercase tracking-widest mb-0.5" style="color:#6366f1">Contestant #{{number}}</div>
+          <h2 class="text-xl sm:text-2xl font-extrabold tracking-tight" style="color:#e2e8f0">{{name}}</h2>
+          <div class="text-xs mt-0.5 flex items-center gap-2" style="color:#64748b">
+            {{#if barangay}}<span>Brgy. {{barangay}}</span>{{/if}}
+            {{#if age}}<span>&bull; {{age}} yrs</span>{{/if}}
+            {{#if platform}}<span>&bull; {{platform}}</span>{{/if}}
           </div>
         </div>
-
-        <!-- ═══ RIGHT: Scoring ═══ -->
-        <div class="lg:col-span-3 space-y-4">
-
-          <!-- Criteria header -->
-          <div class="flex items-center gap-3">
-            <div class="w-8 h-8 rounded-xl flex items-center justify-center" style="background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.25)">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#818cf8" stroke-width="2.5"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-            </div>
-            <div>
-              <div class="text-xs font-extrabold uppercase tracking-wider" style="color:#6366f1">Scoring Criteria</div>
-              <div class="text-[11px]" style="color:#374151">{{scores.length}} criteria &bull; max 100% weighted total</div>
-            </div>
-          </div>
-
-          <!-- Criteria cards -->
-          {{#each scores}}
-          <div class="score-box rounded-2xl overflow-hidden transition-all duration-300"
-            data-criteria-idx="{{@index}}"
-            style="background:#0d1526;border:1px solid rgba(255,255,255,0.07)">
-
-            <!-- Card header -->
-            <div class="px-5 py-3.5 flex items-center justify-between gap-3"
-              style="border-bottom:1px solid rgba(255,255,255,0.05)">
-              <div class="flex items-center gap-3 min-w-0">
-                <!-- Color dot -->
-                <div class="criteria-color-dot w-3 h-3 rounded-full flex-shrink-0" style="background:#6366f1"></div>
-                <span class="font-extrabold text-sm truncate" style="color:#e2e8f0">{{criteriaName}}</span>
-              </div>
-              <div class="flex items-center gap-2 flex-shrink-0">
-                <span class="px-2.5 py-1 rounded-lg text-[11px] font-extrabold" style="background:rgba(99,102,241,0.15);color:#a5b4fc;border:1px solid rgba(99,102,241,0.25)">{{weight}}%</span>
-              </div>
-            </div>
-
-            <!-- Slider + Input -->
-            <div class="px-5 py-4 space-y-4">
-
-              <!-- Big score display -->
-              <div class="flex items-center gap-4">
-                <div class="flex-1">
-                  <div class="relative">
-                    <input type="number"
-                      name="scores[{{../id}}][{{criteriaId}}]"
-                      value="{{value}}"
-                      min="0" max="{{maxScore}}" step="0.5"
-                      placeholder="0"
-                      data-weight="{{weight}}" data-max="{{maxScore}}"
-                      class="score-input w-full text-center font-black focus:outline-none transition-all duration-200"
-                      style="font-size:3rem;line-height:1;background:transparent;color:#6366f1;border:none;padding:0"
-                      oninput="syncNumber(this)"/>
-                    <div class="text-center text-xs font-bold mt-1" style="color:#374151">pts out of {{maxScore}}</div>
-                  </div>
-                </div>
-
-                <!-- Donut progress ring (per criteria) -->
-                <div class="relative flex-shrink-0" style="width:72px;height:72px">
-                  <svg width="72" height="72" viewBox="0 0 72 72">
-                    <circle cx="36" cy="36" r="28" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="6"/>
-                    <circle class="criteria-ring" cx="36" cy="36" r="28" fill="none" stroke="#6366f1" stroke-width="6"
-                      stroke-dasharray="175.9" stroke-dashoffset="175.9" stroke-linecap="round"
-                      transform="rotate(-90 36 36)" style="transition:stroke-dashoffset 0.4s ease,stroke 0.3s"/>
-                  </svg>
-                  <div class="absolute inset-0 flex items-center justify-center">
-                    <span class="criteria-pct text-xs font-extrabold" style="color:#e2e8f0">0%</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Slider -->
-              <div>
-                <input type="range"
-                  min="0" max="{{maxScore}}" step="0.5" value="{{value}}"
-                  data-weight="{{weight}}" data-max="{{maxScore}}"
-                  class="score-slider w-full cursor-pointer"
-                  style="height:6px;accent-color:#6366f1"
-                  oninput="syncSlider(this)"/>
-                <div class="flex justify-between text-[10px] px-0.5 mt-1" style="color:#1e293b">
-                  <span>0</span><span>{{maxScore}}</span>
-                </div>
-              </div>
-
-              <!-- Metrics row -->
-              <div class="grid grid-cols-2 gap-3">
-                <div class="rounded-xl px-3 py-2.5" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06)">
-                  <div class="text-[10px] font-bold uppercase tracking-wider mb-0.5" style="color:#374151">Score</div>
-                  <div class="criteria-bar-wrap h-1.5 rounded-full overflow-hidden" style="background:rgba(255,255,255,0.06)">
-                    <div class="criteria-bar h-full rounded-full transition-all duration-300" style="width:0%;background:#6366f1"></div>
-                  </div>
-                </div>
-                <div class="rounded-xl px-3 py-2.5" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06)">
-                  <div class="text-[10px] font-bold uppercase tracking-wider mb-0.5" style="color:#374151">Contributes</div>
-                  <div class="weighted-preview text-sm font-extrabold" style="color:#6ee7b7">0.00%</div>
-                </div>
-              </div>
-            </div>
-          </div>
-          {{/each}}
-
-          <!-- Save & Next button -->
-          <button type="button"
-            class="w-full py-4 rounded-2xl font-extrabold text-base text-white transition active:scale-[0.98] shadow-2xl save-contestant-btn"
-            data-idx="{{@index}}"
-            style="background:linear-gradient(135deg,#4f46e5,#7c3aed);box-shadow:0 8px 32px rgba(99,102,241,0.35)"
-            onclick="saveAndNext({{@index}}, {{../contestants.length}})">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" style="display:inline;margin-right:8px;vertical-align:-2px"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-            {{#if @last}}Save Scores &amp; Finish{{else}}Save &amp; Next Contestant{{/if}}
-          </button>
-
+        <!-- Contestant total score -->
+        <div class="text-right flex-shrink-0">
+          <div class="contestant-total text-2xl font-black" style="color:#818cf8">0.00%</div>
+          <div class="text-[10px] font-bold uppercase tracking-wider" style="color:#374151">weighted total</div>
+          <div class="contestant-fill-label text-[11px] font-semibold mt-0.5" style="color:#64748b">0/{{scores.length}} filled</div>
         </div>
       </div>
 
-      <!-- ── Navigation ── -->
-      <div class="px-4 sm:px-6 pb-5 flex items-center justify-between gap-3 no-print">
-        <button type="button" class="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition"
-          style="background:rgba(255,255,255,0.05);color:#64748b;border:1px solid rgba(255,255,255,0.08)"
-          onclick="goToContestant({{sub1 @index}})"
-          {{#if @first}}disabled style="opacity:0.25;cursor:not-allowed;background:transparent;border-color:rgba(255,255,255,0.04)"{{/if}}>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-          Previous
-        </button>
+      <!-- Overall contestant progress bar -->
+      <div class="h-1" style="background:rgba(255,255,255,0.04)">
+        <div class="contestant-progress-bar h-full transition-all duration-500" style="width:0%;background:linear-gradient(90deg,#4f46e5,#7c3aed)"></div>
+      </div>
 
-        <div class="text-xs font-bold" style="color:#374151">
-          <span style="color:#6366f1">{{add1 @index}}</span> / {{../contestants.length}}
+      <!-- ── Criteria panels (one per criteria, tabs switch between them) ── -->
+      {{#each scores}}
+      <div class="criteria-panel px-4 sm:px-6 py-5 space-y-5"
+        data-contestant-id="{{../id}}" data-criteria-idx="{{@index}}"
+        style="{{#unless @first}}display:none{{/unless}}">
+
+        <!-- Criteria title + weight + saved indicator -->
+        <div class="flex items-start justify-between gap-3">
+          <div>
+            <div class="text-[10px] font-extrabold uppercase tracking-widest mb-1" style="color:#6366f1">Criteria {{add1 @index}} of {{../scores.length}}</div>
+            <h3 class="text-lg sm:text-xl font-extrabold" style="color:#e2e8f0">{{criteriaName}}</h3>
+            {{#if description}}<p class="text-sm mt-1" style="color:#64748b">{{description}}</p>{{/if}}
+          </div>
+          <div class="flex items-center gap-2 flex-shrink-0">
+            <span class="px-3 py-1.5 rounded-xl text-xs font-extrabold" style="background:rgba(99,102,241,0.15);color:#a5b4fc;border:1px solid rgba(99,102,241,0.25)">{{weight}}%</span>
+            <span class="saved-badge hidden flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[11px] font-extrabold" style="background:rgba(16,185,129,0.15);color:#6ee7b7;border:1px solid rgba(16,185,129,0.3)">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>SAVED
+            </span>
+          </div>
         </div>
 
-        <button type="button" class="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition"
-          style="background:rgba(99,102,241,0.12);color:#a5b4fc;border:1px solid rgba(99,102,241,0.25)"
-          onclick="goToContestant({{add1 @index}})"
-          {{#if @last}}disabled style="opacity:0.25;cursor:not-allowed"{{/if}}>
+        <!-- Big score display -->
+        <div class="flex items-center justify-center gap-6">
+          <div class="text-center">
+            <div class="flex items-end justify-center gap-1">
+              <span class="score-display font-black leading-none" style="font-size:5rem;color:#6366f1;font-variant-numeric:tabular-nums">{{#if value}}{{value}}{{else}}—{{/if}}</span>
+              <span class="text-xl font-bold mb-3" style="color:#374151">/{{maxScore}}</span>
+            </div>
+            <div class="text-xs font-bold uppercase tracking-wider" style="color:#374151">pts out of {{maxScore}}</div>
+          </div>
+          <!-- Donut ring -->
+          <div class="relative" style="width:80px;height:80px">
+            <svg width="80" height="80" viewBox="0 0 80 80">
+              <circle cx="40" cy="40" r="32" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="7"/>
+              <circle class="criteria-ring" cx="40" cy="40" r="32" fill="none" stroke="#6366f1" stroke-width="7"
+                stroke-dasharray="201.06" stroke-dashoffset="201.06" stroke-linecap="round"
+                transform="rotate(-90 40 40)" style="transition:stroke-dashoffset 0.4s ease"/>
+            </svg>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <span class="criteria-pct text-sm font-extrabold" style="color:#e2e8f0">0%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Number pad (1 to maxScore or 1-10 grid) ── -->
+        <div>
+          <div class="text-[10px] font-extrabold uppercase tracking-wider mb-2" style="color:#374151">Your Score</div>
+          <div class="grid gap-2" style="grid-template-columns:repeat(auto-fill,minmax(52px,1fr))">
+            {{#each (range 1 ../maxScore)}}
+            {{else}}
+            <!-- rendered by JS -->
+            {{/each}}
+          </div>
+          <!-- Number pad rendered by JS -->
+          <div class="numpad-grid grid gap-2" data-max="{{maxScore}}"></div>
+        </div>
+
+        <!-- Fine-tune row -->
+        <div>
+          <div class="text-[10px] font-extrabold uppercase tracking-wider mb-2" style="color:#374151">Fine-tune</div>
+          <div class="flex flex-wrap gap-2">
+            <button type="button" class="finetune-btn px-3 py-1.5 rounded-lg text-xs font-extrabold transition border" data-delta="0" style="background:rgba(255,255,255,0.05);color:#64748b;border-color:rgba(255,255,255,0.08)">+.0</button>
+            <button type="button" class="finetune-btn px-3 py-1.5 rounded-lg text-xs font-extrabold transition border" data-delta="0.1" style="background:rgba(255,255,255,0.05);color:#64748b;border-color:rgba(255,255,255,0.08)">+.1</button>
+            <button type="button" class="finetune-btn px-3 py-1.5 rounded-lg text-xs font-extrabold transition border" data-delta="0.2" style="background:rgba(255,255,255,0.05);color:#64748b;border-color:rgba(255,255,255,0.08)">+.2</button>
+            <button type="button" class="finetune-btn px-3 py-1.5 rounded-lg text-xs font-extrabold transition border" data-delta="0.3" style="background:rgba(255,255,255,0.05);color:#64748b;border-color:rgba(255,255,255,0.08)">+.3</button>
+            <button type="button" class="finetune-btn px-3 py-1.5 rounded-lg text-xs font-extrabold transition border" data-delta="0.4" style="background:rgba(255,255,255,0.05);color:#64748b;border-color:rgba(255,255,255,0.08)">+.4</button>
+            <button type="button" class="finetune-btn px-3 py-1.5 rounded-lg text-xs font-extrabold transition border" data-delta="0.5" style="background:rgba(255,255,255,0.05);color:#64748b;border-color:rgba(255,255,255,0.08)">+.5</button>
+            <button type="button" class="finetune-btn px-3 py-1.5 rounded-lg text-xs font-extrabold transition border" data-delta="0.6" style="background:rgba(255,255,255,0.05);color:#64748b;border-color:rgba(255,255,255,0.08)">+.6</button>
+            <button type="button" class="finetune-btn px-3 py-1.5 rounded-lg text-xs font-extrabold transition border" data-delta="0.7" style="background:rgba(255,255,255,0.05);color:#64748b;border-color:rgba(255,255,255,0.08)">+.7</button>
+            <button type="button" class="finetune-btn px-3 py-1.5 rounded-lg text-xs font-extrabold transition border" data-delta="0.8" style="background:rgba(255,255,255,0.05);color:#64748b;border-color:rgba(255,255,255,0.08)">+.8</button>
+            <button type="button" class="finetune-btn px-3 py-1.5 rounded-lg text-xs font-extrabold transition border" data-delta="0.9" style="background:rgba(255,255,255,0.05);color:#64748b;border-color:rgba(255,255,255,0.08)">+.9</button>
+          </div>
+        </div>
+
+        <!-- Score bar + Contributes -->
+        <div class="grid grid-cols-2 gap-3">
+          <div class="rounded-2xl px-4 py-3" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06)">
+            <div class="text-[10px] font-extrabold uppercase tracking-wider mb-2" style="color:#374151">Score</div>
+            <div class="h-2 rounded-full overflow-hidden" style="background:rgba(255,255,255,0.06)">
+              <div class="criteria-bar h-full rounded-full transition-all duration-300" style="width:0%;background:#6366f1"></div>
+            </div>
+            <div class="criteria-pct-label text-xs font-bold mt-1.5" style="color:#818cf8">0%</div>
+          </div>
+          <div class="rounded-2xl px-4 py-3" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06)">
+            <div class="text-[10px] font-extrabold uppercase tracking-wider mb-2" style="color:#374151">Contributes</div>
+            <div class="weighted-preview text-lg font-extrabold" style="color:#6ee7b7">0.00%</div>
+          </div>
+        </div>
+
+        <!-- Hidden actual input -->
+        <input type="number"
+          name="scores[{{../id}}][{{criteriaId}}]"
+          value="{{value}}"
+          min="0" max="{{maxScore}}" step="0.5"
+          class="score-input sr-only"
+          data-weight="{{weight}}" data-max="{{maxScore}}"
+          readonly tabindex="-1"/>
+
+      </div>
+      {{/each}}
+
+      <!-- Criteria nav + Save button -->
+      <div class="px-4 sm:px-6 py-4 flex items-center gap-3" style="border-top:1px solid rgba(255,255,255,0.05);background:rgba(255,255,255,0.01)">
+        <button type="button"
+          class="flex items-center gap-1.5 px-4 py-2.5 rounded-xl font-bold text-sm transition"
+          style="background:rgba(255,255,255,0.05);color:#64748b;border:1px solid rgba(255,255,255,0.08)"
+          onclick="prevCriteria('{{id}}')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+          Prev
+        </button>
+        <button type="button"
+          class="flex-1 py-2.5 rounded-xl font-extrabold text-sm text-white transition active:scale-[0.98]"
+          style="background:linear-gradient(135deg,#4f46e5,#7c3aed);box-shadow:0 4px 20px rgba(99,102,241,0.3)"
+          onclick="nextOrSave('{{id}}', {{@index}}, {{scores.length}})">
+          <span class="btn-label">Next Criteria →</span>
+        </button>
+        <button type="button"
+          class="flex items-center gap-1.5 px-4 py-2.5 rounded-xl font-bold text-sm transition"
+          style="background:rgba(255,255,255,0.05);color:#64748b;border:1px solid rgba(255,255,255,0.08)"
+          onclick="nextContestant({{@index}})">
           Next
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
         </button>
       </div>
 
@@ -290,180 +234,297 @@
   </form>
 
   {{else}}
-  <div class="p-12 text-center">
-    <p class="font-semibold" style="color:#475569">No contestants found.</p>
-    <a href="/events/{{event.id}}" class="text-indigo-400 hover:underline text-sm mt-2 inline-block">Back to event</a>
+  <div class="p-16 text-center">
+    <p style="color:#475569">No contestants yet.</p>
+    <a href="/events/{{event.id}}" class="text-indigo-400 text-sm mt-2 inline-block">Back to event</a>
   </div>
   {{/if}}
 
 </main>
 </div>
 
+<!-- Sticky bottom nav bar (Prev / Next contestant) -->
+<div class="fixed bottom-0 left-0 right-0 z-30 no-print" style="background:rgba(6,11,24,0.97);backdrop-filter:blur(16px);border-top:1px solid rgba(255,255,255,0.06);box-shadow:0 -4px 32px rgba(0,0,0,0.5)">
+  <div class="max-w-screen-xl mx-auto px-4 sm:px-6 py-3 flex items-center gap-3">
+    <button type="button" id="btn-prev-contestant"
+      class="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition disabled:opacity-30"
+      style="background:rgba(255,255,255,0.06);color:#94a3b8;border:1px solid rgba(255,255,255,0.1)"
+      onclick="goToContestant(window._currentIdx - 1)">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+      Previous
+    </button>
+    <div class="flex-1 text-center text-xs font-bold" style="color:#374151">
+      Contestant <span id="bottom-pos" style="color:#6366f1">1</span> / {{contestants.length}}
+    </div>
+    <button type="button" id="btn-next-contestant"
+      class="flex items-center gap-2 px-5 py-2.5 rounded-xl font-extrabold text-sm text-white transition active:scale-[0.98]"
+      style="background:linear-gradient(135deg,#4f46e5,#7c3aed);box-shadow:0 4px 16px rgba(99,102,241,0.3)"
+      onclick="goToContestant(window._currentIdx + 1)">
+      Next →
+    </button>
+  </div>
+</div>
+
 <style>
-/* Slider track */
-input[type=range].score-slider { -webkit-appearance:none; width:100%; border-radius:999px; outline:none; }
-input[type=range].score-slider::-webkit-slider-runnable-track { height:6px; border-radius:999px; background:rgba(255,255,255,0.08); }
-input[type=range].score-slider::-webkit-slider-thumb {
-  -webkit-appearance:none; width:22px; height:22px; border-radius:50%;
-  background:#6366f1; border:3px solid #0d1526;
-  box-shadow:0 0 0 2px rgba(99,102,241,0.5),0 4px 12px rgba(99,102,241,0.4);
-  cursor:pointer; transition:transform 0.15s,box-shadow 0.15s;
+.numpad-btn {
+  aspect-ratio:1;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:14px;font-weight:800;font-size:1rem;
+  border:2px solid rgba(255,255,255,0.08);
+  background:rgba(255,255,255,0.05);
+  color:#64748b;cursor:pointer;transition:all 0.15s;
 }
-input[type=range].score-slider::-webkit-slider-thumb:hover {
-  transform:scale(1.2);
-  box-shadow:0 0 0 3px rgba(99,102,241,0.6),0 6px 20px rgba(99,102,241,0.5);
-}
-input[type=range].score-slider:focus { outline:none; }
-.score-box.filled { border-color:rgba(99,102,241,0.35) !important; }
-.score-box.filled .criteria-color-dot { box-shadow:0 0 8px currentColor; }
-.nav-dot.scored { background:rgba(16,185,129,0.25) !important; color:#6ee7b7 !important; border-color:rgba(16,185,129,0.5) !important; }
-.nav-dot.active { background:rgba(99,102,241,0.25) !important; color:#a5b4fc !important; border-color:rgba(99,102,241,0.6) !important; }
-/* Score input — hide spinners */
-.score-input::-webkit-inner-spin-button, .score-input::-webkit-outer-spin-button { -webkit-appearance:none; margin:0; }
-.score-input[type=number] { -moz-appearance:textfield; }
+.numpad-btn:hover { background:rgba(99,102,241,0.18);border-color:rgba(99,102,241,0.4);color:#a5b4fc; }
+.numpad-btn.selected { background:rgba(99,102,241,0.9);border-color:#6366f1;color:#fff;box-shadow:0 4px 16px rgba(99,102,241,0.5);transform:scale(1.05); }
+.finetune-btn.selected { background:rgba(99,102,241,0.25) !important;color:#a5b4fc !important;border-color:rgba(99,102,241,0.5) !important; }
+.criteria-tab.active { background:rgba(99,102,241,0.2) !important;color:#a5b4fc !important;border-color:rgba(99,102,241,0.45) !important; }
+.criteria-tab.done { background:rgba(16,185,129,0.12) !important;color:#6ee7b7 !important;border-color:rgba(16,185,129,0.35) !important; }
+.nav-dot.scored { background:rgba(16,185,129,0.25) !important;color:#6ee7b7 !important;border-color:rgba(16,185,129,0.5) !important; }
+.nav-dot.active-dot { background:rgba(99,102,241,0.25) !important;color:#a5b4fc !important;border-color:rgba(99,102,241,0.6) !important; }
 </style>
 
 <script>
 (function() {
-  const COLORS = ["#6366f1","#7c3aed","#059669","#dc2626","#d97706","#0891b2","#be185d","#65a30d","#f59e0b","#06b6d4"];
-  const CIRC72 = 2 * Math.PI * 28; // for 72px donut r=28 → 175.93
-  const CIRC11 = 2 * Math.PI * 11; // for header ring r=11 → 69.12
+  const COLORS = ["#6366f1","#7c3aed","#059669","#dc2626","#d97706","#0891b2","#be185d","#65a30d"];
+  const CIRC80 = 2 * Math.PI * 32; // r=32 → 201.06
+  const CIRC10 = 2 * Math.PI * 10; // r=10 → 62.83
   const storeKey = "scoresync_draft_{{event.id}}";
-  let saveTimer, currentIdx = 0;
+  let saveTimer;
+  window._currentIdx = 0;
+  window._currentCriteria = {}; // contestantId → criteriaIdx
   const totalContestants = {{contestants.length}};
 
-  /* ── Navigate ── */
-  window.goToContestant = function(idx) {
-    idx = parseInt(idx);
-    if (isNaN(idx) || idx < 0 || idx >= totalContestants) return;
-    document.querySelectorAll('.contestant-panel').forEach((p, i) => p.style.display = i === idx ? '' : 'none');
-    document.querySelectorAll('.nav-dot').forEach((d, i) => {
-      d.classList.toggle('active', i === idx);
-    });
-    currentIdx = idx;
-    document.getElementById('hdr-contestant-pos').textContent = idx + 1;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    updateOverallRing();
-  };
-
-  /* ── Save & Next ── */
-  window.saveAndNext = function(idx, total) {
-    const panel = document.querySelector('.contestant-panel[data-idx="' + idx + '"]');
-    if (!panel) return;
-    const inputs = panel.querySelectorAll('.score-input');
-    const empty = [...inputs].filter(n => n.value === '' || parseFloat(n.value) < 0);
-    if (empty.length && !confirm(empty.length + ' score(s) are empty. Submit anyway?')) return;
-    document.getElementById('scoringForm').submit();
-  };
-
-  /* ── Sync ── */
-  window.syncSlider = function(el) {
-    const box = el.closest('.score-box');
-    const num = box.querySelector('.score-input');
-    num.value = el.value;
-    updateBox(box); schedSave();
-  };
-  window.syncNumber = function(el) {
-    const box = el.closest('.score-box');
-    const sl  = box.querySelector('.score-slider');
-    const max = parseFloat(el.dataset.max) || 100;
-    let v = parseFloat(el.value); if (isNaN(v)) v = 0;
-    v = Math.min(Math.max(0, v), max);
-    sl.value = v; updateBox(box); schedSave();
-  };
-
-  /* ── Update single box ── */
-  function updateBox(box) {
-    const num    = box.querySelector('.score-input');
-    const val    = parseFloat(num.value) || 0;
-    const max    = parseFloat(num.dataset.max) || 100;
-    const weight = parseFloat(num.dataset.weight) || 0;
-    const pct    = max > 0 ? (val / max) * 100 : 0;
-    const contrib= (val / max) * weight;
-    const idx    = parseInt(box.dataset.criteriaIdx) || 0;
-    const color  = COLORS[idx % COLORS.length];
-
-    // Update color dot + slider accent
-    const dot = box.querySelector('.criteria-color-dot');
-    if (dot) dot.style.background = color;
-    const sl = box.querySelector('.score-slider');
-    if (sl) { sl.style.accentColor = color; sl.style.setProperty('--thumb-color', color); }
-
-    // Donut ring (r=28, circ≈175.93)
-    const ring = box.querySelector('.criteria-ring');
-    if (ring) {
-      ring.style.stroke = color;
-      ring.style.strokeDashoffset = (CIRC72 - (pct / 100) * CIRC72).toFixed(2);
+  /* ══ Build number pads ══ */
+  document.querySelectorAll('.numpad-grid').forEach(grid => {
+    const max = parseInt(grid.dataset.max) || 100;
+    const panel = grid.closest('.criteria-panel');
+    const input = panel?.querySelector('.score-input');
+    // Show 1..max if max<=20, else 10-point steps
+    let nums;
+    if (max <= 20) {
+      nums = Array.from({length: max}, (_, i) => i + 1);
+    } else {
+      nums = [];
+      for (let i = 10; i <= max; i += 10) nums.push(i);
     }
-    const pctEl = box.querySelector('.criteria-pct');
+    nums.forEach(n => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'numpad-btn';
+      btn.textContent = n;
+      btn.dataset.val = n;
+      btn.onclick = () => selectScore(panel, n, btn);
+      grid.appendChild(btn);
+    });
+    // Restore existing value
+    if (input && input.value) {
+      const base = Math.floor(parseFloat(input.value));
+      const dec  = parseFloat((parseFloat(input.value) - base).toFixed(1));
+      const btn  = grid.querySelector('[data-val="' + base + '"]');
+      if (btn) { btn.classList.add('selected'); }
+      // Fine-tune
+      const ft = panel?.querySelectorAll('.finetune-btn');
+      ft?.forEach(b => { if (parseFloat(b.dataset.delta) === dec) b.classList.add('selected'); });
+    }
+  });
+
+  /* ══ Select a base score ══ */
+  window.selectScore = function(panel, val, btn) {
+    const input = panel.querySelector('.score-input');
+    const grid  = panel.querySelector('.numpad-grid');
+    // Deselect all numpad
+    grid?.querySelectorAll('.numpad-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    // Keep fine-tune decimal
+    const ft = panel.querySelectorAll('.finetune-btn');
+    let dec = 0;
+    ft.forEach(b => { if (b.classList.contains('selected')) dec = parseFloat(b.dataset.delta); });
+    const newVal = Math.min(val + dec, parseFloat(input.dataset.max) || 100);
+    input.value = newVal;
+    updateBox(panel);
+    schedSave();
+  };
+
+  /* ══ Fine-tune ══ */
+  document.querySelectorAll('.finetune-btn').forEach(btn => {
+    btn.onclick = () => {
+      const panel = btn.closest('.criteria-panel');
+      const input = panel?.querySelector('.score-input');
+      if (!input) return;
+      // Deselect other fine-tunes
+      panel.querySelectorAll('.finetune-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      // Get selected numpad base
+      const numBtn = panel.querySelector('.numpad-btn.selected');
+      const base   = numBtn ? parseFloat(numBtn.dataset.val) : Math.floor(parseFloat(input.value) || 0);
+      const delta  = parseFloat(btn.dataset.delta);
+      const max    = parseFloat(input.dataset.max) || 100;
+      input.value  = Math.min(base + delta, max);
+      updateBox(panel); schedSave();
+    };
+  });
+
+  /* ══ Update visuals for a criteria panel ══ */
+  function updateBox(panel) {
+    const input   = panel.querySelector('.score-input');
+    const val     = parseFloat(input.value) || 0;
+    const max     = parseFloat(input.dataset.max) || 100;
+    const weight  = parseFloat(input.dataset.weight) || 0;
+    const pct     = max > 0 ? (val / max) * 100 : 0;
+    const contrib = (val / max) * weight;
+    const idx     = parseInt(panel.dataset.criteriaIdx) || 0;
+    const color   = COLORS[idx % COLORS.length];
+
+    // Big score display
+    const disp = panel.querySelector('.score-display');
+    if (disp) { disp.textContent = val > 0 ? val : '—'; disp.style.color = val > 0 ? color : '#374151'; }
+
+    // Donut ring (r=32, circ=201.06)
+    const ring = panel.querySelector('.criteria-ring');
+    if (ring) { ring.style.stroke = color; ring.style.strokeDashoffset = (CIRC80 - (pct / 100) * CIRC80).toFixed(2); }
+    const pctEl = panel.querySelector('.criteria-pct');
     if (pctEl) { pctEl.textContent = Math.round(pct) + '%'; pctEl.style.color = color; }
 
-    const bar = box.querySelector('.criteria-bar');
+    // Bar
+    const bar = panel.querySelector('.criteria-bar');
     if (bar) { bar.style.width = pct.toFixed(1) + '%'; bar.style.background = color; }
+    const pctLbl = panel.querySelector('.criteria-pct-label');
+    if (pctLbl) { pctLbl.textContent = Math.round(pct) + '%'; pctLbl.style.color = color; }
 
-    const wp = box.querySelector('.weighted-preview');
+    // Weighted
+    const wp = panel.querySelector('.weighted-preview');
     if (wp) wp.textContent = contrib.toFixed(2) + '%';
 
-    if (val > 0) box.classList.add('filled'); else box.classList.remove('filled');
+    // Saved badge
+    const saved = panel.querySelector('.saved-badge');
+    if (saved) saved.classList.toggle('hidden', val === 0);
 
-    updateContestantPanel(box.closest('.contestant-panel'));
+    // Mark tab done
+    const cid    = panel.dataset.contestantId;
+    const tabIdx = panel.dataset.criteriaIdx;
+    const tab    = document.querySelector('.criteria-tab[data-panel="' + cid + '"][data-tab-idx="' + tabIdx + '"]');
+    if (tab) {
+      tab.querySelector('.tab-check').classList.toggle('hidden', val === 0);
+      tab.classList.toggle('done', val > 0);
+    }
+
+    updateContestantPanel(panel.closest('.contestant-panel'));
     updateOverallRing();
   }
 
-  /* ── Panel totals ── */
-  function updateContestantPanel(panel) {
-    if (!panel) return;
-    const boxes  = panel.querySelectorAll('.score-box');
+  /* ══ Contestant panel totals ══ */
+  function updateContestantPanel(cp) {
+    if (!cp) return;
+    const panels = cp.querySelectorAll('.criteria-panel');
     let total = 0, filled = 0;
-    boxes.forEach(b => {
-      const n = b.querySelector('.score-input');
+    panels.forEach(p => {
+      const n = p.querySelector('.score-input');
       const v = parseFloat(n.value) || 0;
       const m = parseFloat(n.dataset.max) || 100;
       const w = parseFloat(n.dataset.weight) || 0;
-      if (parseFloat(n.value) > 0) filled++;
+      if (v > 0) filled++;
       total += (v / m) * w;
     });
-    const totEl = panel.querySelector('.contestant-total');
+    const totEl = cp.querySelector('.contestant-total');
     if (totEl) totEl.textContent = total.toFixed(2) + '%';
-
-    const pct = boxes.length > 0 ? (filled / boxes.length) * 100 : 0;
-    const bar = panel.querySelector('.contestant-fill-bar');
+    const lbl = cp.querySelector('.contestant-fill-label');
+    if (lbl) lbl.textContent = filled + '/' + panels.length + ' filled';
+    const bar = cp.querySelector('.contestant-progress-bar');
     if (bar) {
-      bar.style.width = pct.toFixed(0) + '%';
-      bar.style.background = filled === boxes.length
-        ? 'linear-gradient(90deg,#10b981,#34d399)'
-        : 'linear-gradient(90deg,#4f46e5,#7c3aed)';
+      const pct = panels.length > 0 ? (filled / panels.length) * 100 : 0;
+      bar.style.width = pct + '%';
+      bar.style.background = filled === panels.length ? 'linear-gradient(90deg,#10b981,#34d399)' : 'linear-gradient(90deg,#4f46e5,#7c3aed)';
     }
-    const lbl = panel.querySelector('.contestant-fill-label');
-    if (lbl) lbl.textContent = filled + ' / ' + boxes.length;
-
-    const idx = panel.dataset.idx;
-    const dot = document.querySelector('.nav-dot[data-idx="' + idx + '"]');
-    if (dot && filled === boxes.length && boxes.length > 0) dot.classList.add('scored');
+    // Nav dot
+    const dot = document.querySelector('.nav-dot[data-idx="' + cp.dataset.idx + '"]');
+    if (dot && filled === panels.length && panels.length > 0) dot.classList.add('scored');
+    // Update header scored count
+    let totalScored = 0;
+    document.querySelectorAll('.contestant-panel').forEach(c => {
+      const ps = c.querySelectorAll('.criteria-panel');
+      const f  = [...ps].filter(p => parseFloat(p.querySelector('.score-input').value) > 0).length;
+      if (f === ps.length && ps.length > 0) totalScored++;
+    });
+    const sc = document.getElementById('hdr-scored');
+    if (sc) sc.textContent = totalScored;
   }
 
-  /* ── Overall ring ── */
+  /* ══ Overall ring ══ */
   function updateOverallRing() {
     const all    = document.querySelectorAll('.score-input');
     const filled = [...all].filter(i => parseFloat(i.value) > 0).length;
     const pct    = all.length > 0 ? (filled / all.length) * 100 : 0;
-    const offset = CIRC11 - (pct / 100) * CIRC11;
+    const offset = CIRC10 - (pct / 100) * CIRC10;
     const ring   = document.getElementById('ring-progress');
-    if (ring) {
-      ring.style.strokeDashoffset = offset.toFixed(2);
-      ring.style.stroke = pct >= 100 ? '#10b981' : '#6366f1';
-    }
+    if (ring) { ring.style.strokeDashoffset = offset.toFixed(2); ring.style.stroke = pct >= 100 ? '#10b981' : '#6366f1'; }
     const el = document.getElementById('overall-pct');
     if (el) el.textContent = Math.round(pct) + '%';
   }
 
-  /* ── Draft ── */
-  function schedSave() { clearTimeout(saveTimer); saveTimer = setTimeout(saveDraft, 800); }
+  /* ══ Navigate contestants ══ */
+  window.goToContestant = function(idx) {
+    idx = parseInt(idx);
+    if (isNaN(idx) || idx < 0 || idx >= totalContestants) return;
+    document.querySelectorAll('.contestant-panel').forEach((p, i) => p.style.display = i === idx ? '' : 'none');
+    document.querySelectorAll('.criteria-tabs').forEach((t, i) => t.style.display = i === idx ? '' : 'none');
+    document.querySelectorAll('.nav-dot').forEach((d, i) => {
+      d.classList.toggle('active-dot', i === idx);
+    });
+    window._currentIdx = idx;
+    document.getElementById('hdr-pos').textContent   = idx + 1;
+    document.getElementById('bottom-pos').textContent = idx + 1;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Restore criteria position for this contestant
+    const cp  = document.querySelector('.contestant-panel[data-idx="' + idx + '"]');
+    const cid = cp?.dataset.contestantId;
+    const ci  = window._currentCriteria[cid] || 0;
+    showCriteria(cid, ci);
+    updateOverallRing();
+  };
+
+  /* ══ Switch criteria ══ */
+  window.switchCriteria = function(cid, idx) {
+    window._currentCriteria[cid] = idx;
+    showCriteria(cid, idx);
+  };
+  function showCriteria(cid, idx) {
+    document.querySelectorAll('.criteria-panel[data-contestant-id="' + cid + '"]').forEach((p, i) => {
+      p.style.display = i === idx ? '' : 'none';
+    });
+    document.querySelectorAll('.criteria-tab[data-panel="' + cid + '"]').forEach((t, i) => {
+      t.classList.toggle('active', i === idx);
+    });
+    // Update btn label
+    const cp      = document.querySelector('.contestant-panel[data-idx="' + window._currentIdx + '"]');
+    const panels  = cp?.querySelectorAll('.criteria-panel') || [];
+    const btnLbl  = cp?.querySelector('.btn-label');
+    if (btnLbl) btnLbl.textContent = idx >= panels.length - 1 ? 'Save Scores & Finish' : 'Next Criteria →';
+  }
+
+  window.prevCriteria = function(cid) {
+    const ci = (window._currentCriteria[cid] || 0) - 1;
+    if (ci < 0) return;
+    switchCriteria(cid, ci);
+  };
+  window.nextOrSave = function(cid, panelIdx, total) {
+    const ci = (window._currentCriteria[cid] || 0) + 1;
+    if (ci < total) { switchCriteria(cid, ci); return; }
+    // Last criteria → save
+    const cp     = document.querySelector('.contestant-panel[data-idx="' + panelIdx + '"]');
+    const inputs = cp?.querySelectorAll('.score-input') || [];
+    const empty  = [...inputs].filter(n => !n.value || parseFloat(n.value) < 0);
+    if (empty.length && !confirm(empty.length + ' score(s) empty. Submit anyway?')) return;
+    document.getElementById('scoringForm').submit();
+  };
+  window.nextContestant = function(idx) { goToContestant(idx + 1); };
+
+  /* ══ Draft ══ */
+  function schedSave() { clearTimeout(saveTimer); saveTimer = setTimeout(saveDraft, 600); }
   function saveDraft() {
     const data = {};
-    document.querySelectorAll('.contestant-panel').forEach(p => {
-      const cid = p.dataset.contestantId; data[cid] = {};
-      p.querySelectorAll('.score-input').forEach(n => {
+    document.querySelectorAll('.contestant-panel').forEach(cp => {
+      const cid = cp.dataset.contestantId; data[cid] = {};
+      cp.querySelectorAll('.score-input').forEach(n => {
         const m = n.name.match(/scores\[([^\]]+)\]\[([^\]]+)\]/);
         if (m) data[cid][m[2]] = n.value;
       });
@@ -473,23 +534,29 @@ input[type=range].score-slider:focus { outline:none; }
   function restoreDraft() {
     try {
       const data = JSON.parse(localStorage.getItem(storeKey) || '{}');
-      document.querySelectorAll('.contestant-panel').forEach(p => {
-        const cid = p.dataset.contestantId; if (!data[cid]) return;
-        p.querySelectorAll('.score-input').forEach(n => {
-          const m = n.name.match(/scores\[([^\]]+)\]\[([^\]]+)\]/);
-          if (m && data[cid][m[2]] !== undefined && n.value === '') {
-            n.value = data[cid][m[2]];
-            const sl = n.closest('.score-box')?.querySelector('.score-slider');
-            if (sl) sl.value = n.value;
-          }
-        });
+      document.querySelectorAll('.criteria-panel').forEach(panel => {
+        const cid = panel.dataset.contestantId;
+        const input = panel.querySelector('.score-input');
+        if (!input || !data[cid]) return;
+        const m = input.name.match(/scores\[([^\]]+)\]\[([^\]]+)\]/);
+        if (m && data[cid][m[2]] && input.value === '') {
+          input.value = data[cid][m[2]];
+          // Restore numpad selection
+          const base = Math.floor(parseFloat(input.value));
+          const dec  = parseFloat((parseFloat(input.value) - base).toFixed(1));
+          const btn  = panel.querySelector('.numpad-btn[data-val="' + base + '"]');
+          if (btn) { btn.classList.add('selected'); }
+          panel.querySelectorAll('.finetune-btn').forEach(b => {
+            if (parseFloat(b.dataset.delta) === dec) b.classList.add('selected');
+          });
+        }
       });
     } catch(e){}
   }
 
-  /* ── Init ── */
+  /* ══ Init ══ */
   restoreDraft();
-  document.querySelectorAll('.score-box').forEach(b => updateBox(b));
+  document.querySelectorAll('.criteria-panel').forEach(p => updateBox(p));
   goToContestant(0);
 })();
 </script>
