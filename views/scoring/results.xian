@@ -118,7 +118,7 @@
             <div class="font-extrabold text-slate-900 text-base leading-tight">{{name}}</div>
             {{#if barangay}}<div class="text-slate-500 text-xs mt-0.5">Brgy. {{barangay}}</div>{{/if}}
             <div class="text-3xl font-black text-yellow-600 mt-3 leading-none">{{finalScoreDisplay}}<span class="text-base font-normal text-yellow-400">%</span></div>
-            <div class="mt-2 h-2 rounded-full bg-yellow-100 overflow-hidden">
+            <div class="mt-2 h-2 rounded-full overflow-hidden" style="background:rgba(255,255,255,0.08)">
               <div class="h-full rounded-full transition-all duration-700" style="width:{{finalScoreDisplay}}%;background:linear-gradient(90deg,#f59e0b,#fbbf24)"></div>
             </div>
           </div>
