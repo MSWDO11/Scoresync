@@ -5,7 +5,6 @@ import {
   updateDoc, deleteDoc, query, orderBy, serverTimestamp,
 } from "firebase/firestore";
 import { applyAutoStatus } from "../utils/autoStatus.js";
-export { applyAutoStatus }; // re-export so existing code doesn't break
 
 const EVENTS = "events";
 
