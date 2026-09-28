@@ -254,8 +254,63 @@
         </div>
       </div>
 
-      <!-- Roadmap -->
+      <!-- Planned Features / Roadmap -->
       <div class="rounded-2xl overflow-hidden animate-fadeup-2" style="background:linear-gradient(160deg,#0c1030,#0f1f5e,#080e22);border:1px solid rgba(99,102,241,0.2)">
+        <div class="px-6 py-4 flex items-center justify-between" style="border-bottom:1px solid rgba(99,102,241,0.15)">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-xl flex items-center justify-center" style="background:rgba(99,102,241,0.2);border:1px solid rgba(99,102,241,0.3)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#818cf8" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <div>
+              <h2 class="text-sm font-extrabold" style="color:#e2e8f0">Planned Features</h2>
+              <p class="text-[11px]" style="color:#4b5563">Coming in future releases</p>
+            </div>
+          </div>
+          <span class="badge badge-purple text-[10px]">Roadmap</span>
+        </div>
+        <div class="px-5 py-4 space-y-3">
+
+          <!-- Feature 1: Offline Sync -->
+          <div class="p-4 rounded-xl transition" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07)"
+            onmouseover="this.style.borderColor='rgba(99,102,241,0.4)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.07)'">
+            <div class="flex items-start justify-between gap-3 mb-1.5">
+              <h3 class="text-xs font-bold flex items-center gap-2" style="color:#e2e8f0">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#818cf8" stroke-width="2.5"><path d="M1 6v16l7-4 8 4 7-4V2l-7 4-8-4-7 4z"/><path d="M8 2v16"/><path d="M16 6v16"/></svg>
+                Offline Sync Mode for Remote Venues
+              </h3>
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold flex-shrink-0" style="background:rgba(59,130,246,0.15);color:#93c5fd;border:1px solid rgba(59,130,246,0.25)">Connectivity</span>
+            </div>
+            <p class="text-[11px] leading-relaxed" style="color:#64748b">Local IndexedDB caching so judges can submit scores even during wifi drops, syncing automatically when reconnected.</p>
+          </div>
+
+          <!-- Feature 2: Custom Printable Score Sheets -->
+          <div class="p-4 rounded-xl transition" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07)"
+            onmouseover="this.style.borderColor='rgba(99,102,241,0.4)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.07)'">
+            <div class="flex items-start justify-between gap-3 mb-1.5">
+              <h3 class="text-xs font-bold flex items-center gap-2" style="color:#e2e8f0">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                Custom Printable Score Sheets for Manual Audit
+              </h3>
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold flex-shrink-0" style="background:rgba(16,185,129,0.12);color:#6ee7b7;border:1px solid rgba(16,185,129,0.25)">Printing</span>
+            </div>
+            <p class="text-[11px] leading-relaxed" style="color:#64748b">Generate pre-formatted PDF judge paper score sheets with contestant names and criteria barcodes.</p>
+          </div>
+
+          <!-- Feature 3: Judge Feedback & Comments -->
+          <div class="p-4 rounded-xl transition" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07)"
+            onmouseover="this.style.borderColor='rgba(99,102,241,0.4)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.07)'">
+            <div class="flex items-start justify-between gap-3 mb-1.5">
+              <h3 class="text-xs font-bold flex items-center gap-2" style="color:#e2e8f0">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#f43f5e" stroke-width="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                Judge Feedback &amp; Comments Box per Score
+              </h3>
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold flex-shrink-0" style="background:rgba(139,92,246,0.12);color:#c4b5fd;border:1px solid rgba(139,92,246,0.25)">Scoring UX</span>
+            </div>
+            <p class="text-[11px] leading-relaxed" style="color:#64748b">Allow judges to add optional qualitative feedback notes alongside numerical percentage entries.</p>
+          </div>
+
+        </div>
+      </div>
     </div>
   </div>
 
