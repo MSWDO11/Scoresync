@@ -151,12 +151,6 @@
         <!-- ── Number pad (1 to maxScore or 1-10 grid) ── -->
         <div>
           <div class="text-[10px] font-extrabold uppercase tracking-wider mb-2" style="color:#374151">Your Score</div>
-          <div class="grid gap-2" style="grid-template-columns:repeat(auto-fill,minmax(52px,1fr))">
-            {{#each (range 1 ../maxScore)}}
-            {{else}}
-            <!-- rendered by JS -->
-            {{/each}}
-          </div>
           <!-- Number pad rendered by JS -->
           <div class="numpad-grid grid gap-2" data-max="{{maxScore}}"></div>
         </div>
