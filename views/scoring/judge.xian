@@ -129,21 +129,20 @@
         <div class="flex items-center justify-center gap-6">
           <div class="text-center">
             <div class="flex items-end justify-center gap-1">
-              <span class="score-display font-black leading-none" style="font-size:5rem;color:#6366f1;font-variant-numeric:tabular-nums">{{#if value}}{{value}}{{else}}—{{/if}}</span>
+              <span class="score-display font-black leading-none" style="font-size:3rem;color:#6366f1;font-variant-numeric:tabular-nums">{{#if value}}{{value}}{{else}}—{{/if}}</span>
               <span class="text-xl font-bold mb-3" style="color:#374151">/{{maxScore}}</span>
             </div>
             <div class="text-xs font-bold uppercase tracking-wider" style="color:#374151">pts out of {{maxScore}}</div>
           </div>
-          <!-- Donut ring -->
-          <div class="relative" style="width:80px;height:80px">
-            <svg width="80" height="80" viewBox="0 0 80 80">
-              <circle cx="40" cy="40" r="32" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="7"/>
-              <circle class="criteria-ring" cx="40" cy="40" r="32" fill="none" stroke="#6366f1" stroke-width="7"
-                stroke-dasharray="201.06" stroke-dashoffset="201.06" stroke-linecap="round"
-                transform="rotate(-90 40 40)" style="transition:stroke-dashoffset 0.4s ease"/>
+          <div class="relative flex-shrink-0" style="width:64px;height:64px">
+            <svg width="64" height="64" viewBox="0 0 64 64">
+              <circle cx="32" cy="32" r="26" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="6"/>
+              <circle class="criteria-ring" cx="32" cy="32" r="26" fill="none" stroke="#6366f1" stroke-width="6"
+                stroke-dasharray="163.36" stroke-dashoffset="163.36" stroke-linecap="round"
+                transform="rotate(-90 32 32)" style="transition:stroke-dashoffset 0.4s ease"/>
             </svg>
             <div class="absolute inset-0 flex items-center justify-center">
-              <span class="criteria-pct text-sm font-extrabold" style="color:#e2e8f0">0%</span>
+              <span class="criteria-pct text-xs font-extrabold" style="color:#e2e8f0">0%</span>
             </div>
           </div>
         </div>
@@ -152,7 +151,7 @@
         <div>
           <div class="text-[10px] font-extrabold uppercase tracking-wider mb-2" style="color:#374151">Your Score</div>
           <!-- Number pad rendered by JS -->
-          <div class="numpad-grid grid gap-2" data-max="{{maxScore}}"></div>
+          <div class="numpad-grid flex flex-wrap gap-2" data-max="{{maxScore}}"></div>
         </div>
 
         <!-- Fine-tune row -->
@@ -261,15 +260,15 @@
 
 <style>
 .numpad-btn {
-  aspect-ratio:1;
+  width:52px; height:52px;
   display:flex;align-items:center;justify-content:center;
-  border-radius:14px;font-weight:800;font-size:1rem;
+  border-radius:12px;font-weight:800;font-size:0.95rem;
   border:2px solid rgba(255,255,255,0.08);
   background:rgba(255,255,255,0.05);
-  color:#64748b;cursor:pointer;transition:all 0.15s;
+  color:#64748b;cursor:pointer;transition:all 0.15s;flex-shrink:0;
 }
 .numpad-btn:hover { background:rgba(99,102,241,0.18);border-color:rgba(99,102,241,0.4);color:#a5b4fc; }
-.numpad-btn.selected { background:rgba(99,102,241,0.9);border-color:#6366f1;color:#fff;box-shadow:0 4px 16px rgba(99,102,241,0.5);transform:scale(1.05); }
+.numpad-btn.selected { background:rgba(99,102,241,0.9);border-color:#6366f1;color:#fff;box-shadow:0 4px 12px rgba(99,102,241,0.45);transform:scale(1.05); }
 .finetune-btn.selected { background:rgba(99,102,241,0.25) !important;color:#a5b4fc !important;border-color:rgba(99,102,241,0.5) !important; }
 .criteria-tab.active { background:rgba(99,102,241,0.2) !important;color:#a5b4fc !important;border-color:rgba(99,102,241,0.45) !important; }
 .criteria-tab.done { background:rgba(16,185,129,0.12) !important;color:#6ee7b7 !important;border-color:rgba(16,185,129,0.35) !important; }
@@ -280,7 +279,7 @@
 <script>
 (function() {
   const COLORS = ["#6366f1","#7c3aed","#059669","#dc2626","#d97706","#0891b2","#be185d","#65a30d"];
-  const CIRC80 = 2 * Math.PI * 32; // r=32 → 201.06
+  const CIRC80 = 2 * Math.PI * 26; // r=26 (64px donut) → 163.36
   const CIRC10 = 2 * Math.PI * 10; // r=10 → 62.83
   const storeKey = "scoresync_draft_{{event.id}}";
   let saveTimer;
