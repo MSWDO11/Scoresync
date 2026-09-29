@@ -54,6 +54,7 @@ export const settingsPage = async (req, res) => {
       title: "Settings",
       userName: req.session.userName,
       userEmail: userData.email || "",
+      userAvatar: userData.avatar || req.session.userAvatar || "",
       userRole: req.session.userRole,
       userInitial: (req.session.userName || "U")[0].toUpperCase(),
       isAdmin: req.session.userRole === "admin",
@@ -87,12 +88,22 @@ export const settingsPage = async (req, res) => {
 
 export const updateSettings = async (req, res) => {
   try {
-    const { name } = req.body;
-    if (name && req.session.userId) {
-      const userRef = doc(db, "users", req.session.userId);
-      await updateDoc(userRef, { name: name.trim() });
-      req.session.userName = name.trim();
-      req.flash("success_msg", "Account settings updated successfully!");
+    const { name, avatar } = req.body;
+    if (req.session.userId) {
+      const updates = {};
+      if (name && name.trim()) {
+        updates.name = name.trim();
+        req.session.userName = name.trim();
+      }
+      // Save avatar (base64) to Firestore if provided
+      if (avatar && avatar.startsWith('data:image')) {
+        updates.avatar = avatar;
+        req.session.userAvatar = avatar;
+      }
+      if (Object.keys(updates).length > 0) {
+        await updateDoc(doc(db, "users", req.session.userId), updates);
+      }
+      req.flash("success_msg", "Profile updated successfully!");
     }
     res.redirect("/settings");
   } catch (err) {

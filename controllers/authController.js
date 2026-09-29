@@ -138,9 +138,10 @@ export const loginUser = async (req, res) => {
       return res.redirect("/login");
     }
 
-    req.session.userId   = uid;
-    req.session.userName = profile.name  || email;
-    req.session.userRole = profile.role  || "encoder";
+    req.session.userId    = uid;
+    req.session.userName  = profile.name   || email;
+    req.session.userRole  = profile.role   || "encoder";
+    req.session.userAvatar = profile.avatar || "";
 
     console.log(`✅ Login: ${email} as ${req.session.userRole}`);
     res.redirect("/dashboard");
