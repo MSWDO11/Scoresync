@@ -105,6 +105,11 @@ registerPartials(path.join(__dirname, "views", "partials"));
 // ─── Routes ───────────────────────────────────────────────────────────────────
 app.use("/", router);
 
+// ─── Health check (for Vercel diagnostics) ───────────────────────────────────
+app.get("/_health", (req, res) => {
+  res.json({ status: "ok", env: process.env.NODE_ENV || "production", vercel: !!process.env.VERCEL });
+});
+
 // ─── 404 handler ─────────────────────────────────────────────────────────────
 app.use((req, res) => {
   res.status(404).send(`
