@@ -95,8 +95,8 @@ export const updateSettings = async (req, res) => {
         updates.name = name.trim();
         req.session.userName = name.trim();
       }
-      // Save avatar (base64) to Firestore if provided
-      if (avatar && avatar.startsWith('data:image')) {
+      // Save avatar (base64) to Firestore if provided and valid
+      if (avatar && typeof avatar === 'string' && avatar.startsWith('data:image')) {
         updates.avatar = avatar;
         req.session.userAvatar = avatar;
       }
@@ -108,7 +108,7 @@ export const updateSettings = async (req, res) => {
     res.redirect("/settings");
   } catch (err) {
     console.error("Update settings error:", err);
-    req.flash("error_msg", "Failed to update settings.");
+    req.flash("error_msg", "Failed to update settings. " + err.message);
     res.redirect("/settings");
   }
 };
