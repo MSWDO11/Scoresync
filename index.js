@@ -1,6 +1,6 @@
 import express from "express";
 import path from "path";
-import cookieSession from "cookie-session";
+import session from "express-session";
 import flash from "connect-flash";
 import router from "./routes/index.js";
 import fs from "fs";
@@ -22,23 +22,23 @@ app.use(express.urlencoded({ extended: true, limit: '5mb' }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.static(path.join(process.cwd(), "public")));
 
-// ─── Session (cookie-based — works on Vercel serverless, no server store) ────
-app.use(cookieSession({
-  name:   "scoresync_session",
-  keys:   [process.env.SESSION_SECRET || "scoresync-secret-2026"],
-  maxAge: 1000 * 60 * 60 * 8, // 8 hours
-  secure: process.env.VERCEL ? true : false,
-  sameSite: "lax",
-}));
+// ─── Session & Flash ──────────────────────────────────────────────────────────
+// ─── Trust Vercel proxy ───────────────────────────────────────────────────────
+app.set("trust proxy", 1);
 
-// Shim: connect-flash needs req.session.save() — add it for cookie-session compat
-app.use((req, res, next) => {
-  if (req.session && !req.session.save) {
-    req.session.save = (cb) => { if (cb) cb(); };
-    req.session.regenerate = (cb) => { if (cb) cb(); };
-  }
-  next();
-});
+// ─── Session & Flash ──────────────────────────────────────────────────────────
+app.use(session({
+  secret: process.env.SESSION_SECRET || "scoresync-secret-2026",
+  resave: true,
+  saveUninitialized: false,
+  rolling: true,
+  cookie: {
+    maxAge:   1000 * 60 * 60 * 8, // 8 hours
+    secure:   !!process.env.VERCEL, // HTTPS only on Vercel
+    sameSite: process.env.VERCEL ? "none" : "lax",
+    httpOnly: true,
+  },
+}));
 app.use(flash());
 
 // ─── Flash + user data into all views ────────────────────────────────────────
