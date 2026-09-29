@@ -84,17 +84,25 @@ app.set("view engine", "xian");
 
 // ─── Auto-register all partials recursively ───────────────────────────────────
 function registerPartials(dir) {
-  if (!fs.existsSync(dir)) return;
-  fs.readdirSync(dir).forEach(file => {
-    const fullPath = path.join(dir, file);
-    if (fs.statSync(fullPath).isDirectory()) {
-      registerPartials(fullPath);
-    } else if (file.endsWith(".xian")) {
-      const name    = file.replace(".xian", "");
-      const content = fs.readFileSync(fullPath, "utf8");
-      hbs.registerPartial(name, content);
-    }
-  });
+  try {
+    if (!fs.existsSync(dir)) return;
+    fs.readdirSync(dir).forEach(file => {
+      try {
+        const fullPath = path.join(dir, file);
+        if (fs.statSync(fullPath).isDirectory()) {
+          registerPartials(fullPath);
+        } else if (file.endsWith(".xian")) {
+          const name    = file.replace(".xian", "");
+          const content = fs.readFileSync(fullPath, "utf8");
+          hbs.registerPartial(name, content);
+        }
+      } catch (fileErr) {
+        console.error("Failed to register partial:", file, fileErr.message);
+      }
+    });
+  } catch (err) {
+    console.error("registerPartials error:", dir, err.message);
+  }
 }
 registerPartials(path.join(__dirname, "views", "partials"));
 
@@ -104,9 +112,21 @@ app.use("/", router);
 // ─── 404 handler ─────────────────────────────────────────────────────────────
 app.use((req, res) => {
   res.status(404).send(`
-    <div style="font-family:sans-serif;text-align:center;padding:80px">
-      <h1 style="font-size:4rem;color:#1e3a5f">404</h1>
+    <div style="font-family:sans-serif;text-align:center;padding:80px;background:#0a0f1e;color:#e2e8f0;min-height:100vh">
+      <h1 style="font-size:4rem;color:#2563eb">404</h1>
       <p>Page not found.</p>
+      <a href="/" style="color:#2563eb">Go Home</a>
+    </div>
+  `);
+});
+
+// ─── Global error handler ─────────────────────────────────────────────────────
+app.use((err, req, res, next) => {
+  console.error("Global error:", err.message, err.stack);
+  res.status(500).send(`
+    <div style="font-family:sans-serif;text-align:center;padding:80px;background:#0a0f1e;color:#e2e8f0;min-height:100vh">
+      <h1 style="font-size:3rem;color:#ef4444">500 — Server Error</h1>
+      <p style="color:#64748b">${process.env.NODE_ENV === 'development' ? err.message : 'Something went wrong. Please try again.'}</p>
       <a href="/" style="color:#2563eb">Go Home</a>
     </div>
   `);
