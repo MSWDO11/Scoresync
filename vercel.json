@@ -1,35 +1,12 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "index.js",
-      "use": "@vercel/node",
-      "config": {
-        "includeFiles": [
-          "views/**",
-          "public/**",
-          "controllers/**",
-          "middleware/**",
-          "models/**",
-          "routes/**",
-          "utils/**"
-        ]
-      }
-    }
-  ],
-  "routes": [
-    {
-      "src": "/public/(.*)",
-      "dest": "/public/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.js"
-    }
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.js" }
   ],
   "functions": {
     "index.js": {
-      "maxDuration": 30
+      "maxDuration": 30,
+      "memory": 1024
     }
   }
 }

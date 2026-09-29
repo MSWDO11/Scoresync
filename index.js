@@ -18,6 +18,8 @@ const PORT = process.env.PORT || 3000;
 // ─── Body / Static ────────────────────────────────────────────────────────────
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+// Serve static files — use both __dirname and process.cwd() for Vercel compatibility
+app.use(express.static(path.join(__dirname, "public")));
 app.use(express.static(path.join(process.cwd(), "public")));
 
 // ─── Session & Flash ──────────────────────────────────────────────────────────
@@ -81,7 +83,10 @@ app.set("view engine", "xian");
 // ─── Auto-register all partials recursively ───────────────────────────────────
 function registerPartials(dir) {
   try {
-    if (!fs.existsSync(dir)) return;
+    if (!fs.existsSync(dir)) {
+      console.warn("Partials dir not found:", dir);
+      return;
+    }
     fs.readdirSync(dir).forEach(file => {
       try {
         const fullPath = path.join(dir, file);
@@ -100,7 +105,11 @@ function registerPartials(dir) {
     console.error("registerPartials error:", dir, err.message);
   }
 }
-registerPartials(path.join(__dirname, "views", "partials"));
+// Try both __dirname and process.cwd() for Vercel compatibility
+const partialsPath = path.join(__dirname, "views", "partials");
+const altPartialsPath = path.join(process.cwd(), "views", "partials");
+console.log("Registering partials from:", partialsPath, "exists:", fs.existsSync(partialsPath));
+registerPartials(fs.existsSync(partialsPath) ? partialsPath : altPartialsPath);
 
 // ─── Routes ───────────────────────────────────────────────────────────────────
 app.use("/", router);
