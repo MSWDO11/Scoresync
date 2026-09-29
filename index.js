@@ -114,7 +114,8 @@ app.use((req, res) => {
 
 export default app;
 
-if (!process.env.ELECTRON) {
+// Only start the HTTP server when NOT running on Vercel (Vercel uses the export)
+if (!process.env.ELECTRON && !process.env.VERCEL) {
   app.listen(PORT, () => {
     console.log(`🏆 ScoreSync running at http://localhost:${PORT}`);
   });
