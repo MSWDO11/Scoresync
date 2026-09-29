@@ -66,11 +66,7 @@ hbs.registerHelper("criteriaColor", (idx) => CRITERIA_COLORS[Number(idx) % CRITE
 
 // ─── .xian engine (wraps hbs) ────────────────────────────────────────────────
 app.engine("xian", (filePath, options, callback) => {
-  const originalPartialsDir = hbs.partialsDir;
-  hbs.partialsDir = path.join(__dirname, "views");
-
   hbs.__express(filePath, options, (err, html) => {
-    hbs.partialsDir = originalPartialsDir;
     if (err) {
       console.error("Template rendering error on file:", filePath, err);
       return callback(err);
