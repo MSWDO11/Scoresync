@@ -1,7 +1,6 @@
 import express from "express";
 import path from "path";
 import session from "express-session";
-import { FirestoreStore } from "./utils/firestoreSessionStore.js";
 import flash from "connect-flash";
 import router from "./routes/index.js";
 import fs from "fs";
@@ -24,22 +23,11 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(express.static(path.join(process.cwd(), "public")));
 
 // ─── Session & Flash ──────────────────────────────────────────────────────────
-// ─── Trust Vercel proxy ───────────────────────────────────────────────────────
-app.set("trust proxy", 1);
-
-// ─── Session & Flash ──────────────────────────────────────────────────────────
 app.use(session({
-  store:  new FirestoreStore({ collection: "sessions" }),
   secret: process.env.SESSION_SECRET || "scoresync-secret-2026",
   resave: false,
   saveUninitialized: false,
-  rolling: true,
-  cookie: {
-    maxAge:   1000 * 60 * 60 * 8, // 8 hours
-    secure:   !!process.env.VERCEL,
-    sameSite: process.env.VERCEL ? "none" : "lax",
-    httpOnly: true,
-  },
+  cookie: { maxAge: 1000 * 60 * 60 * 8 }, // 8 hours
 }));
 app.use(flash());
 
