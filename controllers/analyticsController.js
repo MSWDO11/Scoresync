@@ -130,11 +130,11 @@ export const runAIAnalytics = async (req, res) => {
     const auditDataset = [];
     let totalRawScores = 0;
 
-    for (const event of targetEvents) {
+    for (const ev of targetEvents) {
       const [cSnap, crSnap, sSnap] = await Promise.all([
-        getDocs(collection(db, "events", event.id, "contestants")),
-        getDocs(collection(db, "events", event.id, "criteria")),
-        getDocs(collection(db, "events", event.id, "scores")),
+        getDocs(collection(db, "events", ev.id, "contestants")),
+        getDocs(collection(db, "events", ev.id, "criteria")),
+        getDocs(collection(db, "events", ev.id, "scores")),
       ]);
 
       const contestants = cSnap.docs.map(d => ({ id: d.id, ...d.data() }));
@@ -163,10 +163,10 @@ export const runAIAnalytics = async (req, res) => {
 
       // Compute peer stats and identify score deviations
       const eventAuditData = {
-        eventId: event.id,
-        eventName: event.name,
-        eventType: event.type || "Competition",
-        eventStatus: event.status || "upcoming",
+        eventId: ev.id,
+        eventName: ev.name,
+        eventType: ev.type || "Competition",
+        eventStatus: ev.status || "upcoming",
         contestantCount: contestants.length,
         judgeCount: new Set(scores.map(s => s.judgeId)).size,
         scoresList: []
