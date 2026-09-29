@@ -1,4 +1,4 @@
-import { db } from "../models/firebaseConfig.js";
+﻿import { db } from "../models/firebaseConfig.js";
 import { getFinanceSummary } from "./financeController.js";
 import {
   collection, addDoc, getDocs, getDoc, doc,
@@ -7,15 +7,16 @@ import {
 import { applyAutoStatus } from "../utils/autoStatus.js";
 
 const EVENTS = "events";
+const PAYMENT_TYPES = ['pageant','talent','cultural','choral','dance','culinary','booth','sports','academic','other'];
+const PRIZE_TYPES   = ['pageant','talent','choral','dance','culinary','academic'];
 
 // ─── List all events ──────────────────────────────────────────────────────────
 export const listEvents = async (req, res) => {
   try {
-    const q = query(collection(db, EVENTS), orderBy("createdAt", "desc"));
+    const q    = query(collection(db, EVENTS), orderBy("createdAt", "desc"));
     const snap = await getDocs(q);
     const events = snap.docs.map(d => ({ id: d.id, ...d.data() }));
 
-    // Auto-update status for all non-cancelled events based on date/time
     await Promise.all(
       events
         .filter(e => e.date && e.status !== 'cancelled')
@@ -23,7 +24,7 @@ export const listEvents = async (req, res) => {
     );
 
     res.render("events/index", {
-      title: "Events",
+      title:       "Events",
       events,
       userName:    req.session.userName,
       userRole:    req.session.userRole,
@@ -101,19 +102,13 @@ export const showEvent = async (req, res) => {
       req.flash("error_msg", "Event not found.");
       return res.redirect("/events");
     }
-    const event = { id: snap.id, ...snap.data() };
+    const ev = { id: snap.id, ...snap.data() };
 
-    // Flag whether this event type requires payment (controls Payment QR display)
-    const PAYMENT_TYPES = ['pageant','talent','cultural','choral','dance','culinary','booth','sports','academic','other'];
-    event.isPaymentType = PAYMENT_TYPES.includes(event.type);
-    // Flag whether this event type uses prizes/rules
-    const PRIZE_TYPES = ['pageant','talent','choral','dance','culinary','academic'];
-    event.isPrizeType = PRIZE_TYPES.includes(event.type);
-    // Flag for finance management (admin + organizer)
-    event.canManageFinance = ['admin','organizer'].includes(req.session.userRole);
+    ev.isPaymentType   = PAYMENT_TYPES.includes(ev.type);
+    ev.isPrizeType     = PRIZE_TYPES.includes(ev.type);
+    ev.canManageFinance = ['admin','organizer'].includes(req.session.userRole);
 
-    // ── Auto-status: update Firestore if date/time/endTime says status changed ──
-    await applyAutoStatus(req.params.id, event);
+    await applyAutoStatus(req.params.id, ev);
 
     const [cSnap, crSnap, finance] = await Promise.all([
       getDocs(collection(db, EVENTS, req.params.id, "contestants")),
@@ -124,8 +119,8 @@ export const showEvent = async (req, res) => {
     const criteria    = crSnap.docs.map(d => ({ id: d.id, ...d.data() }));
 
     res.render("events/show", {
-      title:       event.name,
-      event,
+      title:       ev.name,
+      event:       ev,
       contestants,
       criteria,
       finance,
@@ -150,19 +145,17 @@ export const editEventPage = async (req, res) => {
   try {
     const snap = await getDoc(doc(db, EVENTS, req.params.id));
     if (!snap.exists()) return res.redirect("/events");
-    const event = { id: snap.id, ...snap.data() };
-    const PAYMENT_TYPES = ['pageant','talent','cultural','choral','dance','culinary','booth','sports','academic','other'];
-    const PRIZE_TYPES   = ['pageant','talent','choral','dance','culinary','academic'];
+    const ev = { id: snap.id, ...snap.data() };
     res.render("events/edit", {
-      title:         `Edit — ${event.name}`,
-      event,
+      title:         `Edit — ${ev.name}`,
+      event:         ev,
       userName:      req.session.userName,
       userRole:      req.session.userRole,
       userInitial:   (req.session.userName || "U")[0].toUpperCase(),
       isAdmin:       req.session.userRole === "admin",
       isOrganizer:   req.session.userRole === "organizer",
-      isPaymentType: PAYMENT_TYPES.includes(event.type),
-      isPrizeType:   PRIZE_TYPES.includes(event.type),
+      isPaymentType: PAYMENT_TYPES.includes(ev.type),
+      isPrizeType:   PRIZE_TYPES.includes(ev.type),
     });
   } catch (err) {
     req.flash("error_msg", "Could not load event.");
@@ -215,10 +208,10 @@ export const deleteEvent = async (req, res) => {
   }
 };
 
-// ─── Update event status (Manual Start / End) ───────────────────────────────
+// ─── Update event status ──────────────────────────────────────────────────────
 export const updateEventStatus = async (req, res) => {
   const { status } = req.body;
-  const { id } = req.params;
+  const { id }     = req.params;
   try {
     if (!["upcoming", "ongoing", "completed", "cancelled"].includes(status)) {
       req.flash("error_msg", "Invalid status value.");
@@ -226,10 +219,10 @@ export const updateEventStatus = async (req, res) => {
     }
     await updateDoc(doc(db, EVENTS, id), { status });
     const statusLabels = {
-      ongoing: "started (Ongoing)",
+      ongoing:   "started (Ongoing)",
       completed: "manually ended (Completed)",
-      upcoming: "reset to Upcoming",
-      cancelled: "marked as Cancelled"
+      upcoming:  "reset to Upcoming",
+      cancelled: "marked as Cancelled",
     };
     req.flash("success_msg", `Event status updated to ${statusLabels[status] || status}.`);
     res.redirect(`/events/${id}`);
