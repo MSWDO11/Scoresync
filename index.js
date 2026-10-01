@@ -1,6 +1,6 @@
 import express from "express";
 import path from "path";
-import session from "express-session";
+import cookieSession from "cookie-session";
 import flash from "connect-flash";
 import router from "./routes/index.js";
 import fs from "fs";
@@ -22,13 +22,26 @@ app.use(express.urlencoded({ extended: true, limit: '5mb' }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.static(path.join(process.cwd(), "public")));
 
-// ─── Session & Flash ──────────────────────────────────────────────────────────
-app.use(session({
-  secret: process.env.SESSION_SECRET || "scoresync-secret-2026",
-  resave: false,
-  saveUninitialized: false,
-  cookie: { maxAge: 1000 * 60 * 60 * 8 }, // 8 hours
+// ─── Session (cookie-based — survives Vercel cold starts, no server store) ───
+app.use(cookieSession({
+  name:    "ss_sid",
+  keys:    [process.env.SESSION_SECRET || "scoresync-secret-2026",
+            "scoresync-fallback-key-9x7z"],
+  maxAge:  1000 * 60 * 60 * 8, // 8 hours
+  secure:  !!process.env.VERCEL,
+  sameSite: "lax",
+  httpOnly: true,
 }));
+
+// connect-flash shim: cookie-session doesn't have save()/regenerate() ─────────
+app.use((req, res, next) => {
+  if (req.session && !req.session.save) {
+    req.session.save       = (cb) => { if (cb) cb(); };
+    req.session.regenerate = (cb) => { if (cb) cb(); };
+    req.session.destroy    = (cb) => { req.session = null; if (cb) cb(); };
+  }
+  next();
+});
 app.use(flash());
 
 // ─── Flash + user data into all views ────────────────────────────────────────
