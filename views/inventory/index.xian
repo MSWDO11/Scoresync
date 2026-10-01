@@ -60,7 +60,7 @@
           </div>
           <span class="badge badge-green text-[10px]">+{{items.length}} entries</span>
         </div>
-        <div class="text-3xl font-black text-slate-900 tracking-tight">â‚±{{totalValue}}</div>
+        <div class="text-3xl font-black" style="color:#e2e8f0">₱{{totalValue}}</div>
         <div class="mt-3 h-10" id="sparkline-income"></div>
       </div>
     </div>
