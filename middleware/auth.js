@@ -29,7 +29,7 @@ export const injectUser = (req, res, next) => {
   res.locals.userName      = req.session.userName  || "";
   res.locals.userRole      = req.session.userRole  || "";
   res.locals.userInitial   = (req.session.userName || "U")[0].toUpperCase();
-  res.locals.userAvatar    = req.session.userAvatar || "";
+  res.locals.userAvatar    = ""; // loaded per-page from Firestore where needed
   res.locals.isAdmin       = req.session.userRole === "admin";
   res.locals.isJudge       = req.session.userRole === "judge";
   res.locals.isEncoder     = req.session.userRole === "encoder";

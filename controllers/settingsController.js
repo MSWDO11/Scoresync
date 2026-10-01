@@ -98,7 +98,7 @@ export const updateSettings = async (req, res) => {
       // Save avatar (base64) to Firestore if provided and valid
       if (avatar && typeof avatar === 'string' && avatar.startsWith('data:image')) {
         updates.avatar = avatar;
-        req.session.userAvatar = avatar;
+        // Do NOT store avatar in session — cookie-session has 4KB limit
       }
       if (Object.keys(updates).length > 0) {
         await updateDoc(doc(db, "users", req.session.userId), updates);

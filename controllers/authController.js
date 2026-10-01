@@ -141,7 +141,7 @@ export const loginUser = async (req, res) => {
     req.session.userId    = uid;
     req.session.userName  = profile.name   || email;
     req.session.userRole  = profile.role   || "encoder";
-    req.session.userAvatar = profile.avatar || "";
+    // Note: avatar NOT stored in session (too large for cookie) — loaded from Firestore per request
 
     console.log(`✅ Login: ${email} as ${req.session.userRole}`);
     res.redirect("/dashboard");
