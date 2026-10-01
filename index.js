@@ -1,7 +1,6 @@
 import express from "express";
 import path from "path";
 import cookieSession from "cookie-session";
-import flash from "connect-flash";
 import router from "./routes/index.js";
 import fs from "fs";
 import hbs from "hbs";
@@ -33,21 +32,26 @@ app.use(cookieSession({
   httpOnly: true,
 }));
 
-// connect-flash shim: cookie-session doesn't have save()/regenerate() ─────────
+// ─── Custom flash (replaces connect-flash — works natively with cookie-session)
 app.use((req, res, next) => {
-  if (req.session && !req.session.save) {
-    req.session.save       = (cb) => { if (cb) cb(); };
-    req.session.regenerate = (cb) => { if (cb) cb(); };
-    req.session.destroy    = (cb) => { req.session = null; if (cb) cb(); };
-  }
-  next();
-});
-app.use(flash());
+  // Read and clear flash from session
+  const msgs = req.session._flash || {};
+  req.session._flash = {};
 
-// ─── Flash + user data into all views ────────────────────────────────────────
-app.use((req, res, next) => {
-  res.locals.success_msg = req.flash("success_msg")[0] || "";
-  res.locals.error_msg   = req.flash("error_msg")[0]   || "";
+  req.flash = (type, msg) => {
+    if (type && msg) {
+      // Write flash
+      if (!req.session._flash) req.session._flash = {};
+      if (!req.session._flash[type]) req.session._flash[type] = [];
+      req.session._flash[type].push(msg);
+    } else if (type) {
+      // Read flash for this type
+      return msgs[type] || [];
+    }
+  };
+
+  res.locals.success_msg = (msgs.success_msg || [])[0] || "";
+  res.locals.error_msg   = (msgs.error_msg   || [])[0] || "";
   next();
 });
 app.use(injectUser);
