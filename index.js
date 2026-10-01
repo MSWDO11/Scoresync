@@ -23,13 +23,14 @@ app.use(express.static(path.join(process.cwd(), "public")));
 
 // ─── Session (cookie-based — survives Vercel cold starts, no server store) ───
 app.use(cookieSession({
-  name:    "ss_sid",
-  keys:    [process.env.SESSION_SECRET || "scoresync-secret-2026",
-            "scoresync-fallback-key-9x7z"],
-  maxAge:  1000 * 60 * 60 * 8, // 8 hours
-  secure:  !!process.env.VERCEL,
+  name:     "ss_sid",
+  keys:     [process.env.SESSION_SECRET || "scoresync-secret-2026",
+             "scoresync-fallback-key-9x7z"],
+  maxAge:   1000 * 60 * 60 * 8, // 8 hours
+  secure:   false,
   sameSite: "lax",
   httpOnly: true,
+  overwrite: true,
 }));
 
 // ─── Custom flash (replaces connect-flash — works natively with cookie-session)
