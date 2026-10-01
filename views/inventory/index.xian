@@ -8,7 +8,7 @@
   {{#if success_msg}}<div class="alert-success animate-fadeup"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="flex-shrink-0"><polyline points="20 6 9 17 4 12"/></svg>{{success_msg}}</div>{{/if}}
   {{#if error_msg}}<div class="alert-error animate-fadeup"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="flex-shrink-0"><circle cx="12" cy="12" r="10"/></svg>{{error_msg}}</div>{{/if}}
 
-  <!-- â”€â”€ Page Header â”€â”€ -->
+  <!-- —— Page Header —— -->
   <div class="flex items-center justify-between animate-fadeup">
     <div class="page-header mb-0">
       <div class="breadcrumb"><a href="/dashboard">Dashboard</a></div>
@@ -44,7 +44,7 @@
     </div>
   </div>
 
-  <!-- â”€â”€ KPI Cards Row â”€â”€ -->
+  <!-- —— KPI Cards Row —— -->
   <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 animate-fadeup-1">
 
     <!-- Total Income -->
@@ -96,14 +96,14 @@
           </div>
           <span class="badge badge-purple text-[10px]">average</span>
         </div>
-        <div class="text-3xl font-black text-slate-900 tracking-tight" id="kpi-avg">â‚±0.00</div>
+        <div class="text-3xl font-black text-slate-900 tracking-tight" id="kpi-avg">₱0.00</div>
         <div class="mt-3 h-10" id="sparkline-avg"></div>
       </div>
     </div>
 
   </div>
 
-  <!-- â”€â”€ Main Content: Chart + Type Breakdown | Recent Records â”€â”€ -->
+  <!-- —— Main Content: Chart + Type Breakdown | Recent Records —— -->
   <div class="grid lg:grid-cols-3 gap-5 animate-fadeup-1">
 
     <!-- LEFT 2/3: Bar Chart + Records Table -->
@@ -116,7 +116,7 @@
             <h2 class="font-extrabold text-base" style="color:#e2e8f0">Income by Record</h2>
             <p class="text-xs mt-0.5" style="color:#64748b">All ticket sales entries — bar height = total income</p>
           </div>
-          <span class="badge badge-green text-xs" id="chart-total-badge">â‚±{{totalValue}} total</span>
+          <span class="badge badge-green text-xs" id="chart-total-badge">₱{{totalValue}} total</span>
         </div>
         <div style="height:200px;position:relative">
           <canvas id="income-bar-chart"></canvas>
@@ -156,13 +156,13 @@
                 <div class="font-semibold text-sm" style="color:#e2e8f0">{{ticketType}}</div>
                 <div class="text-xs mt-0.5" style="color:#64748b">
                   {{#unless ../filterEventId}}{{eventName}} &bull; {{/unless}}
-                  {{quantity}} Ã— â‚±{{unitPrice}}
+                  {{quantity}} Ã— ₱{{unitPrice}}
                   {{#if notes}} &bull; {{notes}}{{/if}}
                 </div>
               </div>
             </div>
             <div class="flex items-center gap-3 flex-shrink-0">
-              <span class="font-extrabold text-emerald-400 text-sm">+â‚±{{totalValue}}</span>
+              <span class="font-extrabold text-emerald-400 text-sm">+₱{{totalValue}}</span>
               {{#if ../isAdmin}}
               <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition">
                 <button type="button"
@@ -185,7 +185,7 @@
         <!-- Footer total -->
         <div class="px-5 py-3 flex items-center justify-between" style="border-top:1px solid rgba(255,255,255,0.07);background:rgba(16,185,129,0.05)">
           <span class="text-xs font-extrabold uppercase tracking-wide" style="color:#64748b">Total Â· {{totalItems}} tickets</span>
-          <span class="font-black text-emerald-400 text-base">â‚±{{totalValue}}</span>
+          <span class="font-black text-emerald-400 text-base">₱{{totalValue}}</span>
         </div>
 
         {{else}}
@@ -217,7 +217,7 @@
           <canvas id="income-donut"></canvas>
           <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
             <div class="text-xs font-bold text-slate-400">Total</div>
-            <div class="text-xl font-black" style="color:#e2e8f0" id="donut-center">â‚±{{totalValue}}</div>
+            <div class="text-xl font-black" style="color:#e2e8f0" id="donut-center">₱{{totalValue}}</div>
           </div>
         </div>
         <div id="donut-legend" class="space-y-2 mt-4"></div>
@@ -239,14 +239,14 @@
           <div class="px-5 py-3.5 flex items-center justify-between">
             <div class="flex items-center gap-3">
               <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0 grad-green shadow-sm">
-                {{#if photo}}<img src="{{photo}}" class="w-full h-full rounded-full object-cover"/>{{else}}â‚±{{/if}}
+                {{#if photo}}<img src="{{photo}}" class="w-full h-full rounded-full object-cover"/>{{else}}₱{{/if}}
               </div>
               <div>
                 <div class="font-semibold text-sm" style="color:#e2e8f0">{{ticketType}}</div>
                 <div class="text-slate-400 text-xs">just now</div>
               </div>
             </div>
-            <span class="font-extrabold text-emerald-600 text-sm">+â‚±{{totalValue}}</span>
+            <span class="font-extrabold text-emerald-600 text-sm">+₱{{totalValue}}</span>
           </div>
           {{/if}}
           {{#unless @first}}
@@ -263,7 +263,7 @@
                 <div class="text-xs" style="color:#64748b">{{#unless ../filterEventId}}{{eventName}}{{/unless}}</div>
               </div>
             </div>
-            <span class="font-extrabold text-emerald-400 text-sm">+â‚±{{totalValue}}</span>
+            <span class="font-extrabold text-emerald-400 text-sm">+₱{{totalValue}}</span>
           </div>
           {{/if}}
           {{/if}}
@@ -330,14 +330,14 @@
           <input type="number" name="quantity" value="1" min="0" class="form-input-bare" oninput="calcPreview()"/>
         </div>
         <div>
-          <label class="block text-xs font-semibold uppercase tracking-wide mb-1.5" style="color:#64748b">Unit Price (â‚±)</label>
+          <label class="block text-xs font-semibold uppercase tracking-wide mb-1.5" style="color:#64748b">Unit Price (₱)</label>
           <input type="number" name="unitPrice" placeholder="0.00" min="0" step="0.01" id="add-unit-price" oninput="calcPreview()" class="form-input-bare"/>
         </div>
       </div>
       <!-- Live total -->
       <div class="flex items-center justify-between px-4 py-3 rounded-xl" style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2)">
         <span class="text-xs font-semibold" style="color:#6ee7b7">Estimated Total</span>
-        <span id="add-total-preview" class="font-extrabold text-base" style="color:#6ee7b7">â‚±0.00</span>
+        <span id="add-total-preview" class="font-extrabold text-base" style="color:#6ee7b7">₱0.00</span>
       </div>
       <div>
         <label class="block text-xs font-semibold uppercase tracking-wide mb-1.5" style="color:#64748b">Attachment <span class="font-normal text-[10px] normal-case" style="color:#374151">optional</span></label>
@@ -396,7 +396,7 @@
           <input type="number" name="quantity" id="edit-quantity" min="0" class="form-input-bare"/>
         </div>
         <div>
-          <label class="block text-xs font-semibold uppercase tracking-wide mb-1.5" style="color:#64748b">Unit Price (â‚±)</label>
+          <label class="block text-xs font-semibold uppercase tracking-wide mb-1.5" style="color:#64748b">Unit Price (₱)</label>
           <input type="number" name="unitPrice" id="edit-unitPrice" min="0" step="0.01" class="form-input-bare"/>
         </div>
       </div>
@@ -435,7 +435,7 @@
 <!-- Chart.js CDN -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
-/* â”€â”€ Build chart data from server items â”€â”€ */
+/* —— Build chart data from server items —— */
 const ITEMS = [
   {{#each items}}
   { label: "{{ticketType}}", total: {{totalValue}}, qty: {{quantity}}, price: {{unitPrice}} },
@@ -445,17 +445,17 @@ const ITEMS = [
 const TOTAL_VALUE = {{#if totalValue}}{{totalValue}}{{else}}0{{/if}};
 const TOTAL_QTY   = {{#if totalItems}}{{totalItems}}{{else}}0{{/if}};
 
-/* â”€â”€ KPI avg â”€â”€ */
+/* —— KPI avg —— */
 const avgEl = document.getElementById('kpi-avg');
 if (avgEl) {
   const avg = TOTAL_QTY > 0 ? (TOTAL_VALUE / TOTAL_QTY) : 0;
-  avgEl.textContent = 'â‚±' + avg.toLocaleString('en-PH', {minimumFractionDigits:2, maximumFractionDigits:2});
+  avgEl.textContent = '₱' + avg.toLocaleString('en-PH', {minimumFractionDigits:2, maximumFractionDigits:2});
 }
 
-/* â”€â”€ Colour palette â”€â”€ */
+/* —— Colour palette —— */
 const COLORS = ['#10b981','#f59e0b','#6366f1','#ef4444','#3b82f6','#8b5cf6','#ec4899','#14b8a6'];
 
-/* â”€â”€ Bar chart â”€â”€ */
+/* —— Bar chart —— */
 const barCtx = document.getElementById('income-bar-chart');
 if (barCtx && ITEMS.length) {
   new Chart(barCtx, {
@@ -474,13 +474,13 @@ if (barCtx && ITEMS.length) {
     options: {
       responsive: true, maintainAspectRatio: false,
       plugins: { legend: { display: false }, tooltip: {
-        callbacks: { label: ctx => ' â‚±' + ctx.parsed.y.toLocaleString('en-PH', {minimumFractionDigits:2}) }
+        callbacks: { label: ctx => ' ₱' + ctx.parsed.y.toLocaleString('en-PH', {minimumFractionDigits:2}) }
       }},
       scales: {
         x: { grid: { display: false }, ticks: { font: { size: 11, weight: '600' }, color: '#94a3b8' } },
         y: { grid: { color: '#f1f5f9' }, ticks: {
           font: { size: 11 }, color: '#94a3b8',
-          callback: v => 'â‚±' + (v >= 1000 ? (v/1000).toFixed(0)+'K' : v)
+          callback: v => '₱' + (v >= 1000 ? (v/1000).toFixed(0)+'K' : v)
         }},
       },
     },
@@ -489,7 +489,7 @@ if (barCtx && ITEMS.length) {
   barCtx.parentElement.innerHTML = '<div class="flex items-center justify-center h-full text-slate-300 text-sm font-semibold">No data yet</div>';
 }
 
-/* â”€â”€ Donut chart â”€â”€ */
+/* —— Donut chart —— */
 const donutCtx = document.getElementById('income-donut');
 if (donutCtx && ITEMS.length) {
   // Group by label
@@ -509,7 +509,7 @@ if (donutCtx && ITEMS.length) {
       cutout: '70%',
       plugins: {
         legend: { display: false },
-        tooltip: { callbacks: { label: ctx => ' â‚±' + ctx.parsed.toLocaleString('en-PH', {minimumFractionDigits:2}) } }
+        tooltip: { callbacks: { label: ctx => ' ₱' + ctx.parsed.toLocaleString('en-PH', {minimumFractionDigits:2}) } }
       },
     },
   });
@@ -526,7 +526,7 @@ if (donutCtx && ITEMS.length) {
             <span class="font-semibold truncate max-w-[110px]" style="color:#94a3b8">${lbl}</span>
           </div>
           <div class="flex items-center gap-2">
-            <span class="font-bold" style="color:#e2e8f0">â‚±${values[i].toLocaleString('en-PH',{minimumFractionDigits:2})}</span>
+            <span class="font-bold" style="color:#e2e8f0">₱${values[i].toLocaleString('en-PH',{minimumFractionDigits:2})}</span>
             <span class="text-slate-400">${pct}%</span>
           </div>
         </div>`;
@@ -536,7 +536,7 @@ if (donutCtx && ITEMS.length) {
   donutCtx.parentElement.innerHTML = '<div class="flex items-center justify-center h-full text-slate-300 text-sm font-semibold">No data</div>';
 }
 
-/* â”€â”€ Sparklines (mini bar) â”€â”€ */
+/* —— Sparklines (mini bar) —— */
 ['sparkline-income','sparkline-tickets','sparkline-avg'].forEach((id,si) => {
   const el = document.getElementById(id);
   if (!el || !ITEMS.length) return;
@@ -551,7 +551,7 @@ if (donutCtx && ITEMS.length) {
   </svg>`;
 });
 
-/* â”€â”€ Modals â”€â”€ */
+/* —— Modals —— */
 function openAddModal()  { document.getElementById('add-modal').classList.remove('hidden'); }
 function closeAddModal() { document.getElementById('add-modal').classList.add('hidden'); }
 document.getElementById('add-modal').addEventListener('click', e => { if(e.target===document.getElementById('add-modal')) closeAddModal(); });
@@ -577,7 +577,7 @@ function calcPreview() {
   const qty   = parseFloat(document.querySelector('[name=quantity]')?.value || 0);
   const price = parseFloat(document.getElementById('add-unit-price')?.value || 0);
   const el    = document.getElementById('add-total-preview');
-  if (el) el.textContent = 'â‚±' + (qty*price).toLocaleString('en-PH',{minimumFractionDigits:2});
+  if (el) el.textContent = '₱' + (qty*price).toLocaleString('en-PH',{minimumFractionDigits:2});
 }
 document.querySelector('[name=quantity]')?.addEventListener('input', calcPreview);
 
