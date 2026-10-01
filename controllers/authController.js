@@ -206,7 +206,9 @@ export const forgotPassword = async (req, res) => {
 
 export const logoutUser = async (req, res) => {
   try { await signOut(auth); } catch (_) {}
-  req.session.destroy(() => res.redirect("/login"));
+  // cookie-session: clear by setting session to null
+  req.session = null;
+  res.redirect("/login");
 };
 
 // ─── Helper ───────────────────────────────────────────────────────────────────
