@@ -19,7 +19,7 @@
       <!-- Event filter -->
       <form method="GET" action="/inventory">
         <select name="eventId" onchange="this.form.submit()" class="form-input-bare text-sm" style="min-width:180px">
-          <option value="">â€” All Events â€”</option>
+          <option value="">— All Events —</option>
           {{#each events}}
           <option value="{{id}}" {{#if (eq id ../filterEventId)}}selected{{/if}}>{{name}}</option>
           {{/each}}
@@ -114,7 +114,7 @@
         <div class="flex items-center justify-between mb-4">
           <div>
             <h2 class="font-extrabold text-base" style="color:#e2e8f0">Income by Record</h2>
-            <p class="text-xs mt-0.5" style="color:#64748b">All ticket sales entries â€” bar height = total income</p>
+            <p class="text-xs mt-0.5" style="color:#64748b">All ticket sales entries — bar height = total income</p>
           </div>
           <span class="badge badge-green text-xs" id="chart-total-badge">â‚±{{totalValue}} total</span>
         </div>
@@ -128,7 +128,7 @@
         <div class="section-header">
           <h2>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v2z"/></svg>
-            {{#if selectedEvent}}{{selectedEvent.name}} â€” Records{{else}}All Records{{/if}}
+            {{#if selectedEvent}}{{selectedEvent.name}} — Records{{else}}All Records{{/if}}
             <span class="ml-2 badge badge-green text-[10px]">{{items.length}}</span>
           </h2>
           {{#if isAdmin}}
@@ -303,7 +303,7 @@
       <div>
         <label class="block text-xs font-semibold uppercase tracking-wide mb-1.5" style="color:#64748b">Event <span class="text-red-500">*</span></label>
         <select name="eventId" required class="form-input-bare">
-          <option value="">Select an eventâ€¦</option>
+          <option value="">Select an event…</option>
           {{#each events}}
           <option value="{{id}}" {{#if (eq id ../filterEventId)}}selected{{/if}}>{{name}}</option>
           {{/each}}
@@ -311,7 +311,7 @@
       </div>
       <div>
         <label class="block text-xs font-semibold uppercase tracking-wide mb-1.5" style="color:#64748b">Ticket / Income Type <span class="text-red-500">*</span></label>
-        <input type="text" name="ticketType" placeholder="e.g. General Admission, VIP, Sponsor Feeâ€¦" required class="form-input-bare"/>
+        <input type="text" name="ticketType" placeholder="e.g. General Admission, VIP, Sponsor Fee…" required class="form-input-bare"/>
       </div>
       <!-- Quick presets -->
       <div class="flex flex-wrap gap-1.5">
@@ -360,7 +360,7 @@
       </div>
       <div>
         <label class="block text-xs font-semibold uppercase tracking-wide mb-1.5" style="color:#64748b">Notes</label>
-        <textarea name="notes" rows="2" placeholder="e.g. Sold at gate, online pre-saleâ€¦" class="form-input-bare resize-none"></textarea>
+        <textarea name="notes" rows="2" placeholder="e.g. Sold at gate, online pre-sale…" class="form-input-bare resize-none"></textarea>
       </div>
       <div class="flex gap-3 pt-1">
         <button type="submit" class="btn-primary flex-1 py-2.5 text-sm justify-center"
@@ -461,7 +461,7 @@ if (barCtx && ITEMS.length) {
   new Chart(barCtx, {
     type: 'bar',
     data: {
-      labels: ITEMS.map(i => i.label.length > 16 ? i.label.slice(0,14)+'â€¦' : i.label),
+      labels: ITEMS.map(i => i.label.length > 16 ? i.label.slice(0,14)+'…' : i.label),
       datasets: [{
         data:            ITEMS.map(i => i.total),
         backgroundColor: ITEMS.map((_, idx) => COLORS[idx % COLORS.length] + '33'),
