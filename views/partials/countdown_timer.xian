@@ -99,40 +99,20 @@
       <div class="relative flex items-center gap-1.5 sm:gap-2 z-10">
 
         <!-- Minutes tens -->
-        <div class="digit-cell" id="dc-m1">
-          <div class="digit-inner" id="di-m1">
-            <div class="digit-top"><span>0</span></div>
-            <div class="digit-bottom"><span>0</span></div>
-          </div>
-        </div>
+        <div class="digit-cell" id="dc-m1"><span class="digit-val" id="dv-m1">0</span></div>
         <!-- Minutes ones -->
-        <div class="digit-cell" id="dc-m2">
-          <div class="digit-inner" id="di-m2">
-            <div class="digit-top"><span>1</span></div>
-            <div class="digit-bottom"><span>1</span></div>
-          </div>
-        </div>
+        <div class="digit-cell" id="dc-m2"><span class="digit-val" id="dv-m2">1</span></div>
 
         <!-- Colon -->
-        <div class="flex flex-col items-center gap-1.5 sm:gap-2 mx-1 sm:mx-2 self-center" style="margin-top:-4px">
+        <div class="flex flex-col items-center gap-1.5 sm:gap-2 mx-1 sm:mx-2 self-center" style="margin-top:0">
           <div id="colon-dot1" class="rounded-full transition-opacity duration-500" style="width:clamp(5px,1.2vw,8px);height:clamp(5px,1.2vw,8px);background:#6366f1;box-shadow:0 0 8px rgba(99,102,241,0.8)"></div>
           <div id="colon-dot2" class="rounded-full transition-opacity duration-500" style="width:clamp(5px,1.2vw,8px);height:clamp(5px,1.2vw,8px);background:#6366f1;box-shadow:0 0 8px rgba(99,102,241,0.8)"></div>
         </div>
 
         <!-- Seconds tens -->
-        <div class="digit-cell" id="dc-s1">
-          <div class="digit-inner" id="di-s1">
-            <div class="digit-top"><span>0</span></div>
-            <div class="digit-bottom"><span>0</span></div>
-          </div>
-        </div>
+        <div class="digit-cell" id="dc-s1"><span class="digit-val" id="dv-s1">0</span></div>
         <!-- Seconds ones -->
-        <div class="digit-cell" id="dc-s2">
-          <div class="digit-inner" id="di-s2">
-            <div class="digit-top"><span>0</span></div>
-            <div class="digit-bottom"><span>0</span></div>
-          </div>
-        </div>
+        <div class="digit-cell" id="dc-s2"><span class="digit-val" id="dv-s2">0</span></div>
 
       </div>
     </div>
@@ -238,14 +218,14 @@
 
     <!-- MASSIVE digital digits fullscreen -->
     <div class="flex items-center justify-center gap-2 sm:gap-4 md:gap-6">
-      <div class="digit-cell-fs" id="dc-fs-m1"><div class="digit-inner-fs" id="di-fs-m1"><div class="digit-top-fs"><span>0</span></div><div class="digit-bottom-fs"><span>0</span></div></div></div>
-      <div class="digit-cell-fs" id="dc-fs-m2"><div class="digit-inner-fs" id="di-fs-m2"><div class="digit-top-fs"><span>1</span></div><div class="digit-bottom-fs"><span>1</span></div></div></div>
-      <div class="flex flex-col items-center gap-2 sm:gap-3 md:gap-4 mx-1 sm:mx-2 md:mx-3" style="margin-top:-8px">
+      <div class="digit-cell-fs" id="dc-fs-m1"><span class="digit-val-fs" id="dv-fs-m1">0</span></div>
+      <div class="digit-cell-fs" id="dc-fs-m2"><span class="digit-val-fs" id="dv-fs-m2">1</span></div>
+      <div class="flex flex-col items-center gap-2 sm:gap-3 md:gap-4 mx-1 sm:mx-2 md:mx-3">
         <div id="colon-fs1" class="rounded-full transition-opacity duration-500" style="width:clamp(8px,2vw,16px);height:clamp(8px,2vw,16px);background:#6366f1;box-shadow:0 0 20px rgba(99,102,241,0.9)"></div>
         <div id="colon-fs2" class="rounded-full transition-opacity duration-500" style="width:clamp(8px,2vw,16px);height:clamp(8px,2vw,16px);background:#6366f1;box-shadow:0 0 20px rgba(99,102,241,0.9)"></div>
       </div>
-      <div class="digit-cell-fs" id="dc-fs-s1"><div class="digit-inner-fs" id="di-fs-s1"><div class="digit-top-fs"><span>0</span></div><div class="digit-bottom-fs"><span>0</span></div></div></div>
-      <div class="digit-cell-fs" id="dc-fs-s2"><div class="digit-inner-fs" id="di-fs-s2"><div class="digit-top-fs"><span>0</span></div><div class="digit-bottom-fs"><span>0</span></div></div></div>
+      <div class="digit-cell-fs" id="dc-fs-s1"><span class="digit-val-fs" id="dv-fs-s1">0</span></div>
+      <div class="digit-cell-fs" id="dc-fs-s2"><span class="digit-val-fs" id="dv-fs-s2">0</span></div>
     </div>
 
     <div id="st-fs-status" class="text-xs sm:text-base md:text-xl font-bold tracking-widest uppercase mt-5 sm:mt-8" style="color:#374151">
@@ -278,110 +258,100 @@
 </div>
 
 <style>
-/* ── Flip-card digit cells ── */
+/* ── Single-box digit cells ── */
 .digit-cell {
-  position:relative;
-  width:clamp(44px,8vw,72px);
-  height:clamp(64px,12vw,108px);
-  perspective:400px;
+  width: clamp(44px,8vw,72px);
+  height: clamp(64px,12vw,108px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: linear-gradient(180deg,#0d1220 0%,#0a0f1e 100%);
+  border: 1px solid rgba(99,102,241,0.22);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.04);
+  position: relative;
+  overflow: hidden;
 }
-.digit-inner {
-  position:relative;
-  width:100%;
-  height:100%;
-  border-radius:10px;
-  overflow:hidden;
-  background:#0a0f1e;
-  border:1px solid rgba(99,102,241,0.2);
-  box-shadow:0 4px 20px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.04);
+/* horizontal divider line in center */
+.digit-cell::after {
+  content: '';
+  position: absolute;
+  left: 8%; right: 8%;
+  top: calc(50% - 0.5px);
+  height: 1px;
+  background: rgba(0,0,0,0.5);
+  z-index: 2;
 }
-.digit-top, .digit-bottom {
-  position:absolute; left:0; right:0;
-  height:50%; overflow:hidden;
-  display:flex; align-items:center; justify-content:center;
+.digit-val {
+  font-family: 'SF Mono','Roboto Mono','Courier New',monospace;
+  font-size: clamp(2rem,6vw,4.5rem);
+  font-weight: 900;
+  line-height: 1;
+  color: #e2e8f0;
+  text-shadow: 0 0 20px rgba(99,102,241,0.7), 0 0 40px rgba(99,102,241,0.3);
+  letter-spacing: -2px;
+  user-select: none;
+  display: block;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+  position: relative;
+  z-index: 3;
 }
-.digit-top { top:0; background:linear-gradient(180deg,#0d1220 0%,#0a0f1e 100%); border-bottom:1px solid rgba(0,0,0,0.4); align-items:flex-end; padding-bottom:2px; }
-.digit-bottom { bottom:0; background:linear-gradient(180deg,#090e1c 0%,#0c1220 100%); align-items:flex-start; padding-top:2px; }
-.digit-top span, .digit-bottom span {
-  font-family:'SF Mono','Roboto Mono','Courier New',monospace;
-  font-size:clamp(2rem,6vw,4.5rem);
-  font-weight:900;
-  line-height:1;
-  color:#e2e8f0;
-  text-shadow:0 0 20px rgba(99,102,241,0.6),0 0 40px rgba(99,102,241,0.3);
-  letter-spacing:-2px;
-  user-select:none;
+.digit-val.flipping {
+  animation: digitFlip 0.25s ease;
 }
-/* Center line divider */
-.digit-inner::after {
-  content:'';
-  position:absolute;
-  left:4%; right:4%;
-  top:calc(50% - 0.5px);
-  height:1px;
-  background:rgba(0,0,0,0.6);
-  z-index:10;
-}
-
-/* Flip animation */
-.digit-flip-top {
-  animation: flipTop 0.3s ease-in forwards;
-}
-.digit-flip-bottom {
-  animation: flipBottom 0.3s ease-out forwards;
-  animation-delay: 0.15s;
-}
-@keyframes flipTop {
-  0%   { transform:rotateX(0deg);   }
-  100% { transform:rotateX(-90deg); }
-}
-@keyframes flipBottom {
-  0%   { transform:rotateX(90deg);  }
-  100% { transform:rotateX(0deg);   }
+@keyframes digitFlip {
+  0%   { transform: scaleY(1);    opacity: 1; }
+  40%  { transform: scaleY(0.05); opacity: 0.3; }
+  60%  { transform: scaleY(0.05); opacity: 0.3; }
+  100% { transform: scaleY(1);    opacity: 1; }
 }
 
 /* Fullscreen digit cells */
 .digit-cell-fs {
-  position:relative;
-  width:clamp(60px,15vw,180px);
-  height:clamp(90px,22vw,260px);
-  perspective:600px;
+  width: clamp(60px,15vw,180px);
+  height: clamp(90px,22vw,260px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 18px;
+  background: linear-gradient(180deg,#080c18,#0a0e1c);
+  border: 1px solid rgba(99,102,241,0.28);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.03), 0 0 60px rgba(99,102,241,0.08);
+  position: relative;
+  overflow: hidden;
 }
-.digit-inner-fs {
-  position:relative; width:100%; height:100%;
-  border-radius:16px; overflow:hidden;
-  background:#080c18;
-  border:1px solid rgba(99,102,241,0.25);
-  box-shadow:0 8px 40px rgba(0,0,0,0.7),inset 0 1px 0 rgba(255,255,255,0.03),0 0 60px rgba(99,102,241,0.1);
+.digit-cell-fs::after {
+  content: '';
+  position: absolute;
+  left: 8%; right: 8%;
+  top: calc(50% - 0.5px);
+  height: 1px;
+  background: rgba(0,0,0,0.6);
+  z-index: 2;
 }
-.digit-top-fs, .digit-bottom-fs {
-  position:absolute; left:0; right:0; height:50%; overflow:hidden;
-  display:flex; align-items:center; justify-content:center;
+.digit-val-fs {
+  font-family: 'SF Mono','Roboto Mono','Courier New',monospace;
+  font-size: clamp(3.5rem,12vw,11rem);
+  font-weight: 900;
+  line-height: 1;
+  color: #fff;
+  text-shadow: 0 0 40px rgba(99,102,241,0.9), 0 0 80px rgba(99,102,241,0.5), 0 0 120px rgba(99,102,241,0.2);
+  letter-spacing: -4px;
+  user-select: none;
+  display: block;
+  position: relative;
+  z-index: 3;
 }
-.digit-top-fs    { top:0;    background:linear-gradient(180deg,#0c1020,#090d1a); border-bottom:1px solid rgba(0,0,0,0.5); align-items:flex-end; padding-bottom:2px; }
-.digit-bottom-fs { bottom:0; background:linear-gradient(180deg,#080c18,#0c1020); align-items:flex-start; padding-top:2px; }
-.digit-top-fs span, .digit-bottom-fs span {
-  font-family:'SF Mono','Roboto Mono','Courier New',monospace;
-  font-size:clamp(3.5rem,12vw,11rem);
-  font-weight:900;
-  line-height:1;
-  color:#fff;
-  text-shadow:0 0 40px rgba(99,102,241,0.8),0 0 80px rgba(99,102,241,0.4),0 0 120px rgba(99,102,241,0.2);
-  letter-spacing:-4px;
-  user-select:none;
-}
-.digit-inner-fs::after {
-  content:''; position:absolute; left:4%; right:4%;
-  top:calc(50% - 0.5px); height:1px;
-  background:rgba(0,0,0,0.7); z-index:10;
+.digit-val-fs.flipping {
+  animation: digitFlip 0.3s ease;
 }
 
-/* Shimmer animation */
+/* Warning / overtime color overrides */
+.digit-warn .digit-val, .digit-warn .digit-val-fs { text-shadow: 0 0 20px rgba(245,158,11,0.9),0 0 40px rgba(245,158,11,0.5); color:#fbbf24; }
+.digit-over .digit-val, .digit-over .digit-val-fs { text-shadow: 0 0 20px rgba(239,68,68,0.9), 0 0 40px rgba(239,68,68,0.5); color:#f87171; }
+
+/* Shimmer animation on progress bar */
 @keyframes shimmer { 0%{transform:translateX(-100%)} 100%{transform:translateX(100%)} }
-
-/* Warning state */
-.digit-warn .digit-top span, .digit-warn .digit-bottom span { text-shadow:0 0 20px rgba(245,158,11,0.8),0 0 40px rgba(245,158,11,0.4); color:#fbbf24; }
-.digit-over .digit-top span, .digit-over .digit-bottom span { text-shadow:0 0 20px rgba(239,68,68,0.8),0 0 40px rgba(239,68,68,0.4); color:#f87171; }
 </style>
 
 <script>
@@ -422,47 +392,37 @@ window.ScoreSyncTimer = (function () {
   }
 
   // ── Flip digit animation ──
-  function flipDigit(cellId, newChar, isFs) {
-    const suffix = isFs ? '-fs-' : '-';
-    const topEl  = document.querySelector(`#di${suffix}${cellId} .digit-top${isFs?'-fs':''} span`);
-    const botEl  = document.querySelector(`#di${suffix}${cellId} .digit-bottom${isFs?'-fs':''} span`);
-    const inner  = document.getElementById(`di${suffix}${cellId}`);
-    if (!topEl || !botEl) return;
-    const old = topEl.textContent;
-    if (old === newChar) return;
-
-    // Animate top flipping away
-    inner.classList.add('digit-flip-top');
-    setTimeout(()=>{
-      topEl.textContent = newChar;
-      botEl.textContent = newChar;
-      inner.classList.remove('digit-flip-top');
-      inner.classList.add('digit-flip-bottom');
-      setTimeout(()=>inner.classList.remove('digit-flip-bottom'), 300);
-    }, 150);
+  function flipDigit(valId, newChar) {
+    const el = document.getElementById(valId);
+    if (!el || el.textContent === newChar) return;
+    el.classList.remove('flipping');
+    // Force reflow
+    void el.offsetWidth;
+    el.textContent = newChar;
+    el.classList.add('flipping');
+    el.addEventListener('animationend', () => el.classList.remove('flipping'), { once: true });
   }
 
   function setDigits(secs, isFs) {
     const a  = Math.abs(secs);
     const mm = String(Math.floor(a/60)).padStart(2,'0');
     const ss = String(a%60).padStart(2,'0');
-    const d  = { m1:mm[0], m2:mm[1], s1:ss[0], s2:ss[1] };
-    const key = isFs ? 'fs' : 'sm';
+    const prefix = isFs ? 'dv-fs-' : 'dv-';
 
-    ['m1','m2','s1','s2'].forEach(k=>{
-      flipDigit(k, d[k], isFs);
-    });
+    flipDigit(prefix+'m1', mm[0]);
+    flipDigit(prefix+'m2', mm[1]);
+    flipDigit(prefix+'s1', ss[0]);
+    flipDigit(prefix+'s2', ss[1]);
 
-    // Update glow color
+    // Update glow color on cells
     const warn = secs <= 10 && secs >= 0;
     const over = secs < 0;
-    const cells = isFs
-      ? ['dc-fs-m1','dc-fs-m2','dc-fs-s1','dc-fs-s2']
-      : ['dc-m1','dc-m2','dc-s1','dc-s2'];
-    cells.forEach(id=>{
-      const el=document.getElementById(id); if(!el) return;
-      el.querySelector('.digit-inner,.digit-inner-fs')?.classList.toggle('digit-warn', warn && !over);
-      el.querySelector('.digit-inner,.digit-inner-fs')?.classList.toggle('digit-over', over);
+    const cellPrefix = isFs ? 'dc-fs-' : 'dc-';
+    ['m1','m2','s1','s2'].forEach(k => {
+      const cell = document.getElementById(cellPrefix + k);
+      if (!cell) return;
+      cell.classList.toggle('digit-warn', warn && !over);
+      cell.classList.toggle('digit-over', over);
     });
   }
 
