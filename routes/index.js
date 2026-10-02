@@ -94,8 +94,8 @@ import {
   scoringPage, submitScores, resultsPage,
 } from "../controllers/scoringController.js";
 
-router.get( "/events/:eventId/scoring",  requireAuth, requireRole("admin","judge"), scoringPage);
-router.post("/events/:eventId/scoring",  requireAuth, requireRole("admin","judge"), submitScores);
+router.get( "/events/:eventId/scoring",  requireAuth, requireRole("admin","judge","organizer"), scoringPage);
+router.post("/events/:eventId/scoring",  requireAuth, requireRole("admin","judge","organizer"), submitScores);
 router.get( "/events/:eventId/results",  requireAuth,                               resultsPage);
 
 // ─── AI Score Analytics (admin only) ──────────────────────────────────────────
