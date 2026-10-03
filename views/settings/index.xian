@@ -87,7 +87,7 @@
               <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold capitalize"
                 style="{{#if isAdmin}}background:rgba(59,130,246,0.15);color:#93c5fd;border:1px solid rgba(59,130,246,0.3){{else}}{{#if isJudge}}background:rgba(139,92,246,0.15);color:#c4b5fd;border:1px solid rgba(139,92,246,0.3){{else}}{{#if isOrganizer}}background:rgba(245,158,11,0.15);color:#fcd34d;border:1px solid rgba(245,158,11,0.3){{else}}background:rgba(16,185,129,0.15);color:#6ee7b7;border:1px solid rgba(16,185,129,0.3){{/if}}{{/if}}{{/if}}">
                 <span class="w-2 h-2 rounded-full bg-current"></span>
-                {{userRole}}
+                {{#if isEncoder}}Participant{{else}}{{userRole}}{{/if}}
               </div>
             </div>
             <div class="flex justify-end pt-2">
@@ -274,7 +274,7 @@ function handleAvatarUpload(input) {
             <span style="color:#475569">Role</span>
             <span class="badge capitalize
               {{#if isAdmin}}badge-blue{{else}}{{#if isJudge}}badge-purple{{else}}{{#if isOrganizer}}badge-yellow{{else}}badge-green{{/if}}{{/if}}{{/if}}">
-              {{userRole}}
+              {{#if isEncoder}}Participant{{else}}{{userRole}}{{/if}}
             </span>
           </div>
           <div class="flex items-center justify-between py-1.5" style="border-bottom:1px solid rgba(255,255,255,0.05)">
