@@ -1,17 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  {{> head }}
-</head>
-<body class="flex h-screen overflow-hidden font-sans antialiased" style="background:#0a0f1e;color:#e2e8f0">
+{{> head }}
+<body class="min-h-screen flex flex-col" style="background:#0a0f1e">
+{{> navbar }}
+<div class="flex flex-1 overflow-hidden">
+{{> sidebar }}
 
-  {{> sidebar }}
+<main class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-5">
 
-  <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
-    {{> navbar title="AI Score Analytics & Anomaly Detection" }}
-    {{> flash }}
-
-    <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6">
+  {{#if success_msg}}<div class="alert-success animate-fadeup">{{success_msg}}</div>{{/if}}
+  {{#if error_msg}}<div class="alert-error animate-fadeup">{{error_msg}}</div>{{/if}}
 
       <!-- Header -->
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-2xl text-white shadow-xl relative overflow-hidden"
@@ -259,14 +255,14 @@
       {{/if}}
 
     </main>
-  </div>
-
-  <script>
-    document.getElementById('auditForm').addEventListener('submit', function() {
-      document.getElementById('auditLoading').classList.remove('hidden');
-      document.getElementById('runAuditBtn').disabled = true;
-      document.getElementById('runAuditBtn').innerHTML = 'Auditing...';
-    });
-  </script>
+</div>
+<script>
+  document.getElementById('auditForm').addEventListener('submit', function() {
+    document.getElementById('auditLoading').classList.remove('hidden');
+    document.getElementById('runAuditBtn').disabled = true;
+    document.getElementById('runAuditBtn').innerHTML = 'Auditing...';
+  });
+</script>
+{{> footer }}
 </body>
 </html>
