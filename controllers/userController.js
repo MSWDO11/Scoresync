@@ -109,20 +109,27 @@ export const rejectUser = async (req, res) => {
 export const updateUserRole = async (req, res) => {
   const { id } = req.params;
   const { role } = req.body;
-  const allowed = ["admin", "judge", "encoder"];
+  const allowed = ["judge", "encoder", "organizer"]; // admin NOT in allowed — cannot assign or change to/from admin
 
   if (!allowed.includes(role)) {
-    req.flash("error_msg", "Invalid role.");
+    req.flash("error_msg", "Invalid role selection.");
     return res.redirect("/users");
   }
 
-  // Prevent admin from removing their own admin role
-  if (id === req.session.userId && role !== "admin") {
+  // Prevent changing own role
+  if (id === req.session.userId) {
     req.flash("error_msg", "You cannot change your own role.");
     return res.redirect("/users");
   }
 
   try {
+    // Block changing an admin account's role
+    const targetDoc = await getDoc(doc(db, "users", id));
+    if (targetDoc.exists() && targetDoc.data().role === "admin") {
+      req.flash("error_msg", "Admin accounts are protected and cannot have their role changed.");
+      return res.redirect("/users");
+    }
+
     await updateDoc(doc(db, "users", id), { role });
     req.flash("success_msg", "User role updated.");
     res.redirect("/users");
@@ -143,6 +150,13 @@ export const deleteUser = async (req, res) => {
   }
 
   try {
+    // Block deleting any admin account
+    const targetDoc = await getDoc(doc(db, "users", id));
+    if (targetDoc.exists() && targetDoc.data().role === "admin") {
+      req.flash("error_msg", "Admin accounts are protected and cannot be deleted.");
+      return res.redirect("/users");
+    }
+
     await deleteDoc(doc(db, "users", id));
     req.flash("success_msg", "User removed from the system.");
     res.redirect("/users");

@@ -160,23 +160,34 @@
                 </div>
                 <div>
                   <div class="font-semibold text-slate-800 text-sm">{{name}}</div>
-                  <div class="text-slate-400 text-xs mt-0.5 capitalize">{{role}}</div>
+                  <div class="text-slate-400 text-xs mt-0.5 capitalize">{{#if (eq role 'encoder')}}Participant{{else}}{{role}}{{/if}}</div>
                 </div>
               </div>
             </td>
             <td class="text-slate-500 text-sm">{{email}}</td>
-            <td><span class="badge {{#if (eq role 'admin')}}badge-blue{{else}}{{#if (eq role 'judge')}}badge-purple{{else}}badge-green{{/if}}{{/if}}">{{role}}</span></td>
+            <td>
+              <span class="badge {{#if (eq role 'admin')}}badge-blue{{else}}{{#if (eq role 'judge')}}badge-purple{{else}}badge-green{{/if}}{{/if}}">
+                {{#if (eq role 'encoder')}}Participant{{else}}{{role}}{{/if}}
+              </span>
+            </td>
             <td class="text-slate-400 text-xs">{{createdAt}}</td>
             <td>
+              {{#if (eq role 'admin')}}
+              <!-- Admin role is protected — cannot be changed -->
+              <span class="text-xs font-bold px-3 py-1.5 rounded-lg" style="background:rgba(37,99,235,0.10);color:#93c5fd;border:1px solid rgba(37,99,235,0.2)">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline;margin-right:4px"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                Protected
+              </span>
+              {{else}}
               <form method="POST" action="/users/{{id}}/role" class="flex items-center gap-2">
                 <select name="role" class="text-xs rounded-lg px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-blue-400 form-input-bare">
-                  <option value="admin"     {{#if (eq role 'admin')}}selected{{/if}}>Admin</option>
                   <option value="judge"     {{#if (eq role 'judge')}}selected{{/if}}>Judge</option>
                   <option value="encoder"   {{#if (eq role 'encoder')}}selected{{/if}}>Participant</option>
                   <option value="organizer" {{#if (eq role 'organizer')}}selected{{/if}}>Organizer</option>
                 </select>
                 <button type="submit" class="btn-sm btn-sm-blue text-xs px-2.5 py-1.5"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></button>
               </form>
+              {{/if}}
             </td>
             <td class="text-right pr-5">
               <div class="flex items-center justify-end gap-2">
@@ -184,9 +195,11 @@
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
                   Gmail
                 </a>
+                {{#unless (eq role 'admin')}}
                 <form method="POST" action="/users/{{id}}/delete" onsubmit="return confirm('Remove {{name}}?')" class="inline">
                   <button type="submit" class="btn-sm btn-sm-red text-xs px-2.5 py-1.5" title="Delete User"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>
                 </form>
+                {{/unless}}
               </div>
             </td>
           </tr>
