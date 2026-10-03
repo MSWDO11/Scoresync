@@ -72,7 +72,7 @@
   .input-icon-wrap { position: relative; }
   .input-icon {
     position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
-    color: #374151; pointer-events: none;
+    color: #374151; pointer-events: none; z-index: 1;
   }
   .role-card {
     border-radius: 16px; padding: 12px;
@@ -142,13 +142,13 @@
         <!-- Password -->
         <div>
           <label class="auth-label">Password</label>
-          <div class="input-icon-wrap">
+          <div class="input-icon-wrap" style="position:relative">
             <span class="input-icon">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
             </span>
             <input type="password" name="password" id="passwordInput" placeholder="Min. 6 characters" required minlength="6" autocomplete="new-password" class="auth-input auth-input-pr"/>
             <button type="button" id="eyeBtn" onclick="togglePwd()"
-              class="absolute right-4 top-1/2 -translate-y-1/2" style="color:#374151;background:none;border:none;cursor:pointer;padding:0">
+              style="position:absolute;right:14px;top:50%;transform:translateY(-50%);color:#475569;background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center;justify-content:center;border-radius:6px;transition:color 60ms ease">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
             </button>
           </div>
