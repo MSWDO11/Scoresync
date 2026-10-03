@@ -4,7 +4,6 @@ import cookieSession from "cookie-session";
 import router from "./routes/index.js";
 import fs from "fs";
 import hbs from "hbs";
-import zlib from "zlib";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 import { injectUser } from "./middleware/auth.js";
@@ -19,25 +18,8 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json({ limit: '5mb' }));
 app.use(express.urlencoded({ extended: true, limit: '5mb' }));
 
-// ─── Gzip compression (built-in zlib, no extra package needed) ───────────────
-app.use((req, res, next) => {
-  const ae = req.headers['accept-encoding'] || '';
-  if (!ae.includes('gzip')) return next();
-  const _write = res.write.bind(res);
-  const _end   = res.end.bind(res);
-  const ct     = res.getHeader('content-type') || '';
-  // Only compress text responses
-  if (!/html|json|css|javascript|text/.test(ct) && ct !== '') return next();
-  const gz = zlib.createGzip({ level: zlib.constants.Z_DEFAULT_COMPRESSION });
-  res.setHeader('Content-Encoding', 'gzip');
-  res.removeHeader('Content-Length');
-  gz.pipe(res.socket || res);
-  res.write = (chunk) => gz.write(chunk);
-  res.end   = (chunk) => { if (chunk) gz.write(chunk); gz.end(); };
-  next();
-});
-
 // ─── Static files with aggressive cache headers ───────────────────────────────
+// NOTE: Vercel handles gzip/brotli at the CDN edge — no manual compression needed
 const staticOpts = {
   maxAge: '7d',
   setHeaders(res, filePath) {

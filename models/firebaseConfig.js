@@ -1,5 +1,5 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
-import { getFirestore, initializeFirestore, CACHE_SIZE_UNLIMITED } from "firebase/firestore";
+import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
@@ -12,20 +12,9 @@ const firebaseConfig = {
   measurementId:     process.env.FIREBASE_MEASUREMENT_ID     || "G-R9WJWV7KWR"
 };
 
-// ── Singleton guard — re-use existing app across Vercel cold-start re-evals ──
-let app, db;
-if (getApps().length) {
-  app = getApp();
-  db  = getFirestore(app);
-} else {
-  app = initializeApp(firebaseConfig);
-  // Use long-polling instead of WebSocket — much faster on serverless (no WebSocket handshake)
-  db  = initializeFirestore(app, {
-    experimentalForceLongPolling: true,
-    useFetchStreams: false,
-  });
-}
-
+// ── Singleton guard — re-use existing app across Vercel warm re-invocations ──
+const app  = getApps().length ? getApp() : initializeApp(firebaseConfig);
+const db   = getFirestore(app);
 const auth = getAuth(app);
 
 export { db, auth, firebaseConfig };
