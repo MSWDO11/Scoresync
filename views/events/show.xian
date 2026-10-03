@@ -251,9 +251,11 @@
     data-event-status="{{event.status}}"
     style="display:none"></div>
   {{#if (eq event.status 'ongoing')}}
+  {{#unless isEncoder}}
   <div class="animate-fadeup-1">
     {{> countdown_timer }}
   </div>
+  {{/unless}}
   {{/if}}
 
   {{#if event.prizes}}

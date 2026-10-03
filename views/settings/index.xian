@@ -68,7 +68,7 @@
               </div>
               <div class="flex-1 min-w-0">
                 <div class="font-extrabold text-sm" style="color:#e2e8f0">{{userName}}</div>
-                <div class="text-xs mt-0.5 capitalize" style="color:#64748b">{{userRole}}</div>
+                <div class="text-xs mt-0.5 capitalize" style="color:#64748b">{{#if isEncoder}}Participant{{else}}{{userRole}}{{/if}}</div>
                 <p class="text-[11px] mt-2" style="color:#374151">Click the camera icon to upload a profile photo. PNG or JPG, max 2MB.</p>
               </div>
             </div>
