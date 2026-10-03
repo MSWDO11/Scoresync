@@ -145,10 +145,10 @@
     .kpi-card::after { content:''; position:absolute; width:150px; height:150px; border-radius:50%; background:rgba(255,255,255,0.07); bottom:-50px; right:-50px; }
     .kpi-card::before { content:''; position:absolute; width:70px; height:70px; border-radius:50%; background:rgba(255,255,255,0.05); top:-15px; left:50%; }
 
-    /* ── Dark Forms — Liquid Glass Pill ── */
+    /* ── Dark Forms — Liquid Glass ── */
     .form-input {
-      width: 100%; padding: 13px 18px 13px 44px;
-      border: 1.5px solid rgba(255,255,255,0.13); border-radius: 999px;
+      width: 100%; padding: 12px 16px 12px 44px;
+      border: 1.5px solid rgba(255,255,255,0.13); border-radius: 14px;
       font-size: 0.875rem; color: #e2e8f0; outline: none;
       background: rgba(255,255,255,0.05);
       backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
@@ -157,8 +157,8 @@
     }
     .form-input:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.22), inset 0 1px 0 rgba(255,255,255,0.07); }
     .form-input-bare {
-      width: 100%; padding: 13px 18px;
-      border: 1.5px solid rgba(255,255,255,0.13); border-radius: 999px;
+      width: 100%; padding: 12px 16px;
+      border: 1.5px solid rgba(255,255,255,0.13); border-radius: 14px;
       font-size: 0.875rem; color: #e2e8f0; outline: none;
       background: rgba(255,255,255,0.05);
       backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
@@ -166,8 +166,7 @@
       transition: border-color 60ms ease, box-shadow 60ms ease;
     }
     .form-input-bare:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.22), inset 0 1px 0 rgba(255,255,255,0.07); }
-    /* textarea stays rounded-lg, not pill */
-    textarea.form-input-bare, textarea.form-input { border-radius: 18px !important; }
+    textarea.form-input-bare, textarea.form-input { border-radius: 14px !important; }
     .form-input-bare::placeholder, .form-input::placeholder { color: #475569; }
     select.form-input-bare, select.form-input { appearance: none; cursor: pointer; border-radius: 999px; }
     select.form-input-bare option, select.form-input option { background: #0d1424; color: #e2e8f0; }
@@ -340,7 +339,7 @@
     .divide-slate-50 > * + * { border-color: rgba(255,255,255,0.05) !important; }
     /* Force selects and inputs dark in all browsers */
     select.bg-white, select.bg-slate-50, select.bg-slate-100,
-    select.bg-slate-800, select { background-color: rgba(13,20,36,0.85) !important; color: #e2e8f0 !important; border-radius: 999px !important; }
+    select.bg-slate-800, select { background-color: rgba(13,20,36,0.85) !important; color: #e2e8f0 !important; border-radius: 12px !important; }
     select option { background-color: #0d1424; color: #e2e8f0; }
     input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),
     textarea {
@@ -350,9 +349,9 @@
       backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
     }
     input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]) {
-      border-radius: 999px !important;
+      border-radius: 12px !important;
     }
-    textarea { border-radius: 18px !important; }
+    textarea { border-radius: 14px !important; }
     input:focus, textarea:focus, select:focus { border-color: #3b82f6 !important; box-shadow: 0 0 0 3px rgba(59,130,246,0.20) !important; outline: none !important; }
     .hover\:bg-slate-50:hover { background-color: rgba(255,255,255,0.03) !important; }
     .hover\:bg-slate-100:hover { background-color: rgba(255,255,255,0.05) !important; }
