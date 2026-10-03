@@ -12,16 +12,29 @@ export const addContestantPage = async (req, res) => {
   try {
     const eSnap = await getDoc(doc(db, "events", req.params.eventId));
     if (!eSnap.exists()) return res.redirect("/events");
+
+    const ev = eSnap.data();
+    const maxContestants = Number(ev.maxContestants) || 0;
+
+    // Check limit before showing the form
+    if (maxContestants > 0) {
+      const cSnap = await getDocs(collection(db, "events", req.params.eventId, "contestants"));
+      if (cSnap.size >= maxContestants) {
+        req.flash("error_msg", `Contestant limit reached. This event allows a maximum of ${maxContestants} contestants.`);
+        return res.redirect(`/events/${req.params.eventId}`);
+      }
+    }
+
     const PAYMENT_TYPES = ['pageant','talent','cultural','choral','dance','culinary','booth','sports','academic','other'];
     res.render("contestants/create", {
       title: "Add Contestant",
-      event: { id: eSnap.id, ...eSnap.data() },
+      event: { id: eSnap.id, ...ev },
       userName: req.session.userName,
       userRole: req.session.userRole,
       userInitial: (req.session.userName || "U")[0].toUpperCase(),
       isAdmin: req.session.userRole === "admin",
       isOrganizer: req.session.userRole === "organizer",
-      isPaymentType: PAYMENT_TYPES.includes(eSnap.data().type),
+      isPaymentType: PAYMENT_TYPES.includes(ev.type),
     });
   } catch (err) {
     req.flash("error_msg", "Could not load event.");
@@ -34,6 +47,19 @@ export const storeContestant = async (req, res) => {
   const { name, number, barangay, age, gender, description, photo, platform, registrationFee } = req.body;
   const { eventId } = req.params;
   try {
+    // ── Enforce maxContestants limit ─────────────────────────────────────────
+    const eSnap = await getDoc(doc(db, "events", eventId));
+    if (eSnap.exists()) {
+      const maxContestants = Number(eSnap.data().maxContestants) || 0;
+      if (maxContestants > 0) {
+        const cSnap = await getDocs(collection(db, "events", eventId, "contestants"));
+        if (cSnap.size >= maxContestants) {
+          req.flash("error_msg", `Cannot add more contestants. The limit for this event is ${maxContestants}.`);
+          return res.redirect(`/events/${eventId}`);
+        }
+      }
+    }
+
     const docRef = await addDoc(collection(db, "events", eventId, "contestants"), {
       name,
       number:          number          || "",
