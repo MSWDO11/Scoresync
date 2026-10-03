@@ -154,22 +154,7 @@
           <div class="numpad-grid flex flex-wrap gap-2 max-w-full" data-max="{{maxScore}}"></div>
         </div>
 
-        <!-- Fine-tune row -->
-        <div>
-          <div class="text-[10px] font-extrabold uppercase tracking-wider mb-2" style="color:#374151">Fine-tune</div>
-          <div class="flex flex-wrap gap-2 max-w-full">
-            <button type="button" class="finetune-btn px-3 py-1.5 rounded-lg text-xs font-extrabold transition border" data-delta="0" style="background:rgba(255,255,255,0.05);color:#64748b;border-color:rgba(255,255,255,0.08)">+.0</button>
-            <button type="button" class="finetune-btn px-3 py-1.5 rounded-lg text-xs font-extrabold transition border" data-delta="0.1" style="background:rgba(255,255,255,0.05);color:#64748b;border-color:rgba(255,255,255,0.08)">+.1</button>
-            <button type="button" class="finetune-btn px-3 py-1.5 rounded-lg text-xs font-extrabold transition border" data-delta="0.2" style="background:rgba(255,255,255,0.05);color:#64748b;border-color:rgba(255,255,255,0.08)">+.2</button>
-            <button type="button" class="finetune-btn px-3 py-1.5 rounded-lg text-xs font-extrabold transition border" data-delta="0.3" style="background:rgba(255,255,255,0.05);color:#64748b;border-color:rgba(255,255,255,0.08)">+.3</button>
-            <button type="button" class="finetune-btn px-3 py-1.5 rounded-lg text-xs font-extrabold transition border" data-delta="0.4" style="background:rgba(255,255,255,0.05);color:#64748b;border-color:rgba(255,255,255,0.08)">+.4</button>
-            <button type="button" class="finetune-btn px-3 py-1.5 rounded-lg text-xs font-extrabold transition border" data-delta="0.5" style="background:rgba(255,255,255,0.05);color:#64748b;border-color:rgba(255,255,255,0.08)">+.5</button>
-            <button type="button" class="finetune-btn px-3 py-1.5 rounded-lg text-xs font-extrabold transition border" data-delta="0.6" style="background:rgba(255,255,255,0.05);color:#64748b;border-color:rgba(255,255,255,0.08)">+.6</button>
-            <button type="button" class="finetune-btn px-3 py-1.5 rounded-lg text-xs font-extrabold transition border" data-delta="0.7" style="background:rgba(255,255,255,0.05);color:#64748b;border-color:rgba(255,255,255,0.08)">+.7</button>
-            <button type="button" class="finetune-btn px-3 py-1.5 rounded-lg text-xs font-extrabold transition border" data-delta="0.8" style="background:rgba(255,255,255,0.05);color:#64748b;border-color:rgba(255,255,255,0.08)">+.8</button>
-            <button type="button" class="finetune-btn px-3 py-1.5 rounded-lg text-xs font-extrabold transition border" data-delta="0.9" style="background:rgba(255,255,255,0.05);color:#64748b;border-color:rgba(255,255,255,0.08)">+.9</button>
-          </div>
-        </div>
+
 
         <!-- Score bar + Contributes -->
         <div class="grid grid-cols-2 gap-3">
@@ -265,19 +250,30 @@
   border-radius:12px;font-weight:800;font-size:0.9rem;
   border:2px solid rgba(255,255,255,0.08);
   background:rgba(255,255,255,0.05);
-  color:#64748b;cursor:pointer;transition:all 0.15s;flex-shrink:0;
+  color:#64748b;cursor:pointer;
+  transition:background 60ms ease, border-color 60ms ease, color 60ms ease, transform 60ms ease, box-shadow 60ms ease;
+  flex-shrink:0;
+  -webkit-tap-highlight-color: transparent;
 }
 @media (max-width:480px) { .numpad-btn { width:42px; height:42px; font-size:0.85rem; } }
 .numpad-btn:hover { background:rgba(99,102,241,0.18);border-color:rgba(99,102,241,0.4);color:#a5b4fc; }
-.numpad-btn.selected { background:rgba(99,102,241,0.9);border-color:#6366f1;color:#fff;box-shadow:0 4px 12px rgba(99,102,241,0.45);transform:scale(1.05); }
-.finetune-btn.selected { background:rgba(99,102,241,0.25) !important;color:#a5b4fc !important;border-color:rgba(99,102,241,0.5) !important; }
+.numpad-btn:active { transform:scale(0.93); }
+.numpad-btn.selected { background:rgba(99,102,241,0.9);border-color:#6366f1;color:#fff;box-shadow:0 4px 12px rgba(99,102,241,0.45);transform:scale(1.04); }
 .criteria-tab.active { background:rgba(99,102,241,0.2) !important;color:#a5b4fc !important;border-color:rgba(99,102,241,0.45) !important; }
 .criteria-tab.done { background:rgba(16,185,129,0.12) !important;color:#6ee7b7 !important;border-color:rgba(16,185,129,0.35) !important; }
 .nav-dot.scored { background:rgba(16,185,129,0.25) !important;color:#6ee7b7 !important;border-color:rgba(16,185,129,0.5) !important; }
 .nav-dot.active-dot { background:rgba(99,102,241,0.25) !important;color:#a5b4fc !important;border-color:rgba(99,102,241,0.6) !important; }
+/* All interactive elements in scoring: 60ms transitions */
+.criteria-tab, .nav-dot, .criteria-tab, [onclick] {
+  transition: background 60ms ease, color 60ms ease, border-color 60ms ease !important;
+  -webkit-tap-highlight-color: transparent;
+}
 /* Hide scrollbars on overflow-x rows */
 .criteria-tabs::-webkit-scrollbar, main::-webkit-scrollbar { display:none; }
 .criteria-tabs { -ms-overflow-style:none; }
+/* GPU compositing hints */
+.numpad-btn, .nav-dot, .criteria-tab { will-change: background, transform; }
+#scoring-main { will-change: scroll-position; }
 /* Responsive score display */
 @media (max-width:480px) {
   .score-display { font-size:2.2rem !important; }
@@ -333,37 +329,15 @@
   window.selectScore = function(panel, val, btn) {
     const input = panel.querySelector('.score-input');
     const grid  = panel.querySelector('.numpad-grid');
-    // Deselect all numpad
     grid?.querySelectorAll('.numpad-btn').forEach(b => b.classList.remove('selected'));
     btn.classList.add('selected');
-    // Keep fine-tune decimal
-    const ft = panel.querySelectorAll('.finetune-btn');
-    let dec = 0;
-    ft.forEach(b => { if (b.classList.contains('selected')) dec = parseFloat(b.dataset.delta); });
-    const newVal = Math.min(val + dec, parseFloat(input.dataset.max) || 100);
-    input.value = newVal;
+    const max = parseFloat(input.dataset.max) || 100;
+    input.value = Math.min(val, max);
     updateBox(panel);
     schedSave();
   };
 
-  /* ══ Fine-tune ══ */
-  document.querySelectorAll('.finetune-btn').forEach(btn => {
-    btn.onclick = () => {
-      const panel = btn.closest('.criteria-panel');
-      const input = panel?.querySelector('.score-input');
-      if (!input) return;
-      // Deselect other fine-tunes
-      panel.querySelectorAll('.finetune-btn').forEach(b => b.classList.remove('selected'));
-      btn.classList.add('selected');
-      // Get selected numpad base
-      const numBtn = panel.querySelector('.numpad-btn.selected');
-      const base   = numBtn ? parseFloat(numBtn.dataset.val) : Math.floor(parseFloat(input.value) || 0);
-      const delta  = parseFloat(btn.dataset.delta);
-      const max    = parseFloat(input.dataset.max) || 100;
-      input.value  = Math.min(base + delta, max);
-      updateBox(panel); schedSave();
-    };
-  });
+
 
   /* ══ Update visuals for a criteria panel ══ */
   function updateBox(panel) {
@@ -544,12 +518,8 @@
           input.value = data[cid][m[2]];
           // Restore numpad selection
           const base = Math.floor(parseFloat(input.value));
-          const dec  = parseFloat((parseFloat(input.value) - base).toFixed(1));
           const btn  = panel.querySelector('.numpad-btn[data-val="' + base + '"]');
-          if (btn) { btn.classList.add('selected'); }
-          panel.querySelectorAll('.finetune-btn').forEach(b => {
-            if (parseFloat(b.dataset.delta) === dec) b.classList.add('selected');
-          });
+          if (btn) btn.classList.add('selected');
         }
       });
     } catch(e){}

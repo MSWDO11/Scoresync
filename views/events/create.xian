@@ -170,11 +170,35 @@
           <div class="px-6 py-4 space-y-2 text-sm text-slate-600">
             <div class="flex items-center gap-2"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Saved to Firebase Firestore</div>
             <div class="flex items-center gap-2"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Add contestants after creation</div>
-            <div class="flex items-center gap-2"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Define scoring criteria separately</div>
+            <div class="flex items-center gap-2"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Criteria auto-set below — edit before saving</div>
           </div>
           <div class="px-6 pb-5 space-y-2">
             <button type="submit" class="btn-primary w-full py-3 text-sm justify-center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="12" y1="14" x2="12" y2="18"/><line x1="10" y1="16" x2="14" y2="16"/></svg>Create Event</button>
             <a href="/events" class="btn-secondary w-full py-2.5 text-sm justify-center">Cancel</a>
+          </div>
+        </div>
+
+        <!-- ── Inline Criteria Builder ── -->
+        <div class="card-flat" id="criteria-builder-card">
+          <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+            <h2 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2.5"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="19" cy="17" r="2.5"/><circle cx="6.5" cy="17" r="2.5"/></svg>
+              Scoring Criteria
+            </h2>
+            <span id="criteria-weight-badge" class="text-xs font-extrabold px-2 py-0.5 rounded-full" style="background:rgba(139,92,246,0.15);color:#c4b5fd;border:1px solid rgba(139,92,246,0.3)">0 / 100%</span>
+          </div>
+          <div class="px-5 py-3 text-xs" style="color:#64748b">Auto-filled from event type. Edit, remove, or add rows. Weights must total <strong style="color:#c4b5fd">100%</strong>.</div>
+
+          <!-- Criteria rows -->
+          <div id="criteria-rows" class="px-5 space-y-2 pb-2"></div>
+
+          <!-- Add row button -->
+          <div class="px-5 py-3">
+            <button type="button" onclick="addCriteriaRow()" class="w-full flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-bold transition"
+              style="background:rgba(139,92,246,0.08);color:#a78bfa;border:1.5px dashed rgba(139,92,246,0.3)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add Criteria Row
+            </button>
           </div>
         </div>
 
@@ -363,7 +387,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const sel = document.getElementById('event-type-select');
   if (sel) handleEventType(sel);
 });
-
 /* ── Payment QR ── */
 function handleCreateQRUpload(input) {
   const file = input.files[0];
@@ -389,6 +412,153 @@ function clearCreateQR() {
   document.getElementById('create-qr-dropzone').classList.remove('hidden');
   document.getElementById('create-qr-file').value = '';
 }
+
+/* ════════════════════════════════════════════════════════════
+   INLINE CRITERIA BUILDER
+   ════════════════════════════════════════════════════════════ */
+const CRITERIA_PRESETS = {
+  pageant: [
+    { name: 'Beauty of Face',   weight: 25, max: 100 },
+    { name: 'Beauty of Figure', weight: 20, max: 100 },
+    { name: 'Poise & Bearing',  weight: 20, max: 100 },
+    { name: 'Intelligence & Q&A', weight: 20, max: 100 },
+    { name: 'Swimwear / Attire', weight: 15, max: 100 },
+  ],
+  cultural: [
+    { name: 'Choreography',     weight: 30, max: 100 },
+    { name: 'Costume & Props',  weight: 25, max: 100 },
+    { name: 'Synchronization',  weight: 25, max: 100 },
+    { name: 'Showmanship',      weight: 20, max: 100 },
+  ],
+  float: [
+    { name: 'Design & Creativity', weight: 35, max: 100 },
+    { name: 'Theme Relevance',     weight: 30, max: 100 },
+    { name: 'Craftsmanship',       weight: 20, max: 100 },
+    { name: 'Overall Impact',      weight: 15, max: 100 },
+  ],
+  marching: [
+    { name: 'Musical Performance', weight: 35, max: 100 },
+    { name: 'Marching Precision',  weight: 30, max: 100 },
+    { name: 'Uniform & Appearance',weight: 20, max: 100 },
+    { name: 'Showmanship',         weight: 15, max: 100 },
+  ],
+  choral: [
+    { name: 'Tone & Quality',   weight: 30, max: 100 },
+    { name: 'Blend & Balance',  weight: 25, max: 100 },
+    { name: 'Diction & Clarity',weight: 25, max: 100 },
+    { name: 'Presentation',     weight: 20, max: 100 },
+  ],
+  dance: [
+    { name: 'Technical Skill',  weight: 30, max: 100 },
+    { name: 'Choreography',     weight: 30, max: 100 },
+    { name: 'Synchronization',  weight: 20, max: 100 },
+    { name: 'Stage Presence',   weight: 20, max: 100 },
+  ],
+  booth: [
+    { name: 'Display & Visual', weight: 30, max: 100 },
+    { name: 'Product Quality',  weight: 35, max: 100 },
+    { name: 'Relevance to Theme',weight: 20, max: 100 },
+    { name: 'Presentation',     weight: 15, max: 100 },
+  ],
+  sports: [
+    { name: 'Performance',      weight: 40, max: 100 },
+    { name: 'Sportsmanship',    weight: 30, max: 100 },
+    { name: 'Team Play',        weight: 30, max: 100 },
+  ],
+  academic: [
+    { name: 'Accuracy',         weight: 40, max: 100 },
+    { name: 'Speed',            weight: 30, max: 100 },
+    { name: 'Presentation',     weight: 30, max: 100 },
+  ],
+  culinary: [
+    { name: 'Taste & Flavor',   weight: 35, max: 100 },
+    { name: 'Presentation',     weight: 25, max: 100 },
+    { name: 'Creativity',       weight: 20, max: 100 },
+    { name: 'Cleanliness',      weight: 20, max: 100 },
+  ],
+  talent: [
+    { name: 'Skill & Technique',weight: 35, max: 100 },
+    { name: 'Originality',      weight: 25, max: 100 },
+    { name: 'Stage Presence',   weight: 25, max: 100 },
+    { name: 'Audience Impact',  weight: 15, max: 100 },
+  ],
+  other: [
+    { name: 'Criteria 1',       weight: 34, max: 100 },
+    { name: 'Criteria 2',       weight: 33, max: 100 },
+    { name: 'Criteria 3',       weight: 33, max: 100 },
+  ],
+};
+
+let _criteriaRows = [];
+
+function renderCriteriaRows() {
+  const container = document.getElementById('criteria-rows');
+  if (!container) return;
+  container.innerHTML = '';
+  _criteriaRows.forEach((row, i) => {
+    const div = document.createElement('div');
+    div.className = 'flex items-center gap-2';
+    div.innerHTML = `
+      <input type="text" name="criteria[name]" value="${row.name}"
+        placeholder="Criteria name" required
+        oninput="_criteriaRows[${i}].name=this.value"
+        class="form-input-bare flex-1 text-xs py-2" style="min-width:0;border-radius:12px"/>
+      <input type="number" name="criteria[weight]" value="${row.weight}"
+        min="1" max="100" placeholder="%" required
+        oninput="_criteriaRows[${i}].weight=Number(this.value)||0;updateWeightBadge()"
+        class="form-input-bare text-xs py-2 text-center" style="width:54px;border-radius:12px"/>
+      <input type="number" name="criteria[max]" value="${row.max}"
+        min="1" placeholder="Max" required
+        oninput="_criteriaRows[${i}].max=Number(this.value)||100"
+        class="form-input-bare text-xs py-2 text-center" style="width:58px;border-radius:12px"/>
+      <input type="hidden" name="criteria[desc]" value=""/>
+      <button type="button" onclick="removeCriteriaRow(${i})"
+        class="flex-shrink-0 w-7 h-7 flex items-center justify-center rounded-full text-xs transition"
+        style="background:rgba(239,68,68,0.12);color:#fca5a5;border:1px solid rgba(239,68,68,0.25)">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>`;
+    container.appendChild(div);
+  });
+  updateWeightBadge();
+}
+
+function updateWeightBadge() {
+  const total = _criteriaRows.reduce((s, r) => s + (Number(r.weight) || 0), 0);
+  const badge = document.getElementById('criteria-weight-badge');
+  if (!badge) return;
+  badge.textContent = total + ' / 100%';
+  const ok = total === 100;
+  badge.style.background    = ok ? 'rgba(16,185,129,0.15)' : 'rgba(139,92,246,0.15)';
+  badge.style.color         = ok ? '#6ee7b7'               : '#c4b5fd';
+  badge.style.borderColor   = ok ? 'rgba(16,185,129,0.3)'  : 'rgba(139,92,246,0.3)';
+}
+
+window.addCriteriaRow = function() {
+  _criteriaRows.push({ name: '', weight: 0, max: 100 });
+  renderCriteriaRows();
+};
+
+window.removeCriteriaRow = function(i) {
+  _criteriaRows.splice(i, 1);
+  renderCriteriaRows();
+};
+
+function loadPreset(type) {
+  _criteriaRows = (CRITERIA_PRESETS[type] || CRITERIA_PRESETS.other).map(r => ({ ...r }));
+  renderCriteriaRows();
+}
+
+// Hook into the existing handleEventType function
+const _origHandleEventType = handleEventType;
+handleEventType = function(sel) {
+  _origHandleEventType(sel);
+  loadPreset(sel.value);
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  const sel = document.getElementById('event-type-select');
+  if (sel) loadPreset(sel.value);
+});
 </script>
 {{> footer }}
 </html>

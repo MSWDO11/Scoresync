@@ -62,7 +62,7 @@ export const storeEvent = async (req, res) => {
     otherType,
   } = req.body;
   try {
-    await addDoc(collection(db, EVENTS), {
+    const evRef = await addDoc(collection(db, EVENTS), {
       name:                 name || "",
       description:          description || "",
       date:                 date || "",
@@ -85,8 +85,30 @@ export const storeEvent = async (req, res) => {
       createdBy:            req.session.userId,
       createdAt:            serverTimestamp(),
     });
+
+    // ── Save inline criteria submitted from create form ──────────────────────
+    const criteriaNames   = [].concat(req.body['criteria[name]']   || []);
+    const criteriaWeights = [].concat(req.body['criteria[weight]'] || []);
+    const criteriaMaxes   = [].concat(req.body['criteria[max]']    || []);
+    const criteriaDescs   = [].concat(req.body['criteria[desc]']   || []);
+    if (criteriaNames.length > 0) {
+      const saves = criteriaNames
+        .map((n, i) => ({
+          name:        n.trim(),
+          description: (criteriaDescs[i] || "").trim(),
+          weight:      Number(criteriaWeights[i]) || 0,
+          maxScore:    Number(criteriaMaxes[i])   || 100,
+        }))
+        .filter(c => c.name && c.weight > 0);
+      await Promise.all(
+        saves.map(c => addDoc(collection(db, EVENTS, evRef.id, "criteria"), {
+          ...c, createdAt: serverTimestamp(),
+        }))
+      );
+    }
+
     req.flash("success_msg", `Event "${name}" created successfully.`);
-    res.redirect("/events");
+    res.redirect(`/events/${evRef.id}`);
   } catch (err) {
     console.error(err);
     req.flash("error_msg", "Failed to create event. " + err.message);
