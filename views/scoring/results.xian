@@ -23,7 +23,7 @@
       </div>
       <div class="flex items-center gap-2 flex-shrink-0">
         <!-- Auto-refresh -->
-        <div class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1)">
+        <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1)">
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
           <select id="autoRefreshInterval" class="font-bold text-blue-400 outline-none cursor-pointer text-xs" style="background:transparent">
             <option value="0">No refresh</option>
