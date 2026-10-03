@@ -20,11 +20,15 @@
   .auth-input::placeholder { color: #475569; }
   /* Kill browser autofill blue/yellow tint */
   .auth-input:-webkit-autofill,
-  .auth-input:-webkit-autofill:focus {
-    -webkit-box-shadow: 0 0 0 1000px #0d1424 inset !important;
+  .auth-input:-webkit-autofill:hover,
+  .auth-input:-webkit-autofill:focus,
+  .auth-input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px #0d1527 inset !important;
     -webkit-text-fill-color: #e2e8f0 !important;
+    caret-color: #e2e8f0 !important;
     border-color: rgba(255,255,255,0.10) !important;
-    transition: background-color 9999s ease;
+    background-color: #0d1527 !important;
+    transition: background-color 9999s ease-in-out 0s;
   }
   .auth-input-pr { padding-right: 48px; }
   .auth-card {

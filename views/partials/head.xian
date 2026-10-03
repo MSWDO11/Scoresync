@@ -353,6 +353,17 @@
     }
     textarea { border-radius: 14px !important; }
     input:focus, textarea:focus, select:focus { border-color: #3b82f6 !important; box-shadow: 0 0 0 3px rgba(59,130,246,0.20) !important; outline: none !important; }
+    /* Kill Chrome/Edge autofill bright background globally */
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus,
+    input:-webkit-autofill:active {
+      -webkit-box-shadow: 0 0 0 1000px #0d1527 inset !important;
+      -webkit-text-fill-color: #e2e8f0 !important;
+      caret-color: #e2e8f0 !important;
+      background-color: #0d1527 !important;
+      transition: background-color 9999s ease-in-out 0s;
+    }
     .hover\:bg-slate-50:hover { background-color: rgba(255,255,255,0.03) !important; }
     .hover\:bg-slate-100:hover { background-color: rgba(255,255,255,0.05) !important; }
     /* Card section headers */
