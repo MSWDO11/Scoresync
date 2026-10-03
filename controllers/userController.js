@@ -170,7 +170,7 @@ export const deleteUser = async (req, res) => {
 // ─── Create user (admin) ──────────────────────────────────────────────────────
 export const createUser = async (req, res) => {
   const { name, email, password, role } = req.body;
-  const allowed = ["admin", "judge", "encoder"];
+  const allowed = ["judge", "encoder", "organizer"]; // admin cannot be created via this form
 
   if (!name || !email || !password || !allowed.includes(role)) {
     req.flash("error_msg", "Please fill in all required fields and select a valid role.");
