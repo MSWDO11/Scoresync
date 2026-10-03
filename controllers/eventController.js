@@ -7,7 +7,7 @@ import {
 import { applyAutoStatus } from "../utils/autoStatus.js";
 
 const EVENTS = "events";
-const PAYMENT_TYPES = ['pageant','talent','cultural','choral','dance','culinary','booth','sports','academic','other'];
+const PAYMENT_TYPES = ['cultural','choral','dance','culinary','booth','sports','academic','other'];
 const PRIZE_TYPES   = ['pageant','talent','choral','dance','culinary','academic'];
 
 // ─── List all events ──────────────────────────────────────────────────────────
@@ -251,6 +251,53 @@ export const updateEventStatus = async (req, res) => {
   } catch (err) {
     console.error(err);
     req.flash("error_msg", "Failed to update event status.");
+    res.redirect(`/events/${id}`);
+  }
+};
+
+// ─── Assign judge to event ────────────────────────────────────────────────────
+export const assignJudge = async (req, res) => {
+  const { id } = req.params;
+  const { judgeId } = req.body;
+  try {
+    if (!judgeId) {
+      req.flash("error_msg", "Please select a judge.");
+      return res.redirect(`/events/${id}`);
+    }
+    const snap = await getDoc(doc(db, EVENTS, id));
+    if (!snap.exists()) return res.redirect("/events");
+    const current = snap.data().assignedJudges || [];
+    if (current.includes(judgeId)) {
+      req.flash("error_msg", "This judge is already assigned to the event.");
+      return res.redirect(`/events/${id}`);
+    }
+    await updateDoc(doc(db, EVENTS, id), {
+      assignedJudges: [...current, judgeId],
+    });
+    req.flash("success_msg", "Judge assigned to event.");
+    res.redirect(`/events/${id}`);
+  } catch (err) {
+    console.error(err);
+    req.flash("error_msg", "Failed to assign judge.");
+    res.redirect(`/events/${id}`);
+  }
+};
+
+// ─── Remove judge from event ──────────────────────────────────────────────────
+export const removeJudge = async (req, res) => {
+  const { id, judgeId } = req.params;
+  try {
+    const snap = await getDoc(doc(db, EVENTS, id));
+    if (!snap.exists()) return res.redirect("/events");
+    const current = snap.data().assignedJudges || [];
+    await updateDoc(doc(db, EVENTS, id), {
+      assignedJudges: current.filter(j => j !== judgeId),
+    });
+    req.flash("success_msg", "Judge removed from event.");
+    res.redirect(`/events/${id}`);
+  } catch (err) {
+    console.error(err);
+    req.flash("error_msg", "Failed to remove judge.");
     res.redirect(`/events/${id}`);
   }
 };

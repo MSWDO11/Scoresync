@@ -353,7 +353,7 @@ function handleVenueSelect(sel) {
 // Types that need Prizes & Rules
 const PRIZE_TYPES   = ['pageant','talent','choral','dance','culinary','academic'];
 // Types that normally charge admission/registration (show Payment QR)
-const PAYMENT_TYPES = ['pageant','talent','cultural','choral','dance','culinary','booth','sports','academic','other'];
+const PAYMENT_TYPES = ['talent','cultural','choral','dance','culinary','booth','sports','academic','other'];
 
 function handleEventType(sel) {
   const type = sel.value;

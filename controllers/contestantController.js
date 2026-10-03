@@ -25,7 +25,7 @@ export const addContestantPage = async (req, res) => {
       }
     }
 
-    const PAYMENT_TYPES = ['pageant','talent','cultural','choral','dance','culinary','booth','sports','academic','other'];
+    const PAYMENT_TYPES = ['talent','cultural','choral','dance','culinary','booth','sports','academic','other'];
     res.render("contestants/create", {
       title: "Add Contestant",
       event: { id: eSnap.id, ...ev },
@@ -94,7 +94,7 @@ export const editContestantPage = async (req, res) => {
       getDoc(doc(db, "events", eventId, "contestants", id)),
     ]);
     if (!eSnap.exists() || !cSnap.exists()) return res.redirect(`/events/${eventId}`);
-    const PAYMENT_TYPES = ['pageant','talent','cultural','choral','dance','culinary','booth','sports','academic','other'];
+    const PAYMENT_TYPES = ['talent','cultural','choral','dance','culinary','booth','sports','academic','other'];
     res.render("contestants/edit", {
       title: "Edit Contestant",
       event:      { id: eSnap.id, ...eSnap.data() },
