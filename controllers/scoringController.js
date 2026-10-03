@@ -67,6 +67,7 @@ export const scoringPage = async (req, res) => {
       event:       ev,
       contestants: matrix,
       criteria,
+      judgeId,
       userName:    req.session.userName,
       userRole:    req.session.userRole,
       userInitial: (req.session.userName || "U")[0].toUpperCase(),

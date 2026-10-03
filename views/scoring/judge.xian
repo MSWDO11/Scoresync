@@ -285,7 +285,7 @@
   const COLORS = ["#6366f1","#7c3aed","#059669","#dc2626","#d97706","#0891b2","#be185d","#65a30d"];
   const CIRC80 = 2 * Math.PI * 26; // r=26 (64px donut) → 163.36
   const CIRC10 = 2 * Math.PI * 10; // r=10 → 62.83
-  const storeKey = "scoresync_draft_{{event.id}}";
+  const storeKey = "scoresync_draft_{{event.id}}_{{judgeId}}";
   let saveTimer;
   window._currentIdx = 0;
   window._currentCriteria = {}; // contestantId → criteriaIdx
@@ -489,6 +489,8 @@
     const inputs = cp?.querySelectorAll('.score-input') || [];
     const empty  = [...inputs].filter(n => !n.value || parseFloat(n.value) < 0);
     if (empty.length && !confirm(empty.length + ' score(s) empty. Submit anyway?')) return;
+    // Clear draft for this judge before submitting
+    try { localStorage.removeItem(storeKey); } catch(e){}
     document.getElementById('scoringForm').submit();
   };
   window.nextContestant = function(idx) { goToContestant(idx + 1); };
@@ -505,8 +507,7 @@
       });
     });
     try { localStorage.setItem(storeKey, JSON.stringify(data)); } catch(e){}
-  }
-  function restoreDraft() {
+  }  function restoreDraft() {
     try {
       const data = JSON.parse(localStorage.getItem(storeKey) || '{}');
       document.querySelectorAll('.criteria-panel').forEach(panel => {
