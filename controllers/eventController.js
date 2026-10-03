@@ -132,13 +132,25 @@ export const showEvent = async (req, res) => {
 
     await applyAutoStatus(req.params.id, ev);
 
-    const [cSnap, crSnap, finance] = await Promise.all([
+    const [cSnap, crSnap, finance, usersSnap] = await Promise.all([
       getDocs(collection(db, EVENTS, req.params.id, "contestants")),
       getDocs(collection(db, EVENTS, req.params.id, "criteria")),
       getFinanceSummary(req.params.id),
+      getDocs(collection(db, "users")),
     ]);
     const contestants = cSnap.docs.map(d => ({ id: d.id, ...d.data() }));
     const criteria    = crSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+    // All judges in the system
+    const allJudges = usersSnap.docs
+      .map(d => ({ id: d.id, ...d.data() }))
+      .filter(u => u.role === 'judge' && u.status !== 'pending');
+
+    // Assigned judges with names
+    const assignedJudgeIds = ev.assignedJudges || [];
+    const assignedJudges = allJudges.filter(j => assignedJudgeIds.includes(j.id));
+    // Unassigned judges (available to assign)
+    const availableJudges = allJudges.filter(j => !assignedJudgeIds.includes(j.id));
 
     res.render("events/show", {
       title:       ev.name,
@@ -146,6 +158,9 @@ export const showEvent = async (req, res) => {
       contestants,
       criteria,
       finance,
+      allJudges,
+      assignedJudges,
+      availableJudges,
       userName:    req.session.userName,
       userRole:    req.session.userRole,
       userInitial: (req.session.userName || "U")[0].toUpperCase(),
