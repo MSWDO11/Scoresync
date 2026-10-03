@@ -5,11 +5,13 @@ import {
 } from "firebase/firestore";
 // ─── Lazy Gemini import — prevents startup crash if package fails to load ──────
 let _GoogleGenAI = null;
+let _Type = null;
 async function getGeminiClient() {
   if (!_GoogleGenAI) {
     try {
       const mod = await import("@google/genai");
       _GoogleGenAI = mod.GoogleGenAI;
+      _Type = mod.Type;
     } catch (e) {
       console.error("Failed to load @google/genai:", e.message);
       return null;
@@ -252,39 +254,39 @@ INSTRUCTIONS:
             systemInstruction: "You are an expert AI Tabulator and Auditor for official Philippine LGU Festival & Cultural Competitions. Detect scoring anomalies with strict objectivity, precision, and clarity.",
             responseMimeType: "application/json",
             responseSchema: {
-              type: Type.OBJECT,
+              type: _Type.OBJECT,
               properties: {
-                healthScore: { type: Type.INTEGER, description: "Health score of judging consistency from 0 to 100" },
-                riskLevel: { type: Type.STRING, description: "LOW, MODERATE, HIGH, or CRITICAL" },
-                summaryText: { type: Type.STRING, description: "Executive summary of audit findings" },
-                totalScoresAudited: { type: Type.INTEGER, description: "Count of scores audited" },
-                judgingConsensusRate: { type: Type.NUMBER, description: "Consensus percentage among judges (0 to 100)" },
+                healthScore: { type: _Type.INTEGER, description: "Health score of judging consistency from 0 to 100" },
+                riskLevel: { type: _Type.STRING, description: "LOW, MODERATE, HIGH, or CRITICAL" },
+                summaryText: { type: _Type.STRING, description: "Executive summary of audit findings" },
+                totalScoresAudited: { type: _Type.INTEGER, description: "Count of scores audited" },
+                judgingConsensusRate: { type: _Type.NUMBER, description: "Consensus percentage among judges (0 to 100)" },
                 anomalies: {
-                  type: Type.ARRAY,
+                  type: _Type.ARRAY,
                   items: {
-                    type: Type.OBJECT,
+                    type: _Type.OBJECT,
                     properties: {
-                      type: { type: Type.STRING, description: "JUDGE_BIAS, EXTREME_OUTLIER, UNIFORM_SCORING, CRITERIA_DISCREPANCY, or SUSPICIOUS_PATTERN" },
-                      severity: { type: Type.STRING, description: "LOW, MEDIUM, HIGH, or CRITICAL" },
-                      eventId: { type: Type.STRING },
-                      eventName: { type: Type.STRING },
-                      judgeId: { type: Type.STRING },
-                      judgeName: { type: Type.STRING },
-                      contestantId: { type: Type.STRING },
-                      contestantName: { type: Type.STRING },
-                      criteriaName: { type: Type.STRING },
-                      recordedScore: { type: Type.NUMBER },
-                      peerAverage: { type: Type.NUMBER },
-                      delta: { type: Type.NUMBER },
-                      description: { type: Type.STRING },
-                      recommendedAction: { type: Type.STRING }
+                      type: { type: _Type.STRING, description: "JUDGE_BIAS, EXTREME_OUTLIER, UNIFORM_SCORING, CRITERIA_DISCREPANCY, or SUSPICIOUS_PATTERN" },
+                      severity: { type: _Type.STRING, description: "LOW, MEDIUM, HIGH, or CRITICAL" },
+                      eventId: { type: _Type.STRING },
+                      eventName: { type: _Type.STRING },
+                      judgeId: { type: _Type.STRING },
+                      judgeName: { type: _Type.STRING },
+                      contestantId: { type: _Type.STRING },
+                      contestantName: { type: _Type.STRING },
+                      criteriaName: { type: _Type.STRING },
+                      recordedScore: { type: _Type.NUMBER },
+                      peerAverage: { type: _Type.NUMBER },
+                      delta: { type: _Type.NUMBER },
+                      description: { type: _Type.STRING },
+                      recommendedAction: { type: _Type.STRING }
                     },
                     required: ["type", "severity", "eventName", "judgeName", "contestantName", "recordedScore", "peerAverage", "description", "recommendedAction"]
                   }
                 },
                 insights: {
-                  type: Type.ARRAY,
-                  items: { type: Type.STRING }
+                  type: _Type.ARRAY,
+                  items: { type: _Type.STRING }
                 }
               },
               required: ["healthScore", "riskLevel", "summaryText", "totalScoresAudited", "judgingConsensusRate", "anomalies", "insights"]
