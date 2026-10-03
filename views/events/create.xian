@@ -187,7 +187,14 @@
             </h2>
             <span id="criteria-weight-badge" class="text-xs font-extrabold px-2 py-0.5 rounded-full" style="background:rgba(139,92,246,0.15);color:#c4b5fd;border:1px solid rgba(139,92,246,0.3)">0 / 100%</span>
           </div>
-          <div class="px-5 py-3 text-xs" style="color:#64748b">Auto-filled from event type. Edit, remove, or add rows. Weights must total <strong style="color:#c4b5fd">100%</strong>.</div>
+          <div class="px-5 py-2 text-xs" style="color:#64748b">Auto-filled from event type. Edit, remove, or add rows. Weights must total <strong style="color:#c4b5fd">100%</strong>.</div>
+          <!-- Column headers -->
+          <div class="px-5 flex items-center gap-2 mb-1">
+            <span class="flex-1 text-[10px] font-bold uppercase tracking-wider" style="color:#374151">Criteria Name</span>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-center" style="width:62px;min-width:62px;color:#374151">Weight%</span>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-center" style="width:68px;min-width:68px;color:#374151">Max Pts</span>
+            <span style="width:28px"></span>
+          </div>
 
           <!-- Criteria rows -->
           <div id="criteria-rows" class="px-5 space-y-2 pb-2"></div>
@@ -506,11 +513,11 @@ function renderCriteriaRows() {
       <input type="number" name="criteria[weight]" value="${row.weight}"
         min="1" max="100" placeholder="%" required
         oninput="_criteriaRows[${i}].weight=Number(this.value)||0;updateWeightBadge()"
-        class="form-input-bare text-xs py-2 text-center" style="width:54px;border-radius:12px"/>
+        class="form-input-bare text-xs py-2 text-center" style="width:62px;min-width:62px;border-radius:12px"/>
       <input type="number" name="criteria[max]" value="${row.max}"
         min="1" placeholder="Max" required
         oninput="_criteriaRows[${i}].max=Number(this.value)||100"
-        class="form-input-bare text-xs py-2 text-center" style="width:58px;border-radius:12px"/>
+        class="form-input-bare text-xs py-2 text-center" style="width:68px;min-width:68px;border-radius:12px"/>
       <input type="hidden" name="criteria[desc]" value=""/>
       <button type="button" onclick="removeCriteriaRow(${i})"
         class="flex-shrink-0 w-7 h-7 flex items-center justify-center rounded-full text-xs transition"
