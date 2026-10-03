@@ -762,7 +762,7 @@ window._onTimerEventEnd = function() {
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
         </div>
         <div>
-          <h3 class="font-extrabold text-sm" style="color:#e2e8f0">Add New Judge</h3>
+          <h3 class="font-extrabold text-sm" style="color:#e2e8f0">Assign Judge</h3>
           <p class="text-[11px]" style="color:#64748b">Create a judge account — approved immediately</p>
         </div>
       </div>
