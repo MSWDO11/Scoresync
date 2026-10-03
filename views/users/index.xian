@@ -216,33 +216,7 @@
     {{/if}}
   </div>
 
-  <!-- Role guide -->
-  <div class="card-flat p-5 flex items-start gap-4 animate-fadeup-3">
-    <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 flex-shrink-0" style="background:linear-gradient(135deg,#92400e,#d97706)">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-    </div>
-    <div class="flex-1">
-      <p class="font-semibold text-slate-700 text-sm mb-3">Role Permissions</p>
-      <div class="grid sm:grid-cols-3 gap-3">
-        <div class="rounded-xl px-4 py-3" style="background:#eff6ff;border:1px solid #bfdbfe">
-          <div class="flex items-center gap-2 mb-1.5"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1d4ed8" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span class="font-bold text-blue-800 text-sm">Administrator</span></div>
-          <p class="text-blue-600 text-xs leading-relaxed">Full access. Create events, manage users, set criteria, view all results.</p>
-        </div>
-        <div class="rounded-xl px-4 py-3" style="background:#faf5ff;border:1px solid #ddd6fe">
-          <div class="flex items-center gap-2 mb-1.5"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6d28d9" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span class="font-bold text-purple-800 text-sm">Judge</span></div>
-          <p class="text-purple-600 text-xs leading-relaxed">Can enter scores for ongoing events and view published results.</p>
-        </div>
-        <div class="rounded-xl px-4 py-3" style="background:#f0fdf4;border:1px solid #bbf7d0">
-          <div class="flex items-center gap-2 mb-1.5"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#15803d" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg><span class="font-bold text-emerald-800 text-sm">Participant</span></div>
-          <p class="text-emerald-600 text-xs leading-relaxed">Can add and edit contestants for events. View-only for results.</p>
-        </div>
-        <div class="rounded-xl px-4 py-3" style="background:#fffbeb;border:1px solid #fde68a">
-          <div class="flex items-center gap-2 mb-1.5"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#b45309" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><circle cx="12" cy="3" r="1"/></svg><span class="font-bold text-amber-800 text-sm">Organizer</span></div>
-          <p class="text-amber-700 text-xs leading-relaxed">Can create and manage events, track finances, oversee contestants, and view results.</p>
-        </div>
-      </div>
-    </div>
-  </div>
+
 
 </main>
 </div>
@@ -271,7 +245,13 @@
       </div>
       <div>
         <label class="block text-xs font-semibold uppercase tracking-wide mb-1.5" style="color:#64748b">Password</label>
-        <input type="password" name="password" required minlength="6" placeholder="At least 6 characters" class="form-input-bare"/>
+        <div style="position:relative">
+          <input type="password" name="password" id="addUserPwd" required minlength="6" placeholder="At least 6 characters" class="form-input-bare" style="padding-right:44px"/>
+          <button type="button" onclick="toggleAddUserPwd()"
+            style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;color:#475569;display:flex;align-items:center">
+            <svg id="addUserEyeIcon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+          </button>
+        </div>
       </div>
       <div>
         <label class="block text-xs font-semibold uppercase tracking-wide mb-1.5" style="color:#64748b">Assign System Role</label>
@@ -293,6 +273,19 @@
   function toggleAddUserModal() {
     const modal = document.getElementById('addUserModal');
     modal.classList.toggle('hidden');
+  }
+  const _eyeOpen  = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+  const _eyeClose = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
+  function toggleAddUserPwd() {
+    const input = document.getElementById('addUserPwd');
+    const icon  = document.getElementById('addUserEyeIcon').parentElement;
+    if (input.type === 'password') {
+      input.type = 'text';
+      icon.innerHTML = _eyeOpen;
+    } else {
+      input.type = 'password';
+      icon.innerHTML = _eyeClose;
+    }
   }
 </script>
 
