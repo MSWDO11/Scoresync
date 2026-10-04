@@ -34,7 +34,29 @@
   <div class="absolute bottom-0 right-0 w-80 h-80 rounded-full blur-3xl pointer-events-none" style="background:rgba(96,165,250,0.08);transform:translate(30%,30%)"></div>
 
   <div class="relative max-w-5xl mx-auto text-center animate-fadeup">
-    <div class="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-bold mb-8" style="background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.18)">
+    <!-- Three logos row -->
+    <div class="flex items-center justify-center gap-6 mb-8 flex-wrap">
+      <div class="flex flex-col items-center gap-1.5">
+        <div class="w-20 h-20 rounded-full overflow-hidden shadow-2xl" style="border:3px solid rgba(255,255,255,0.3)">
+          <img src="/minsu-logo.png" alt="Mindoro State University" class="w-full h-full object-cover"/>
+        </div>
+        <span class="text-[9px] font-bold uppercase tracking-wider text-center max-w-[80px] leading-tight" style="color:rgba(255,255,255,0.5)">Mindoro State Univ.</span>
+      </div>
+      <div class="flex flex-col items-center gap-1.5">
+        <div class="w-28 h-28 rounded-full overflow-hidden shadow-2xl" style="border:4px solid rgba(255,215,0,0.5);box-shadow:0 0 30px rgba(255,215,0,0.2)">
+          <img src="/scoresync-logo.png" alt="ScoreSync" class="w-full h-full object-cover" style="object-position:center center;transform:scale(1.35)"/>
+        </div>
+        <span class="text-[10px] font-extrabold uppercase tracking-wider" style="color:rgba(255,215,0,0.8)">ScoreSync</span>
+      </div>
+      <div class="flex flex-col items-center gap-1.5">
+        <div class="w-20 h-20 rounded-full overflow-hidden shadow-2xl" style="border:3px solid rgba(255,255,255,0.3)">
+          <img src="/mansalay-logo.png" alt="Bayan ng Mansalay" class="w-full h-full object-cover"/>
+        </div>
+        <span class="text-[9px] font-bold uppercase tracking-wider text-center max-w-[80px] leading-tight" style="color:rgba(255,255,255,0.5)">Bayan ng Mansalay</span>
+      </div>
+    </div>
+
+    <div class="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-bold mb-6" style="background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.18)">
       <svg width="11" height="11" viewBox="0 0 24 24" fill="#fbbf24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3" fill="white"/></svg>
       Municipality of Mansalay, Oriental Mindoro
     </div>
