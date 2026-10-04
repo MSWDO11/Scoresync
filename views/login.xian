@@ -94,7 +94,7 @@
     <!-- Logo -->
     <div class="flex flex-col items-center mb-7">
       <div class="w-28 h-28 rounded-full overflow-hidden mb-3 shadow-2xl flex-shrink-0" style="border:3px solid rgba(99,102,241,0.5)">
-        <img src="/scoresync-logo.png" alt="ScoreSync" class="w-full h-full object-cover" style="object-position:center center"/>
+        <img src="/scoresync-logo.png" alt="ScoreSync" class="w-full h-full object-cover" style="object-position:center center;transform:scale(1.35);transform-origin:center center"/>
       </div>
       <h1 class="text-xl font-black tracking-tight text-white">Welcome back</h1>
       <p class="text-xs mt-1 text-center" style="color:#475569">Sign in to your ScoreSync account</p>
@@ -205,4 +205,5 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
+
 
