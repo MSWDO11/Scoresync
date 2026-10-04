@@ -7,7 +7,7 @@
     <!-- Brand -->
     <a href="/" class="flex items-center gap-3 flex-shrink-0">
       <div class="w-9 h-9 rounded-full overflow-hidden flex-shrink-0 shadow-lg" style="border:2px solid rgba(255,255,255,0.2)">
-        <img src="/mansalay-logo.png" alt="Mansalay Seal" class="w-full h-full object-cover"/>
+        <img src="/scoresync-logo.png" alt="ScoreSync" class="w-full h-full object-cover" style="object-position:center center"/>
       </div>
       <span class="font-black text-lg tracking-tight text-white">ScoreSync</span>
     </a>
@@ -179,7 +179,7 @@
 <section class="py-20 px-6 relative overflow-hidden text-white" style="background:linear-gradient(140deg,#060e22 0%,#0f2156 40%,#1a4db5 80%,#2563eb 100%)">
   <div class="relative max-w-2xl mx-auto text-center">
     <div class="w-16 h-16 rounded-full overflow-hidden flex items-center justify-center mx-auto mb-6 shadow-xl" style="border:3px solid rgba(255,255,255,0.25)">
-      <img src="/mansalay-logo.png" alt="Mansalay Seal" class="w-full h-full object-cover"/>
+      <img src="/scoresync-logo.png" alt="ScoreSync" class="w-full h-full object-cover" style="object-position:center center"/>
     </div>
     <h2 class="text-4xl font-black mb-4 tracking-tight">Ready to run your next competition?</h2>
     <p class="text-blue-100 mb-8 text-base">Join ScoreSync and bring efficiency and transparency to Mansalay's events.</p>
