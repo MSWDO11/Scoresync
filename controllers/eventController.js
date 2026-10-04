@@ -132,14 +132,30 @@ export const showEvent = async (req, res) => {
 
     await applyAutoStatus(req.params.id, ev);
 
-    const [cSnap, crSnap, finance, usersSnap] = await Promise.all([
+    const [cSnap, crSnap, finance, usersSnap, auditSnap] = await Promise.all([
       getDocs(collection(db, EVENTS, req.params.id, "contestants")),
       getDocs(collection(db, EVENTS, req.params.id, "criteria")),
       getFinanceSummary(req.params.id),
       getDocs(collection(db, "users")),
+      getDocs(collection(db, EVENTS, req.params.id, "audit_log")),
     ]);
     const contestants = cSnap.docs.map(d => ({ id: d.id, ...d.data() }));
     const criteria    = crSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+    // Audit log — sorted newest first
+    const auditLog = auditSnap.docs
+      .map(d => {
+        const data = d.data();
+        return {
+          id: d.id,
+          ...data,
+          timestampStr: data.timestamp?.toDate?.()?.toLocaleString("en-PH", {
+            month: "short", day: "numeric", year: "numeric",
+            hour: "2-digit", minute: "2-digit", hour12: true,
+          }) || "—",
+        };
+      })
+      .sort((a, b) => (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0));
 
     // All judges in the system
     const allJudges = usersSnap.docs
@@ -158,6 +174,7 @@ export const showEvent = async (req, res) => {
       contestants,
       criteria,
       finance,
+      auditLog,
       allJudges,
       assignedJudges,
       availableJudges,
