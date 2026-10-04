@@ -1,87 +1,57 @@
 import { db } from "../models/firebaseConfig.js";
 import { doc, getDoc, updateDoc, collection, getDocs, addDoc, serverTimestamp, query, orderBy, limit } from "firebase/firestore";
 
-// Initial default suggestions list
-const DEFAULT_SUGGESTIONS = [
-  {
-    title: "Offline Sync Mode for Remote Venues",
-    description: "Local IndexedDB caching so judges can submit scores even during wifi drops, syncing automatically when reconnected.",
-    category: "Connectivity",
-    votes: 14,
-    status: "Under Review"
-  },
-  {
-    title: "Custom Printable Score Sheets for Manual Audit",
-    description: "Generate pre-formatted PDF judge paper score sheets with contestant names and criteria barcodes.",
-    category: "Printing",
-    votes: 9,
-    status: "Planned"
-  },
-  {
-    title: "Judge Feedback & Comments Box per Score",
-    description: "Allow judges to add optional qualitative feedback notes alongside numerical percentage entries.",
-    category: "Scoring UX",
-    votes: 7,
-    status: "In Progress"
-  }
-];
-
 export const settingsPage = async (req, res) => {
   try {
     let userData = {};
     if (req.session.userId) {
       const userRef = doc(db, "users", req.session.userId);
       const snap = await getDoc(userRef);
-      if (snap.exists()) {
-        userData = snap.data();
-      }
+      if (snap.exists()) userData = snap.data();
     }
 
-    let customSuggestions = [];
+    // Only real submissions from Firestore — no fake defaults
+    let suggestions = [];
     try {
-      const q = query(collection(db, "feature_requests"), orderBy("createdAt", "desc"), limit(10));
+      const q = query(collection(db, "feature_requests"), orderBy("createdAt", "desc"), limit(20));
       const querySnap = await getDocs(q);
-      querySnap.forEach((docSnap) => {
-        customSuggestions.push({ id: docSnap.id, ...docSnap.data() });
-      });
+      querySnap.forEach(d => suggestions.push({ id: d.id, ...d.data() }));
     } catch (e) {
-      console.log("No custom suggestions found or firestore collection empty.");
+      // Collection doesn't exist yet — that's fine, suggestions stays []
     }
-
-    const allSuggestions = [...customSuggestions, ...DEFAULT_SUGGESTIONS];
 
     res.render("settings/index", {
       title: "Settings",
-      userName: req.session.userName,
-      userEmail: userData.email || "",
-      userAvatar: userData.avatar || req.session.userAvatar || "",
-      userRole: req.session.userRole,
+      userName:    req.session.userName,
+      userEmail:   userData.email || "",
+      userAvatar:  userData.avatar || req.session.userAvatar || "",
+      userRole:    req.session.userRole,
       userInitial: (req.session.userName || "U")[0].toUpperCase(),
-      isAdmin: req.session.userRole === "admin",
-      isJudge: req.session.userRole === "judge",
-      isEncoder: req.session.userRole === "encoder",
+      isAdmin:     req.session.userRole === "admin",
+      isJudge:     req.session.userRole === "judge",
+      isEncoder:   req.session.userRole === "encoder",
       isOrganizer: req.session.userRole === "organizer",
-      municipality: "Mansalay, Oriental Mindoro",
+      municipality:  "Mansalay, Oriental Mindoro",
       systemVersion: "v2.5.0-PROD",
-      aiModel: "Gemini 2.5 Flash",
-      suggestions: allSuggestions
+      aiModel:       "Gemini 2.5 Flash",
+      suggestions,
     });
   } catch (err) {
     console.error("Settings page error:", err);
     res.render("settings/index", {
-      title: "Settings",
-      userName: req.session.userName,
-      userEmail: "",
-      userRole: req.session.userRole,
+      title:       "Settings",
+      userName:    req.session.userName,
+      userEmail:   "",
+      userRole:    req.session.userRole,
       userInitial: (req.session.userName || "U")[0].toUpperCase(),
-      isAdmin: req.session.userRole === "admin",
-      isJudge: req.session.userRole === "judge",
-      isEncoder: req.session.userRole === "encoder",
+      isAdmin:     req.session.userRole === "admin",
+      isJudge:     req.session.userRole === "judge",
+      isEncoder:   req.session.userRole === "encoder",
       isOrganizer: req.session.userRole === "organizer",
-      municipality: "Mansalay, Oriental Mindoro",
+      municipality:  "Mansalay, Oriental Mindoro",
       systemVersion: "v2.5.0-PROD",
-      aiModel: "Gemini 2.5 Flash",
-      suggestions: DEFAULT_SUGGESTIONS
+      aiModel:       "Gemini 2.5 Flash",
+      suggestions:   [],
     });
   }
 };
