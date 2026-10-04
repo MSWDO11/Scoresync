@@ -5,64 +5,59 @@
 <title>ScoreSync Icon Generator</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
-body { background:#060e1a; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; gap:16px; font-family:sans-serif; color:#fff; padding:24px; }
-canvas { border-radius:22%; box-shadow:0 0 60px rgba(16,185,129,0.3); width:220px; height:220px; }
-.btn { padding:14px 32px; background:linear-gradient(135deg,#059669,#10b981); color:#fff; border:none; border-radius:14px; font-size:15px; font-weight:800; cursor:pointer; box-shadow:0 4px 16px rgba(16,185,129,0.3); }
-p { font-size:12px; color:#374151; text-align:center; max-width:280px; line-height:1.6; }
+body { background:#060e1a; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; gap:20px; font-family:sans-serif; color:#fff; padding:24px; }
+canvas { box-shadow:0 8px 40px rgba(0,0,0,0.6); border-radius:24%; }
+.btn { padding:14px 32px; background:linear-gradient(135deg,#059669,#10b981); color:#fff; border:none; border-radius:14px; font-size:15px; font-weight:800; cursor:pointer; }
+p { font-size:12px; color:#475569; text-align:center; max-width:300px; }
+label { font-size:13px; color:#94a3b8; }
+input[type=range] { width:200px; }
 </style>
 </head>
 <body>
-<p style="color:#34d399;font-weight:700;font-size:14px">ScoreSync PWA Icon Generator</p>
+<p style="color:#34d399;font-weight:700;font-size:15px">PWA Icon Generator</p>
+
+<div style="display:flex;gap:12px;align-items:center">
+  <label>Zoom: <span id="zv">1.0</span>x</label>
+  <input type="range" id="zoom" min="0.5" max="3" step="0.05" value="1.0" oninput="redraw()"/>
+</div>
+<div style="display:flex;gap:12px;align-items:center">
+  <label>Y offset: <span id="yv">0</span>px</label>
+  <input type="range" id="yoff" min="-100" max="100" step="2" value="0" oninput="redraw()"/>
+</div>
+
 <canvas id="c" width="512" height="512"></canvas>
 <button class="btn" onclick="dl()">⬇ Download icon-512.png</button>
-<p>Save the downloaded file as <strong>scoresync-logo.png</strong> in the public folder, then push to deploy.</p>
+<p>Adjust zoom & position, then download. Save as <strong>scoresync-logo.png</strong> in public/ and push.</p>
 
 <script>
 const canvas = document.getElementById('c');
 const ctx = canvas.getContext('2d');
 const S = 512;
+const img = new Image();
+img.crossOrigin = 'anonymous';
+img.src = '/scoresync-logo.png?' + Date.now();
+img.onload = redraw;
 
-function draw(logo) {
-  // 1. Solid dark navy background
+function redraw() {
+  const zoom = parseFloat(document.getElementById('zoom').value);
+  const yoff = parseInt(document.getElementById('yoff').value);
+  document.getElementById('zv').textContent = zoom.toFixed(2);
+  document.getElementById('yv').textContent = yoff;
+
+  ctx.clearRect(0, 0, S, S);
+
+  // Fill entire square with dark navy — NO white background
   ctx.fillStyle = '#0d1f35';
   ctx.fillRect(0, 0, S, S);
 
-  // 2. Draw logo fitted inside with padding, preserving aspect ratio
-  const pad = 24;
-  const iw = logo.naturalWidth || logo.width;
-  const ih = logo.naturalHeight || logo.height;
+  // Draw image centered with zoom
+  const iw = img.naturalWidth, ih = img.naturalHeight;
   const ar = iw / ih;
-  const maxW = S - pad * 2;
-  const maxH = S - pad * 2;
-  let dw = maxW, dh = maxW / ar;
-  if (dh > maxH) { dh = maxH; dw = maxH * ar; }
+  let dw = S * zoom, dh = (S / ar) * zoom;
   const dx = (S - dw) / 2;
-  const dy = (S - dh) / 2;
-  ctx.drawImage(logo, dx, dy, dw, dh);
-
-  // 3. Teal border ring
-  ctx.beginPath();
-  ctx.arc(S/2, S/2, S/2 - 6, 0, Math.PI * 2);
-  ctx.strokeStyle = 'rgba(20,184,166,0.5)';
-  ctx.lineWidth = 10;
-  ctx.stroke();
+  const dy = (S - dh) / 2 + yoff;
+  ctx.drawImage(img, dx, dy, dw, dh);
 }
-
-const img = new Image();
-img.crossOrigin = 'anonymous';
-img.onload = () => draw(img);
-img.onerror = () => {
-  // Fallback gradient icon
-  ctx.fillStyle = '#0d1f35'; ctx.fillRect(0,0,S,S);
-  const g = ctx.createLinearGradient(0,0,S,S);
-  g.addColorStop(0,'#1e40af'); g.addColorStop(1,'#10b981');
-  ctx.fillStyle = g; ctx.fillRect(40,40,432,432);
-  ctx.font='bold 260px sans-serif'; ctx.textAlign='center';
-  ctx.textBaseline='middle'; ctx.fillStyle='#fff';
-  ctx.fillText('S',S/2,S/2-20);
-  ctx.font='bold 44px sans-serif'; ctx.fillText('SCORESYNC',S/2,380);
-};
-img.src = '/scoresync-logo.png?' + Date.now();
 
 function dl() {
   const a = document.createElement('a');
