@@ -15,7 +15,6 @@ p { font-size:13px; color:#64748b; text-align:center; max-width:300px; }
 <p>ScoreSync App Icon Generator</p>
 <canvas id="c" width="512" height="512"></canvas>
 <button onclick="download()">⬇ Download icon-512.png</button>
-<p>After downloading, replace public/scoresync-logo.png with this file and push to deploy.</p>
 
 <script>
 const canvas = document.getElementById('c');
@@ -25,26 +24,28 @@ const img = new Image();
 img.crossOrigin = 'anonymous';
 img.src = '/scoresync-logo.png?' + Date.now();
 img.onload = function() {
-  // Dark navy background
+  // Dark navy background fills whole square
   ctx.fillStyle = '#0d1f35';
   ctx.fillRect(0, 0, 512, 512);
 
-  // Draw logo centered and scaled up to fill
-  // The logo emblem is centered in the image, so we zoom in
-  const scale = 1.5;
-  const size = 512 * scale;
-  const offset = (512 - size) / 2;
-  ctx.drawImage(img, offset, offset, size, size);
+  // Calculate image dimensions to fit logo centered with padding
+  const iw = img.naturalWidth;
+  const ih = img.naturalHeight;
+  const aspect = iw / ih;
 
-  // Optional: subtle teal border ring
-  ctx.beginPath();
-  ctx.arc(256, 256, 250, 0, Math.PI * 2);
-  ctx.strokeStyle = 'rgba(20,184,166,0.6)';
-  ctx.lineWidth = 8;
-  ctx.stroke();
+  // Fit inside 512x512 with 20px padding all around
+  const pad = 20;
+  const maxSize = 512 - pad * 2;
+  let drawW, drawH;
+  if (aspect >= 1) { drawW = maxSize; drawH = maxSize / aspect; }
+  else             { drawH = maxSize; drawW = maxSize * aspect; }
+
+  const x = (512 - drawW) / 2;
+  const y = (512 - drawH) / 2;
+
+  ctx.drawImage(img, x, y, drawW, drawH);
 };
 img.onerror = function() {
-  // Fallback: draw letter S
   ctx.fillStyle = '#0d1f35';
   ctx.fillRect(0, 0, 512, 512);
   ctx.font = 'bold 280px Arial';
@@ -55,9 +56,6 @@ img.onerror = function() {
   g.addColorStop(1, '#10b981');
   ctx.fillStyle = g;
   ctx.fillText('S', 256, 270);
-  ctx.font = 'bold 42px Arial';
-  ctx.fillStyle = '#e2e8f0';
-  ctx.fillText('SCORESYNC', 256, 420);
 };
 
 function download() {
