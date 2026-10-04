@@ -25,8 +25,13 @@
 </head>
 <body class="min-h-screen flex flex-col">
 
+  <!-- Reload progress bar at very top -->
+  <div class="fixed top-0 left-0 right-0 z-50 h-1" style="background:rgba(255,255,255,0.06)">
+    <div id="reload-bar" class="h-full transition-none" style="width:100%;background:linear-gradient(90deg,#10b981,#34d399);transform-origin:left"></div>
+  </div>
+
   <!-- Header -->
-  <div class="flex-shrink-0 px-8 py-5 flex items-center justify-between" style="background:rgba(255,255,255,0.03);border-bottom:1px solid rgba(255,255,255,0.07)">
+  <div class="flex-shrink-0 px-6 py-4 flex items-center justify-between mt-1" style="background:rgba(255,255,255,0.03);border-bottom:1px solid rgba(255,255,255,0.07)">
     <div class="flex items-center gap-4">
       <img src="/mansalay-logo.png" alt="Mansalay" class="w-12 h-12 rounded-full shadow-xl" style="border:2px solid rgba(255,255,255,0.2)"/>
       <div>
@@ -35,23 +40,39 @@
         <div class="text-xs mt-0.5" style="color:#475569">{{event.venue}} {{#if event.date}}&bull; {{event.date}}{{/if}}</div>
       </div>
     </div>
-    <div class="flex items-center gap-4">
-      <div class="flex items-center gap-2 px-4 py-2 rounded-full" style="background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.25)">
+    <div class="flex items-center gap-3">
+      <!-- Live badge -->
+      <div class="flex items-center gap-2 px-3 py-1.5 rounded-full" style="background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.25)">
         <span class="w-2 h-2 rounded-full bg-emerald-400 live-dot"></span>
         <span class="text-sm font-bold" style="color:#34d399">LIVE</span>
       </div>
-      <div class="text-right">
-        <div class="text-xs" style="color:#374151">Auto-refreshes every</div>
-        <div class="text-sm font-bold" style="color:#e2e8f0">10 seconds</div>
+      <!-- Reload indicator -->
+      <div class="flex flex-col items-center gap-1">
+        <div class="relative w-12 h-12">
+          <svg class="w-12 h-12 -rotate-90" viewBox="0 0 44 44">
+            <circle cx="22" cy="22" r="18" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="3.5"/>
+            <circle id="ring-arc" cx="22" cy="22" r="18" fill="none" stroke="#34d399" stroke-width="3.5"
+              stroke-dasharray="113.1" stroke-dashoffset="0" stroke-linecap="round"
+              style="transition:stroke-dashoffset 0.9s linear, stroke 0.3s"/>
+          </svg>
+          <!-- Reload icon in center -->
+          <div class="absolute inset-0 flex items-center justify-center">
+            <svg id="reload-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.5" stroke-linecap="round">
+              <path d="M21.5 2v6h-6"/>
+              <path d="M21.34 15.57a10 10 0 1 1-.57-8.38"/>
+            </svg>
+          </div>
+        </div>
+        <div id="ring-num" class="text-[10px] font-extrabold" style="color:#34d399">10s</div>
       </div>
-      <div id="countdown-ring" class="relative w-10 h-10">
-        <svg class="w-10 h-10 -rotate-90" viewBox="0 0 36 36">
-          <circle cx="18" cy="18" r="15" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="3"/>
-          <circle id="ring-arc" cx="18" cy="18" r="15" fill="none" stroke="#34d399" stroke-width="3"
-            stroke-dasharray="94.25" stroke-dashoffset="0" stroke-linecap="round"/>
-        </svg>
-        <div id="ring-num" class="absolute inset-0 flex items-center justify-center text-xs font-bold" style="color:#34d399">10</div>
-      </div>
+      <!-- Manual refresh button -->
+      <button onclick="window.location.reload()" class="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition"
+        style="background:rgba(255,255,255,0.06);color:#94a3b8;border:1px solid rgba(255,255,255,0.1)"
+        onmouseover="this.style.background='rgba(16,185,129,0.12)';this.style.color='#34d399'"
+        onmouseout="this.style.background='rgba(255,255,255,0.06)';this.style.color='#94a3b8'">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21.5 2v6h-6"/><path d="M21.34 15.57a10 10 0 1 1-.57-8.38"/></svg>
+        Refresh
+      </button>
     </div>
   </div>
 
@@ -175,19 +196,46 @@
 
 </body>
 <script>
-// Auto-refresh countdown
+// Auto-refresh countdown with progress bar + ring
 (function() {
   const TOTAL = 10;
   let secs = TOTAL;
-  const arc = document.getElementById('ring-arc');
-  const num = document.getElementById('ring-num');
-  const circ = 94.25;
-  setInterval(() => {
+  const arc  = document.getElementById('ring-arc');
+  const num  = document.getElementById('ring-num');
+  const bar  = document.getElementById('reload-bar');
+  const icon = document.getElementById('reload-icon');
+  const circ = 113.1; // 2 * PI * 18
+
+  function tick() {
     secs--;
-    if (secs <= 0) { window.location.reload(); return; }
-    if (num) num.textContent = secs;
-    if (arc) arc.style.strokeDashoffset = circ - (circ * (secs / TOTAL));
-  }, 1000);
+    // Update ring
+    if (num) num.textContent = secs + 's';
+    if (arc) {
+      const pct = secs / TOTAL;
+      arc.style.strokeDashoffset = circ - (circ * pct);
+      // Turn orange when < 3s
+      arc.style.stroke = secs <= 3 ? '#f97316' : '#34d399';
+      if (num) num.style.color = secs <= 3 ? '#f97316' : '#34d399';
+    }
+    // Update progress bar (shrinks from 100% to 0%)
+    if (bar) bar.style.width = ((secs / TOTAL) * 100) + '%';
+
+    if (secs <= 0) {
+      // Spin the reload icon before reload
+      if (icon) {
+        icon.style.animation = 'spin 0.5s linear';
+        icon.style.stroke = '#f97316';
+      }
+      if (bar) { bar.style.background = 'linear-gradient(90deg,#f97316,#fbbf24)'; bar.style.width = '100%'; }
+      setTimeout(() => window.location.reload(), 400);
+      return;
+    }
+    setTimeout(tick, 1000);
+  }
+  setTimeout(tick, 1000);
 })();
 </script>
+<style>
+@keyframes spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
+</style>
 </html>
