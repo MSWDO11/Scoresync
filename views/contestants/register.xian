@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Register as Contestant — {{event.name}}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { font-family:'Inter',sans-serif; box-sizing:border-box; }
+    body { background:#060e1a; color:#e2e8f0; -webkit-font-smoothing:antialiased; min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px; }
+    .auth-input { width:100%; padding:13px 16px; background:rgba(255,255,255,0.05)!important; border:1.5px solid rgba(255,255,255,0.12)!important; border-radius:14px!important; font-size:0.9rem; color:#e2e8f0!important; outline:none; transition:border-color 60ms; }
+    .auth-input:focus { border-color:#34d399!important; box-shadow:0 0 0 3px rgba(16,185,129,0.18)!important; }
+    .auth-input::placeholder { color:#374151; }
+    .auth-input:-webkit-autofill, .auth-input:-webkit-autofill:focus { -webkit-box-shadow:0 0 0 1000px #0d1527 inset!important; -webkit-text-fill-color:#e2e8f0!important; }
+    .auth-btn { width:100%; padding:14px; border-radius:14px; font-size:0.95rem; font-weight:800; color:#fff; border:none; cursor:pointer; background:linear-gradient(135deg,#059669,#10b981); box-shadow:0 6px 20px rgba(16,185,129,0.3); transition:opacity 60ms,transform 60ms; }
+    .auth-btn:hover { opacity:0.88; transform:translateY(-1px); }
+    textarea.auth-input { border-radius:14px!important; resize:none; }
+  </style>
+</head>
+<body>
+  <div class="w-full max-w-md">
+
+    <!-- Header -->
+    <div class="text-center mb-7">
+      <img src="/mansalay-logo.png" alt="Mansalay" class="w-14 h-14 rounded-full mx-auto mb-3 shadow-xl" style="border:2.5px solid rgba(16,185,129,0.5)"/>
+      <div class="text-xs font-bold uppercase tracking-widest mb-1" style="color:#34d399">Contestant Registration</div>
+      <h1 class="text-xl font-black text-white">{{event.name}}</h1>
+      {{#if event.date}}<p class="text-xs mt-1" style="color:#475569">{{event.date}} · {{event.venue}}</p>{{/if}}
+    </div>
+
+    {{#if success_msg}}
+    <div class="mb-4 p-4 rounded-2xl flex items-center gap-3" style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);color:#34d399">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+      <span class="text-sm font-bold">{{success_msg}}</span>
+    </div>
+    {{/if}}
+    {{#if error_msg}}
+    <div class="mb-4 p-4 rounded-2xl flex items-center gap-3" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);color:#fca5a5">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <span class="text-sm font-bold">{{error_msg}}</span>
+    </div>
+    {{/if}}
+
+    <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:24px;padding:28px 24px">
+      <form method="POST" action="/events/{{event.id}}/self-register" class="space-y-4">
+
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider mb-1.5" style="color:#475569">Full Name *</label>
+          <input type="text" name="name" placeholder="Your full name" required class="auth-input"/>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider mb-1.5" style="color:#475569">Barangay</label>
+            <input type="text" name="barangay" placeholder="e.g. Poblacion" class="auth-input"/>
+          </div>
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider mb-1.5" style="color:#475569">Age</label>
+            <input type="number" name="age" placeholder="e.g. 21" min="1" max="100" class="auth-input"/>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider mb-1.5" style="color:#475569">Platform / Advocacy</label>
+          <textarea name="platform" rows="2" placeholder="What is your platform or advocacy?" class="auth-input"></textarea>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider mb-1.5" style="color:#475569">Contact Number</label>
+          <input type="tel" name="contact" placeholder="e.g. 09XX-XXX-XXXX" class="auth-input"/>
+        </div>
+
+        <div class="p-3 rounded-xl text-xs flex items-start gap-2" style="background:rgba(16,185,129,0.07);border:1px solid rgba(16,185,129,0.18);color:#6ee7b7">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="flex-shrink-0 mt-0.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Your registration is pending organizer approval before it becomes official.
+        </div>
+
+        <button type="submit" class="auth-btn">Submit Registration</button>
+
+      </form>
+    </div>
+
+    <p class="text-center text-xs mt-4" style="color:#374151">
+      Powered by <span style="color:#34d399;font-weight:700">ScoreSync</span> · Mansalay, Oriental Mindoro
+    </p>
+  </div>
+</body>
+</html>

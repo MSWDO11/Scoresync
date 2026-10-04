@@ -1,7 +1,7 @@
 ﻿import { db } from "../models/firebaseConfig.js";
 import {
   collection, getDocs, getDoc, doc,
-  setDoc, serverTimestamp,
+  setDoc, updateDoc, addDoc, serverTimestamp,
 } from "firebase/firestore";
 
 const CRITERIA_COLORS = [
@@ -32,6 +32,12 @@ export const scoringPage = async (req, res) => {
           ? `"${ev.name}" has not started yet. Scoring opens when the event goes live.`
           : `"${ev.name}" has already ended. Scoring is now closed.`
       );
+      return res.redirect("/dashboard");
+    }
+
+    // Block if scoring is locked
+    if (ev.scoringLocked && req.session.userRole === 'judge') {
+      req.flash("error_msg", "Scoring has been locked by the administrator. Please contact the event organizer.");
       return res.redirect("/dashboard");
     }
 
@@ -68,6 +74,7 @@ export const scoringPage = async (req, res) => {
       contestants: matrix,
       criteria,
       judgeId,
+      scoringLocked: ev.scoringLocked || false,
       userName:    req.session.userName,
       userRole:    req.session.userRole,
       userInitial: (req.session.userName || "U")[0].toUpperCase(),
@@ -101,6 +108,13 @@ export const submitScores = async (req, res) => {
   } catch (_) {}
 
   try {
+    // Block scoring if locked
+    const evSnap2 = await getDoc(doc(db, "events", eventId));
+    if (evSnap2.exists() && evSnap2.data().scoringLocked) {
+      req.flash("error_msg", "Scoring has been locked by the administrator. No more score submissions are allowed.");
+      return res.redirect(`/events/${eventId}/scoring`);
+    }
+
     const writes = [];
     for (const [contestantId, criteriaMap] of Object.entries(scores || {})) {
       for (const [criteriaId, rawScore] of Object.entries(criteriaMap || {})) {
@@ -120,6 +134,16 @@ export const submitScores = async (req, res) => {
       }
     }
     await Promise.all(writes);
+
+    // Audit trail log
+    await addDoc(collection(db, "events", eventId, "audit_log"), {
+      action:    "scores_submitted",
+      judgeId,
+      judgeName: req.session.userName || "Unknown",
+      scoreCount: Object.values(scores || {}).reduce((t, cm) => t + Object.keys(cm).length, 0),
+      timestamp: serverTimestamp(),
+    });
+
     req.flash("success_msg", "Scores submitted successfully.");
     res.redirect(`/events/${eventId}/scoring`);
   } catch (err) {
@@ -244,6 +268,101 @@ export const resultsPage = async (req, res) => {
   } catch (err) {
     console.error(err);
     req.flash("error_msg", "Could not load results.");
+    res.redirect(`/events/${eventId}`);
+  }
+};
+
+// ─── Live Display Board (no auth required — public scoreboard) ────────────────
+export const displayBoard = async (req, res) => {
+  const { eventId } = req.params;
+  try {
+    const [eSnap, cSnap, crSnap, sSnap] = await Promise.all([
+      getDoc(doc(db, "events", eventId)),
+      getDocs(collection(db, "events", eventId, "contestants")),
+      getDocs(collection(db, "events", eventId, "criteria")),
+      getDocs(collection(db, "events", eventId, "scores")),
+    ]);
+    if (!eSnap.exists()) return res.redirect("/");
+    const ev          = { id: eSnap.id, ...eSnap.data() };
+    const contestants = cSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const criteria    = crSnap.docs.map((d, i) => ({ id: d.id, ...d.data(), color: CRITERIA_COLORS[i % CRITERIA_COLORS.length] }));
+    const allScores   = sSnap.docs.map(d => d.data());
+    const judgeMap    = {};
+    allScores.forEach(s => { if (s.judgeId) judgeMap[s.judgeId] = true; });
+    const ranked = contestants.map(c => {
+      let total = 0;
+      criteria.forEach(cr => {
+        const judgeScores = allScores.filter(s => s.contestantId === c.id && s.criteriaId === cr.id);
+        const avg = judgeScores.length ? judgeScores.reduce((sum, s) => sum + s.score, 0) / judgeScores.length : 0;
+        total += (avg / (Number(cr.maxScore) || 100)) * (Number(cr.weight) || 0);
+      });
+      return { ...c, finalScore: total.toFixed(4), finalScoreDisplay: total.toFixed(2) };
+    });
+    ranked.sort((a, b) => b.finalScore - a.finalScore);
+    const topScore = ranked.length ? parseFloat(ranked[0].finalScore) : 0;
+    ranked.forEach((c, i) => { c.rank = i + 1; c.gapToFirst = (topScore - parseFloat(c.finalScore)).toFixed(2); });
+    res.render("scoring/display", {
+      title: `Live — ${ev.name}`,
+      event: ev, ranked, criteria,
+      judgeCount: Object.keys(judgeMap).length || 0,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Could not load display board.");
+  }
+};
+
+// ─── Public Results (no login required) ──────────────────────────────────────
+export const publicResults = async (req, res) => {
+  const { eventId } = req.params;
+  try {
+    const [eSnap, cSnap, crSnap, sSnap] = await Promise.all([
+      getDoc(doc(db, "events", eventId)),
+      getDocs(collection(db, "events", eventId, "contestants")),
+      getDocs(collection(db, "events", eventId, "criteria")),
+      getDocs(collection(db, "events", eventId, "scores")),
+    ]);
+    if (!eSnap.exists()) return res.status(404).send("Event not found.");
+    const ev = { id: eSnap.id, ...eSnap.data() };
+    // Only public if completed or organizer made it public
+    const contestants = cSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const criteria    = crSnap.docs.map((d, i) => ({ id: d.id, ...d.data(), color: CRITERIA_COLORS[i % CRITERIA_COLORS.length] }));
+    const allScores   = sSnap.docs.map(d => d.data());
+    const judgeMap    = {};
+    allScores.forEach(s => { if (s.judgeId && !judgeMap[s.judgeId]) judgeMap[s.judgeId] = s.judgeName || "Judge"; });
+    const ranked = contestants.map(c => {
+      let totalWeighted = 0;
+      const breakdown = criteria.map((cr, i) => {
+        const judgeScores = allScores.filter(s => s.contestantId === c.id && s.criteriaId === cr.id);
+        const avg = judgeScores.length ? judgeScores.reduce((sum, s) => sum + s.score, 0) / judgeScores.length : 0;
+        const weighted = (avg / (Number(cr.maxScore) || 100)) * (Number(cr.weight) || 0);
+        totalWeighted += weighted;
+        return { name: cr.name, weight: cr.weight, avg: avg.toFixed(2), weighted: weighted.toFixed(2), color: CRITERIA_COLORS[i % CRITERIA_COLORS.length] };
+      });
+      return { ...c, breakdown, finalScore: totalWeighted.toFixed(4), finalScoreDisplay: totalWeighted.toFixed(2) };
+    });
+    ranked.sort((a, b) => b.finalScore - a.finalScore);
+    ranked.forEach((c, i) => { c.rank = i + 1; });
+    res.render("scoring/public", { title: `Results — ${ev.name}`, event: ev, ranked, criteria, judgeCount: Object.keys(judgeMap).length });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Could not load results.");
+  }
+};
+
+// ─── Score Lock / Unlock ──────────────────────────────────────────────────────
+export const toggleScoreLock = async (req, res) => {
+  const { eventId } = req.params;
+  try {
+    const eSnap = await getDoc(doc(db, "events", eventId));
+    if (!eSnap.exists()) return res.redirect("/events");
+    const locked = !eSnap.data().scoringLocked;
+    await updateDoc(doc(db, "events", eventId), { scoringLocked: locked });
+    req.flash("success_msg", locked ? "Scoring locked. Judges can no longer submit scores." : "Scoring unlocked. Judges can now submit scores.");
+    res.redirect(`/events/${eventId}`);
+  } catch (err) {
+    console.error(err);
+    req.flash("error_msg", "Failed to toggle score lock.");
     res.redirect(`/events/${eventId}`);
   }
 };

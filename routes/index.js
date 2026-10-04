@@ -57,6 +57,7 @@ router.post( "/users/:id/delete",     requireAuth, requireRole("admin"), deleteU
 import {
   listEvents, createEventPage, storeEvent,
   showEvent, editEventPage, updateEvent, deleteEvent, updateEventStatus,
+  assignJudge, removeJudge,
 } from "../controllers/eventController.js";
 
 router.get( "/events",                requireAuth,                                      listEvents);
@@ -67,11 +68,14 @@ router.get( "/events/:id/edit",       requireAuth, requireRole("admin","organize
 router.post("/events/:id/update",     requireAuth, requireRole("admin","organizer"),     updateEvent);
 router.post("/events/:id/status",     requireAuth, requireRole("admin","organizer"),     updateEventStatus);
 router.post("/events/:id/delete",     requireAuth, requireRole("admin","organizer"),     deleteEvent);
+router.post("/events/:id/judges/assign",          requireAuth, requireRole("admin","organizer"), assignJudge);
+router.post("/events/:id/judges/:judgeId/remove", requireAuth, requireRole("admin","organizer"), removeJudge);
 
 // ─── Contestants (admin, organizer & encoder can mutate) ──────────────────────
 import {
   addContestantPage, storeContestant,
   editContestantPage, updateContestant, deleteContestant,
+  selfRegisterPage, selfRegister,
 } from "../controllers/contestantController.js";
 
 router.get( "/events/:eventId/contestants/add",              requireAuth, requireRole("admin","organizer","encoder"), addContestantPage);
@@ -79,6 +83,9 @@ router.post("/events/:eventId/contestants",                  requireAuth, requir
 router.get( "/events/:eventId/contestants/:id/edit",         requireAuth, requireRole("admin","organizer","encoder"), editContestantPage);
 router.post("/events/:eventId/contestants/:id/update",       requireAuth, requireRole("admin","organizer","encoder"), updateContestant);
 router.post("/events/:eventId/contestants/:id/delete",       requireAuth, requireRole("admin","organizer"),           deleteContestant);
+// Public self-registration (no login)
+router.get( "/events/:eventId/self-register",  selfRegisterPage);
+router.post("/events/:eventId/self-register",  selfRegister);
 
 // ─── Criteria (admin & organizer) ────────────────────────────────────────────
 import {
@@ -92,11 +99,17 @@ router.post("/events/:eventId/criteria/:id/delete", requireAuth, requireRole("ad
 // ─── Scoring (judges can enter scores; all auth can view results) ─────────────
 import {
   scoringPage, submitScores, resultsPage,
+  displayBoard, publicResults, toggleScoreLock,
 } from "../controllers/scoringController.js";
 
 router.get( "/events/:eventId/scoring",  requireAuth, requireRole("admin","judge","organizer"), scoringPage);
 router.post("/events/:eventId/scoring",  requireAuth, requireRole("admin","judge","organizer"), submitScores);
 router.get( "/events/:eventId/results",  requireAuth,                               resultsPage);
+// Public routes — no login required
+router.get( "/events/:eventId/display",  displayBoard);
+router.get( "/events/:eventId/public",   publicResults);
+// Score lock
+router.post("/events/:eventId/lock",     requireAuth, requireRole("admin","organizer"), toggleScoreLock);
 
 // ─── AI Score Analytics (admin only) ──────────────────────────────────────────
 import {

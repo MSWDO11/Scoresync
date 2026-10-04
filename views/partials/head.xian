@@ -3,6 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="/manifest.json"/>
+  <meta name="theme-color" content="#10b981"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="/fa.embedded.css"/>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -416,5 +420,9 @@
       fetch('/_health', { method: 'GET', cache: 'no-store' }).catch(() => {});
       setTimeout(keepWarm, 25000);
     })();
+    // Register Service Worker for PWA
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
+    }
   </script>
 </head>

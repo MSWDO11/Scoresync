@@ -148,3 +148,74 @@ export const deleteContestant = async (req, res) => {
   }
   res.redirect(`/events/${eventId}`);
 };
+
+// ─── Public self-registration page ───────────────────────────────────────────
+export const selfRegisterPage = async (req, res) => {
+  const { eventId } = req.params;
+  try {
+    const eSnap = await getDoc(doc(db, "events", eventId));
+    if (!eSnap.exists()) return res.status(404).send("Event not found.");
+    const ev = eSnap.data();
+    if (ev.status === 'completed' || ev.status === 'cancelled') {
+      return res.send(`<div style="font-family:sans-serif;text-align:center;padding:80px;background:#060e1a;color:#e2e8f0;min-height:100vh"><h2>Registration Closed</h2><p>This event is no longer accepting contestants.</p></div>`);
+    }
+    const flash = req.session._flash || {};
+    req.session._flash = {};
+    res.render("contestants/register", {
+      title:     `Register — ${ev.name}`,
+      event:     { id: eSnap.id, ...ev },
+      success_msg: (flash.success_msg || [])[0] || "",
+      error_msg:   (flash.error_msg   || [])[0] || "",
+    });
+  } catch (err) {
+    res.status(500).send("Could not load registration form.");
+  }
+};
+
+export const selfRegister = async (req, res) => {
+  const { eventId } = req.params;
+  const { name, barangay, age, platform, contact } = req.body;
+  try {
+    if (!name || !name.trim()) {
+      if (!req.session._flash) req.session._flash = {};
+      req.session._flash.error_msg = ["Full name is required."];
+      return res.redirect(`/events/${eventId}/self-register`);
+    }
+
+    // Check max contestants
+    const eSnap = await getDoc(doc(db, "events", eventId));
+    if (eSnap.exists()) {
+      const maxContestants = Number(eSnap.data().maxContestants) || 0;
+      if (maxContestants > 0) {
+        const cSnap = await getDocs(collection(db, "events", eventId, "contestants"));
+        if (cSnap.size >= maxContestants) {
+          if (!req.session._flash) req.session._flash = {};
+          req.session._flash.error_msg = [`Registration is full. This event only allows ${maxContestants} contestants.`];
+          return res.redirect(`/events/${eventId}/self-register`);
+        }
+      }
+    }
+
+    await addDoc(collection(db, "events", eventId, "contestants"), {
+      name:        name.trim(),
+      barangay:    barangay  || "",
+      age:         age       || "",
+      platform:    platform  || "",
+      contact:     contact   || "",
+      photo:       "",
+      number:      "",
+      status:      "pending_approval", // needs admin approval
+      selfRegistered: true,
+      createdAt:   serverTimestamp(),
+    });
+
+    if (!req.session._flash) req.session._flash = {};
+    req.session._flash.success_msg = [`Thank you, ${name.trim()}! Your registration has been submitted and is pending approval.`];
+    res.redirect(`/events/${eventId}/self-register`);
+  } catch (err) {
+    console.error(err);
+    if (!req.session._flash) req.session._flash = {};
+    req.session._flash.error_msg = ["Failed to submit registration. Please try again."];
+    res.redirect(`/events/${eventId}/self-register`);
+  }
+};

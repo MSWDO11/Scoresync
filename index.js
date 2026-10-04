@@ -65,6 +65,7 @@ app.use((req, res, next) => {
 
   res.locals.success_msg = (msgs.success_msg || [])[0] || "";
   res.locals.error_msg   = (msgs.error_msg   || [])[0] || "";
+  res.locals.success_html = (msgs.success_msg || [])[0] || ""; // allows HTML in success
   next();
 });
 app.use(injectUser);

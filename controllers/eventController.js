@@ -279,9 +279,12 @@ export const assignJudge = async (req, res) => {
       req.flash("error_msg", "Please select a judge.");
       return res.redirect(`/events/${id}`);
     }
-    const snap = await getDoc(doc(db, EVENTS, id));
-    if (!snap.exists()) return res.redirect("/events");
-    const current = snap.data().assignedJudges || [];
+    const [evSnap, judgeSnap] = await Promise.all([
+      getDoc(doc(db, EVENTS, id)),
+      getDoc(doc(db, "users", judgeId)),
+    ]);
+    if (!evSnap.exists()) return res.redirect("/events");
+    const current = evSnap.data().assignedJudges || [];
     if (current.includes(judgeId)) {
       req.flash("error_msg", "This judge is already assigned to the event.");
       return res.redirect(`/events/${id}`);
@@ -289,7 +292,27 @@ export const assignJudge = async (req, res) => {
     await updateDoc(doc(db, EVENTS, id), {
       assignedJudges: [...current, judgeId],
     });
-    req.flash("success_msg", "Judge assigned to event.");
+
+    // Build Gmail notification link for the judge
+    if (judgeSnap.exists()) {
+      const ev = evSnap.data();
+      const judge = judgeSnap.data();
+      const subject = encodeURIComponent(`You have been assigned as Judge — ${ev.name}`);
+      const body = encodeURIComponent(
+        `Dear ${judge.name || 'Judge'},\n\n` +
+        `You have been assigned as an official judge for:\n\n` +
+        `Event: ${ev.name}\n` +
+        `Date: ${ev.date || 'TBA'}\n` +
+        `Venue: ${ev.venue || 'TBA'}\n\n` +
+        `Please log in to ScoreSync to view your assigned event and submit scores when the event goes live.\n\n` +
+        `Login: https://scoresync.site/login\n\n` +
+        `Best regards,\nScoreSync Admin`
+      );
+      const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(judge.email)}&su=${subject}&body=${body}`;
+      req.flash("success_msg", `Judge assigned. <a href="${gmailUrl}" target="_blank" style="color:#60a5fa;text-decoration:underline">Click here to notify them via Gmail →</a>`);
+    } else {
+      req.flash("success_msg", "Judge assigned to event.");
+    }
     res.redirect(`/events/${id}`);
   } catch (err) {
     console.error(err);
