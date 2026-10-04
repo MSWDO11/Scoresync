@@ -35,24 +35,27 @@
 
   <div class="relative max-w-5xl mx-auto text-center animate-fadeup">
     <!-- Three logos row -->
-    <div class="flex items-center justify-center gap-6 mb-8 flex-wrap">
-      <div class="flex flex-col items-center gap-1.5">
-        <div class="w-20 h-20 rounded-full overflow-hidden shadow-2xl" style="border:3px solid rgba(255,255,255,0.3)">
+    <div class="flex items-end justify-center gap-8 mb-8 flex-wrap">
+      <!-- MinSU -->
+      <div class="flex flex-col items-center gap-2">
+        <div class="w-20 h-20 rounded-full overflow-hidden shadow-2xl" style="border:3px solid rgba(255,255,255,0.25)">
           <img src="/minsu-logo.png" alt="Mindoro State University" class="w-full h-full object-cover"/>
         </div>
-        <span class="text-[9px] font-bold uppercase tracking-wider text-center max-w-[80px] leading-tight" style="color:rgba(255,255,255,0.5)">Mindoro State Univ.</span>
+        <span class="text-[9px] font-bold uppercase tracking-wider text-center" style="color:rgba(255,255,255,0.5);letter-spacing:0.12em">Mindoro<br/>State Univ.</span>
       </div>
-      <div class="flex flex-col items-center gap-1.5">
-        <div class="w-28 h-28 rounded-full overflow-hidden shadow-2xl" style="border:4px solid rgba(255,215,0,0.5);box-shadow:0 0 30px rgba(255,215,0,0.2)">
-          <img src="/scoresync-logo.png" alt="ScoreSync" class="w-full h-full object-cover" style="object-position:center center;transform:scale(1.35)"/>
+      <!-- ScoreSync — center, larger with gold ring -->
+      <div class="flex flex-col items-center gap-2 -mt-4">
+        <div class="w-28 h-28 rounded-full overflow-hidden shadow-2xl" style="border:4px solid #f59e0b;box-shadow:0 0 0 2px rgba(245,158,11,0.3),0 8px 32px rgba(245,158,11,0.25)">
+          <img src="/scoresync-logo.png" alt="ScoreSync" class="w-full h-full object-cover"/>
         </div>
-        <span class="text-[10px] font-extrabold uppercase tracking-wider" style="color:rgba(255,215,0,0.8)">ScoreSync</span>
+        <span class="text-[10px] font-extrabold uppercase tracking-wider" style="color:#f59e0b;letter-spacing:0.12em">ScoreSync</span>
       </div>
-      <div class="flex flex-col items-center gap-1.5">
-        <div class="w-20 h-20 rounded-full overflow-hidden shadow-2xl" style="border:3px solid rgba(255,255,255,0.3)">
+      <!-- Mansalay -->
+      <div class="flex flex-col items-center gap-2">
+        <div class="w-20 h-20 rounded-full overflow-hidden shadow-2xl" style="border:3px solid rgba(255,255,255,0.25)">
           <img src="/mansalay-logo.png" alt="Bayan ng Mansalay" class="w-full h-full object-cover"/>
         </div>
-        <span class="text-[9px] font-bold uppercase tracking-wider text-center max-w-[80px] leading-tight" style="color:rgba(255,255,255,0.5)">Bayan ng Mansalay</span>
+        <span class="text-[9px] font-bold uppercase tracking-wider text-center" style="color:rgba(255,255,255,0.5);letter-spacing:0.12em">Bayan ng<br/>Mansalay</span>
       </div>
     </div>
 
