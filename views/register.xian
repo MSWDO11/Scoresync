@@ -93,7 +93,7 @@
     <!-- Logo -->
     <div class="flex flex-col items-center mb-6">
       <div class="w-14 h-14 rounded-full overflow-hidden shadow-2xl mb-3" style="border:2.5px solid rgba(99,102,241,0.5)">
-        <img src="/mansalay-logo.png" alt="ScoreSync" class="w-full h-full object-cover"/>
+        <img src="/scoresync-logo.png" alt="ScoreSync" class="w-full h-full object-cover"/>
       </div>
       <h1 class="text-xl font-black tracking-tight text-white">Get started</h1>
       <p class="text-xs mt-1 text-center" style="color:#475569">Request a ScoreSync account</p>

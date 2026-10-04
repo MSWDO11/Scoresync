@@ -13,7 +13,7 @@
   <!-- Brand -->
   <a href="/dashboard" class="flex items-center gap-2 flex-shrink-0">
     <div class="w-7 h-7 rounded-full overflow-hidden shadow" style="border:1.5px solid rgba(255,255,255,0.2)">
-      <img src="/mansalay-logo.png" alt="Mansalay" class="w-full h-full object-cover"/>
+      <img src="/scoresync-logo.png" alt="Mansalay" class="w-full h-full object-cover"/>
     </div>
     <span class="font-black text-white text-sm tracking-tight hidden sm:block">ScoreSync</span>
   </a>

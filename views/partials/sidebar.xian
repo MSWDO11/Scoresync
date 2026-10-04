@@ -4,7 +4,7 @@
   <div class="px-5 py-5 flex-shrink-0 flex items-center justify-between" style="background:rgba(255,255,255,0.03);border-bottom:1px solid rgba(255,255,255,0.08)">
     <div class="flex items-center gap-3 sidebar-brand-content">
       <div class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 shadow-lg" style="border:2px solid rgba(255,255,255,0.2)">
-        <img src="/mansalay-logo.png" alt="Mansalay Seal" class="w-full h-full object-cover"/>
+        <img src="/scoresync-logo.png" alt="Mansalay Seal" class="w-full h-full object-cover"/>
       </div>
       <div class="sidebar-label-text">
         <div class="text-white font-black text-base leading-tight tracking-tight">ScoreSync</div>
