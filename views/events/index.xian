@@ -22,9 +22,35 @@
   </div>
 
   {{#if events.length}}
-  <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5 animate-fadeup-1">
+
+  <!-- ── Filter by Status ── -->
+  <div class="flex items-center gap-2 flex-wrap animate-fadeup-1">
+    <span class="text-[10px] font-extrabold uppercase tracking-widest flex-shrink-0" style="color:#374151">Filter by Status</span>
+    <div class="flex gap-2 flex-wrap">
+      <button onclick="filterEvents('all')" id="filter-all"
+        class="filter-btn px-4 py-1.5 rounded-full text-xs font-bold transition"
+        style="background:#10b981;color:#fff;border:1px solid #10b981">All</button>
+      <button onclick="filterEvents('upcoming')" id="filter-upcoming"
+        class="filter-btn px-4 py-1.5 rounded-full text-xs font-bold transition"
+        style="background:rgba(255,255,255,0.06);color:#94a3b8;border:1px solid rgba(255,255,255,0.1)">Upcoming</button>
+      <button onclick="filterEvents('ongoing')" id="filter-ongoing"
+        class="filter-btn px-4 py-1.5 rounded-full text-xs font-bold transition"
+        style="background:rgba(255,255,255,0.06);color:#94a3b8;border:1px solid rgba(255,255,255,0.1)">Ongoing</button>
+      <button onclick="filterEvents('completed')" id="filter-completed"
+        class="filter-btn px-4 py-1.5 rounded-full text-xs font-bold transition"
+        style="background:rgba(255,255,255,0.06);color:#94a3b8;border:1px solid rgba(255,255,255,0.1)">Completed</button>
+      <button onclick="filterEvents('cancelled')" id="filter-cancelled"
+        class="filter-btn px-4 py-1.5 rounded-full text-xs font-bold transition"
+        style="background:rgba(255,255,255,0.06);color:#94a3b8;border:1px solid rgba(255,255,255,0.1)">Cancelled</button>
+    </div>
+  </div>
+
+  <div id="events-count" class="text-xs" style="color:#374151"></div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5 animate-fadeup-1" id="events-grid">
     {{#each events}}
-    <div class="overflow-hidden flex flex-col rounded-2xl transition hover:-translate-y-1 hover:shadow-2xl"
+    <div class="overflow-hidden flex flex-col rounded-2xl transition hover:-translate-y-1 hover:shadow-2xl event-card"
+      data-status="{{status}}"
       style="background:#111827;border:1px solid rgba(255,255,255,0.08);box-shadow:0 2px 12px rgba(0,0,0,0.3)">
       <!-- Card Header -->
       <div class="px-5 py-4 relative overflow-hidden"
@@ -110,6 +136,32 @@
 
 </main>
 </div>
+<script>
+function filterEvents(status) {
+  const cards = document.querySelectorAll('.event-card');
+  const btns  = document.querySelectorAll('.filter-btn');
+  let visible = 0;
+
+  cards.forEach(card => {
+    const show = status === 'all' || card.dataset.status === status;
+    card.style.display = show ? '' : 'none';
+    if (show) visible++;
+  });
+
+  // Update button styles
+  btns.forEach(btn => {
+    const active = btn.id === 'filter-' + status;
+    btn.style.background     = active ? '#10b981' : 'rgba(255,255,255,0.06)';
+    btn.style.color          = active ? '#fff'    : '#94a3b8';
+    btn.style.borderColor    = active ? '#10b981' : 'rgba(255,255,255,0.1)';
+  });
+
+  const countEl = document.getElementById('events-count');
+  if (countEl) countEl.textContent = visible + ' event' + (visible !== 1 ? 's' : '') + (status !== 'all' ? ' · ' + status : '');
+}
+// Init
+document.addEventListener('DOMContentLoaded', () => filterEvents('all'));
+</script>
 {{> footer }}
 </body>
 </html>

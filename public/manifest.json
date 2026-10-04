@@ -5,8 +5,7 @@
   "start_url": "/dashboard",
   "display": "standalone",
   "background_color": "#0a1628",
-  "theme_color": "#10b981",
-  "orientation": "portrait-primary",
+  "theme_color": "#10b981",  "orientation": "portrait-primary",
   "icons": [
     {
       "src": "/scoresync-logo.png",
