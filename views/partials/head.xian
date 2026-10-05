@@ -19,18 +19,57 @@
     /* 80ms = ~1.5 frames at 120fps — instant-feel, no perceptible lag */
     a, button { transition: background 80ms ease, color 80ms ease, border-color 80ms ease,
                              opacity 80ms ease, box-shadow 80ms ease, transform 80ms ease; }
+    /* Larger tap targets on mobile */
+    button, a, [role="button"] { min-height: 36px; }
+    /* Remove iOS button styling */
+    button { -webkit-appearance: none; appearance: none; }
+    /* Prevent double-tap zoom on buttons */
+    button, a { touch-action: manipulation; }
     :focus-visible { outline: 2px solid #3b82f6; outline-offset: 2px; border-radius: 6px; }
 
     /* ── Smooth scrolling + touch ── */
     html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
-    body { background: #0a0f1e; color: #e2e8f0; -webkit-font-smoothing: antialiased; }
+    body { background: #0a0f1e; color: #e2e8f0; -webkit-font-smoothing: antialiased; overscroll-behavior: none; }
+    /* GPU compositing for smooth animations */
+    .card, .card-flat, .section-card, .kpi-card, .btn-primary, .btn-secondary, .btn-danger {
+      will-change: transform;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    /* Active press feedback on ALL buttons */
+    button:active, a.btn-primary:active, a.btn-secondary:active, a.btn-sm:active {
+      transform: scale(0.97) !important;
+      opacity: 0.9 !important;
+    }
+    /* Smooth image rendering */
+    img { image-rendering: -webkit-optimize-contrast; }
 
     /* ── Responsive text ── */
     @media (max-width: 480px) {
-      .text-2xl { font-size: 1.35rem !important; }
-      .text-3xl { font-size: 1.6rem !important; }
+      .text-2xl { font-size: 1.25rem !important; }
+      .text-3xl { font-size: 1.5rem !important; }
+      .text-4xl { font-size: 1.75rem !important; }
+      .text-5xl { font-size: 2rem !important; }
       .px-6, .px-7, .px-8 { padding-left: 1rem !important; padding-right: 1rem !important; }
-      .py-6, .py-7, .py-8 { padding-top: 1.2rem !important; padding-bottom: 1.2rem !important; }
+      .py-6, .py-7, .py-8 { padding-top: 1rem !important; padding-bottom: 1rem !important; }
+      /* Full-width buttons on mobile */
+      .btn-primary, .btn-secondary, .btn-danger { width: 100%; justify-content: center; }
+      /* Better tap targets */
+      .btn-sm { padding: 8px 16px !important; font-size: 0.8rem !important; }
+      /* Prevent text overflow */
+      h1, h2, h3 { word-break: break-word; overflow-wrap: break-word; }
+      /* Stack grids on mobile */
+      .grid-cols-2 { grid-template-columns: 1fr !important; }
+      .grid-cols-3 { grid-template-columns: 1fr !important; }
+      .grid-cols-4 { grid-template-columns: repeat(2,1fr) !important; }
+    }
+    @media (max-width: 640px) {
+      /* Smaller page headers on mobile */
+      .page-header h1 { font-size: 1.4rem !important; }
+      /* Tables scroll on mobile */
+      .overflow-x-auto { -webkit-overflow-scrolling: touch; }
+      /* Full width cards */
+      .card, .card-flat, .section-card { border-radius: 16px !important; }
     }
 
     /* ── Gradients ── */
@@ -99,6 +138,12 @@
     @media (max-width: 767px) {
       .sidebar { position: fixed; top: 0; bottom: 0; left: 0; height: 100vh; transform: translateX(-100%); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5); }
       .sidebar.open { transform: translateX(0); }
+      /* Full viewport main content on mobile */
+      main { padding: 12px !important; }
+      /* Stack flex rows on mobile */
+      .flex-col-mobile { flex-direction: column !important; }
+      /* Hide non-essential columns on mobile */
+      .hide-mobile { display: none !important; }
     }
     @media (min-width: 768px) {
       .sidebar { position: relative; min-height: 100vh; flex-shrink: 0; transform: none !important; }
