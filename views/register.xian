@@ -203,7 +203,7 @@
           </div>
         </div>
 
-        <button type="submit" class="auth-btn">Request Account →</button>
+        <button type="submit" class="auth-btn">Request Account</button>
 
       </form>
     </div>

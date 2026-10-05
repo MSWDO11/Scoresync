@@ -159,7 +159,7 @@
         </div>
 
         <!-- Submit -->
-        <button type="submit" class="auth-btn">Sign In →</button>
+        <button type="submit" class="auth-btn">Sign In</button>
 
       </form>
     </div>
