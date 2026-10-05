@@ -46,7 +46,7 @@
       <!-- ScoreSync — center, same size -->
       <div class="flex flex-col items-center gap-2">
         <div class="w-24 h-24 rounded-full overflow-hidden shadow-2xl" style="border:3px solid rgba(255,255,255,0.3)">
-          <img src="/scoresync-logo.png?v=3" alt="ScoreSync" class="w-full h-full object-cover" style="transform:scale(1.1);transform-origin:center"/>
+          <img src="/scoresync-logo.png?v=4" alt="ScoreSync" class="w-full h-full object-cover" style="transform:scale(1.1);transform-origin:center"/>
         </div>
         <span class="text-[10px] font-extrabold uppercase tracking-wider" style="color:rgba(255,255,255,0.7);letter-spacing:0.12em">ScoreSync</span>
       </div>
