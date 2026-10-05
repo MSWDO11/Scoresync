@@ -28,14 +28,16 @@
     :focus-visible { outline: 2px solid #3b82f6; outline-offset: 2px; border-radius: 6px; }
 
     /* ── Smooth scrolling + touch ── */
-    html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; overflow-x: hidden; }
-    body { background: #0a0f1e; color: #e2e8f0; -webkit-font-smoothing: antialiased; overscroll-behavior: none; overflow-x: hidden; max-width: 100vw; }
+    html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
+    body { background: #0a0f1e; color: #e2e8f0; -webkit-font-smoothing: antialiased; }
     /* GPU compositing for smooth animations */
     .card, .card-flat, .section-card, .kpi-card, .btn-primary, .btn-secondary, .btn-danger {
       will-change: transform;
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
     }
+    /* Prevent horizontal scroll at content level (not body — breaks mobile vertical scroll) */
+    main { overflow-x: hidden; }
     /* Active press feedback on ALL buttons */
     button:active, a.btn-primary:active, a.btn-secondary:active, a.btn-sm:active {
       transform: scale(0.97) !important;

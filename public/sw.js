@@ -1,10 +1,13 @@
 // ScoreSync Service Worker — cache static assets for faster loads
-const CACHE = 'scoresync-v1';
+const CACHE = 'scoresync-v2';
 const STATIC = [
   '/tailwind.css',
   '/fa.embedded.css',
   '/manifest.json',
   '/mansalay-logo.png',
+  '/scoresync-logo.png',
+  '/minsu-logo.png',
+  '/icon.png',
 ];
 
 self.addEventListener('install', e => {
