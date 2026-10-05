@@ -35,7 +35,7 @@
 
   <div class="relative max-w-5xl mx-auto text-center animate-fadeup">
     <!-- Three logos row -->
-    <div class="flex items-end justify-center gap-8 mb-8 flex-wrap">
+    <div class="flex items-center justify-center gap-8 mb-8 flex-wrap">
       <!-- MinSU -->
       <div class="flex flex-col items-center gap-2">
         <div class="w-24 h-24 rounded-full overflow-hidden shadow-2xl" style="border:3px solid rgba(255,255,255,0.3)">
