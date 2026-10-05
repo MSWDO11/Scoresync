@@ -43,12 +43,12 @@
         </div>
         <span class="text-[9px] font-bold uppercase tracking-wider text-center" style="color:rgba(255,255,255,0.5);letter-spacing:0.12em">Mindoro<br/>State Univ.</span>
       </div>
-      <!-- ScoreSync — center, larger with gold ring -->
+      <!-- ScoreSync — center, larger -->
       <div class="flex flex-col items-center gap-2 -mt-4">
-        <div class="w-28 h-28 rounded-full overflow-hidden shadow-2xl" style="border:4px solid #f59e0b;box-shadow:0 0 0 2px rgba(245,158,11,0.3),0 8px 32px rgba(245,158,11,0.25)">
+        <div class="w-28 h-28 rounded-full overflow-hidden shadow-2xl" style="border:3px solid rgba(255,255,255,0.3)">
           <img src="/scoresync-logo.png" alt="ScoreSync" class="w-full h-full object-cover" style="transform:scale(1.7);transform-origin:center"/>
         </div>
-        <span class="text-[10px] font-extrabold uppercase tracking-wider" style="color:#f59e0b;letter-spacing:0.12em">ScoreSync</span>
+        <span class="text-[10px] font-extrabold uppercase tracking-wider" style="color:rgba(255,255,255,0.7);letter-spacing:0.12em">ScoreSync</span>
       </div>
       <!-- Mansalay -->
       <div class="flex flex-col items-center gap-2">
