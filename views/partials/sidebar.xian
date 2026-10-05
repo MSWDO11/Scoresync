@@ -176,13 +176,6 @@
         <div class="text-white text-sm font-semibold truncate">{{ userName }}</div>
         <div class="text-blue-300 text-[10px] capitalize mt-0.5 sidebar-label-text" style="opacity:0.7">{{#if isEncoder}}Participant{{else}}{{ userRole }}{{/if}}</div>
       </div>
-      <a href="/logout" title="Sign out"
-        class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 hover:bg-red-500"
-        style="color:rgba(252,165,165,0.7)">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-      </a>
-    </div>
-  </div>
 
 </aside>
 
