@@ -1,4 +1,4 @@
-{{> head }}
+﻿{{> head }}
 <style>
   .auth-input {
     width: 100%;
@@ -232,6 +232,8 @@ function togglePwd(){
 </script>
 </body>
 </html>
+
+
 
 
 
