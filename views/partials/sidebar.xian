@@ -165,7 +165,7 @@
   <!-- User footer -->
   <div class="px-3 py-3 flex-shrink-0" style="border-top:1px solid rgba(255,255,255,0.08)">
     <!-- User card -->
-    <div class="flex items-center gap-3 px-3 py-2.5 rounded-xl" style="background:rgba(255,255,255,0.07)">
+    <div class="flex items-center gap-3 px-3 py-2.5 rounded-xl mb-2" style="background:rgba(255,255,255,0.07)">
       <div class="relative flex-shrink-0">
         <div class="w-9 h-9 rounded-full grad-blue flex items-center justify-center text-white text-sm font-black shadow-md">
           {{ userInitial }}
@@ -177,6 +177,14 @@
         <div class="text-blue-300 text-[10px] capitalize mt-0.5" style="opacity:0.7">{{#if isEncoder}}Participant{{else}}{{ userRole }}{{/if}}</div>
       </div>
     </div>
+    <!-- Sign Out button -->
+    <a href="/logout" class="sidebar-label-text flex items-center justify-center gap-2 w-full py-2 rounded-xl text-xs font-bold transition"
+      style="color:rgba(252,165,165,0.85);background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.2)"
+      onmouseover="this.style.background='rgba(239,68,68,0.15)';this.style.borderColor='rgba(239,68,68,0.4)'"
+      onmouseout="this.style.background='rgba(239,68,68,0.07)';this.style.borderColor='rgba(239,68,68,0.2)'">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Sign Out
+    </a>
   </div>
 
 </aside>
