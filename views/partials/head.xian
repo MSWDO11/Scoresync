@@ -52,24 +52,45 @@
       .text-5xl { font-size: 2rem !important; }
       .px-6, .px-7, .px-8 { padding-left: 1rem !important; padding-right: 1rem !important; }
       .py-6, .py-7, .py-8 { padding-top: 1rem !important; padding-bottom: 1rem !important; }
-      /* Full-width buttons on mobile */
-      .btn-primary, .btn-secondary, .btn-danger { width: 100%; justify-content: center; }
       /* Better tap targets */
-      .btn-sm { padding: 8px 16px !important; font-size: 0.8rem !important; }
+      .btn-sm { padding: 8px 14px !important; font-size: 0.75rem !important; }
       /* Prevent text overflow */
       h1, h2, h3 { word-break: break-word; overflow-wrap: break-word; }
-      /* Stack grids on mobile */
-      .grid-cols-2 { grid-template-columns: 1fr !important; }
-      .grid-cols-3 { grid-template-columns: 1fr !important; }
-      .grid-cols-4 { grid-template-columns: repeat(2,1fr) !important; }
+      /* KPI cards: 2 columns on mobile */
+      .grid-cols-2, .grid-cols-3, .grid-cols-4 { grid-template-columns: repeat(2, 1fr) !important; }
+      /* Modals fit on small screens */
+      .fixed.inset-0 > div { max-width: 95vw !important; max-height: 90vh !important; overflow-y: auto !important; }
     }
     @media (max-width: 640px) {
       /* Smaller page headers on mobile */
       .page-header h1 { font-size: 1.4rem !important; }
-      /* Tables scroll on mobile */
-      .overflow-x-auto { -webkit-overflow-scrolling: touch; }
-      /* Full width cards */
+      .page-header p { font-size: 0.8rem !important; }
+      /* Tables scroll horizontally */
+      .overflow-x-auto { -webkit-overflow-scrolling: touch; overflow-x: auto !important; }
+      .data-table { min-width: 500px !important; }
+      /* Cards full width with smaller radius */
       .card, .card-flat, .section-card { border-radius: 16px !important; }
+      /* Toolbars: wrap buttons */
+      .flex.flex-wrap { flex-wrap: wrap !important; }
+      /* Button groups wrap with gap */
+      .flex.items-center.gap-2, .flex.items-center.gap-3 { flex-wrap: wrap !important; }
+      /* Hide breadcrumb on mobile */
+      .breadcrumb { font-size: 0.7rem !important; }
+      /* Navbar: smaller profile pill */
+      .max-w-\[160px\] { max-width: 100px !important; }
+      /* Stack lg grids to 1 column */
+      .lg\:grid-cols-2, .lg\:grid-cols-3, .lg\:grid-cols-4, .lg\:grid-cols-5 {
+        grid-template-columns: 1fr !important;
+      }
+      /* Smaller gaps on mobile */
+      .gap-5, .gap-6 { gap: 0.75rem !important; }
+      .space-y-5 > *, .space-y-6 > * { margin-top: 0.75rem !important; }
+    }
+    @media (max-width: 380px) {
+      /* Very small phones: KPI cards 1 column */
+      .grid-cols-2, .grid-cols-3, .grid-cols-4 { grid-template-columns: 1fr !important; }
+      /* Even smaller buttons */
+      .btn-sm { padding: 6px 10px !important; font-size: 0.7rem !important; }
     }
 
     /* ── Gradients ── */
