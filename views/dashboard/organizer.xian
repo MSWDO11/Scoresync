@@ -199,7 +199,7 @@
           </a>
           <form method="POST" action="/events/{{id}}/status" class="w-full"
             onsubmit="return confirm('End this event and mark as completed?')">
-    <input type="hidden" name="_csrf" value="{{csrfToken}}">
+            <input type="hidden" name="_csrf" value="{{../csrfToken}}">
             <input type="hidden" name="status" value="completed">
             <button type="submit"
               class="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-bold transition active:scale-95"
