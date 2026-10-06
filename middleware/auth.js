@@ -43,7 +43,8 @@ export const injectUser = async (req, res, next) => {
     try {
       const snap = await getDoc(doc(db, "users", req.session.userId));
       if (snap.exists()) {
-        res.locals.userAvatar = snap.data().avatar || "";
+        const data = snap.data();
+        res.locals.userAvatar = data.avatar || data.photoURL || data.photo || "";
       }
     } catch (e) {
       // Silent fail — navbar will show initial letter instead
