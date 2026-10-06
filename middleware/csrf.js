@@ -5,6 +5,8 @@ import { randomBytes } from "crypto";
 
 // Generate a new token and store in session
 export function csrfMiddleware(req, res, next) {
+  // Guard: session may be null after logout
+  if (!req.session) return next();
   // Generate token if not already set for this session
   if (!req.session.csrfToken) {
     req.session.csrfToken = randomBytes(32).toString("hex");
@@ -19,9 +21,11 @@ export function csrfProtect(req, res, next) {
   // Skip for GET, HEAD, OPTIONS
   if (["GET", "HEAD", "OPTIONS"].includes(req.method)) return next();
 
+  // Guard: session may be null after logout
+  if (!req.session) return next();
+
   // Skip for public routes that have no session (self-registration, health check)
-  const publicPaths = ["/events/", "/self-register"];
-  if (publicPaths.some(p => req.path.includes(p) && req.path.endsWith("/self-register"))) return next();
+  if (req.path.endsWith("/self-register")) return next();
 
   const sessionToken = req.session.csrfToken;
   const bodyToken    = req.body._csrf || req.headers["x-csrf-token"];
@@ -29,13 +33,13 @@ export function csrfProtect(req, res, next) {
   if (!sessionToken || !bodyToken || sessionToken !== bodyToken) {
     return res.status(403).render("403", {
       title:       "Forbidden",
-      userName:    req.session.userName    || "",
-      userRole:    req.session.userRole    || "",
-      userInitial: (req.session.userName  || "U")[0].toUpperCase(),
-      isAdmin:     req.session.userRole   === "admin",
-      isJudge:     req.session.userRole   === "judge",
-      isEncoder:   req.session.userRole   === "encoder",
-      isOrganizer: req.session.userRole   === "organizer",
+      userName:    req.session?.userName    || "",
+      userRole:    req.session?.userRole    || "",
+      userInitial: (req.session?.userName  || "U")[0].toUpperCase(),
+      isAdmin:     req.session?.userRole   === "admin",
+      isJudge:     req.session?.userRole   === "judge",
+      isEncoder:   req.session?.userRole   === "encoder",
+      isOrganizer: req.session?.userRole   === "organizer",
     });
   }
   next();

@@ -29,17 +29,17 @@ export const requireRole = (...roles) => (req, res, next) => {
 
 // Inject session user data + avatar into all view locals
 export const injectUser = async (req, res, next) => {
-  res.locals.userName      = req.session.userName  || "";
-  res.locals.userRole      = req.session.userRole  || "";
-  res.locals.userInitial   = (req.session.userName || "U")[0].toUpperCase();
-  res.locals.isAdmin       = req.session.userRole === "admin";
-  res.locals.isJudge       = req.session.userRole === "judge";
-  res.locals.isEncoder     = req.session.userRole === "encoder";
-  res.locals.isOrganizer   = req.session.userRole === "organizer";
+  res.locals.userName      = req.session?.userName  || "";
+  res.locals.userRole      = req.session?.userRole  || "";
+  res.locals.userInitial   = (req.session?.userName || "U")[0].toUpperCase();
+  res.locals.isAdmin       = req.session?.userRole === "admin";
+  res.locals.isJudge       = req.session?.userRole === "judge";
+  res.locals.isEncoder     = req.session?.userRole === "encoder";
+  res.locals.isOrganizer   = req.session?.userRole === "organizer";
 
   // Fetch avatar from Firestore so it shows in navbar on ALL pages
   res.locals.userAvatar = "";
-  if (req.session.userId) {
+  if (req.session?.userId) {
     try {
       const snap = await getDoc(doc(db, "users", req.session.userId));
       if (snap.exists()) {
