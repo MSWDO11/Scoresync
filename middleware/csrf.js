@@ -5,8 +5,8 @@ import { randomBytes } from "crypto";
 
 // Generate a new token and store in session
 export function csrfMiddleware(req, res, next) {
-  // Guard: session may be null after logout
-  if (!req.session) return next();
+  // Reinitialize session if null (happens after logout sets req.session = null)
+  if (!req.session) req.session = {};
   // Generate token if not already set for this session
   if (!req.session.csrfToken) {
     req.session.csrfToken = randomBytes(32).toString("hex");
