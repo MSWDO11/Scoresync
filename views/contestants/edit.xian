@@ -1,4 +1,4 @@
-{{> head }}
+﻿{{> head }}
 <body class="min-h-screen flex flex-col" style="background:#0a0f1e">
 {{> navbar }}
 <div class="flex flex-1 overflow-hidden">
@@ -81,6 +81,7 @@
           </div>
         </div>
         <form method="POST" action="/events/{{event.id}}/contestants/{{contestant.id}}/update" class="px-6 py-5 space-y-4">
+    <input type="hidden" name="_csrf" value="{{csrfToken}}">
           <input type="hidden" name="photo" id="photo-b64-form" value="{{contestant.photo}}"/>
 
           <div class="grid grid-cols-2 gap-4">

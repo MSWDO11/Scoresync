@@ -2,18 +2,19 @@ import express from "express";
 const router = express.Router();
 
 import { requireAuth, requireRole } from "../middleware/auth.js";
+import { loginRateLimit } from "../middleware/rateLimit.js";
 
 // ─── Public routes ────────────────────────────────────────────────────────────
 import { homePage } from "../controllers/homeController.js";
 import {
   loginPage, registerPage, forgotPasswordPage,
   loginUser, registerUser, forgotPassword, logoutUser,
-  setupPage, setupAdmin, fixRole,
+  setupPage, setupAdmin,
 } from "../controllers/authController.js";
 
 router.get( "/",                homePage);
 router.get( "/login",           loginPage);
-router.post("/login",           loginUser);
+router.post("/login",           loginRateLimit, loginUser);
 router.get( "/register",        registerPage);
 router.post("/register",        registerUser);
 router.get( "/forgot-password", forgotPasswordPage);
@@ -24,8 +25,7 @@ router.get( "/logout",          logoutUser);
 router.get( "/setup",           setupPage);
 router.post("/setup",           setupAdmin);
 
-// Emergency role fixer: /fix-role?email=x@x.com&role=admin
-router.get( "/fix-role",        fixRole);
+// Emergency role fixer removed for security
 
 // ─── Session debug (remove after testing) ────────────────────────────────────
 router.get("/debug-session", requireAuth, (req, res) => {

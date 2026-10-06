@@ -7,6 +7,7 @@ import hbs from "hbs";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 import { injectUser } from "./middleware/auth.js";
+import { csrfMiddleware, csrfProtect } from "./middleware/csrf.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname  = dirname(__filename);
@@ -36,10 +37,10 @@ app.use(express.static(path.join(process.cwd(), "public"), staticOpts));
 // ─── Session (cookie-based — survives Vercel cold starts, no server store) ───
 app.use(cookieSession({
   name:     "ss_sid",
-  keys:     [process.env.SESSION_SECRET || "scoresync-secret-2026",
+  keys:     [process.env.SESSION_SECRET || "change-this-in-production",
              "scoresync-fallback-key-9x7z"],
   maxAge:   1000 * 60 * 60 * 8, // 8 hours
-  secure:   false,
+  secure:   process.env.NODE_ENV === "production", // HTTPS only in production
   sameSite: "lax",
   httpOnly: true,
   overwrite: true,
@@ -69,6 +70,8 @@ app.use((req, res, next) => {
   next();
 });
 app.use(injectUser);
+app.use(csrfMiddleware);  // generates + exposes csrfToken to all views
+app.use(csrfProtect);     // validates token on every POST/PUT/DELETE
 
 // ─── Handlebars helpers ───────────────────────────────────────────────────────
 hbs.registerHelper("eq",  (a, b) => a === b);

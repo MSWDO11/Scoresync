@@ -1,4 +1,4 @@
-{{> head }}
+﻿{{> head }}
 <body class="min-h-screen flex" style="background:#0a0f1e">
   <div class="hidden lg:flex lg:w-[44%] auth-panel-bg flex-col justify-between p-10 relative">
     <div class="relative z-10">
@@ -61,6 +61,7 @@
           </div>
           {{#if error_msg}}<div class="alert-error mb-5"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="flex-shrink-0"><circle cx="12" cy="12" r="10"/></svg><span>{{error_msg}}</span></div>{{/if}}
           <form method="POST" action="/setup" class="space-y-4">
+    <input type="hidden" name="_csrf" value="{{csrfToken}}">
             <div>
               <label class="block text-[10px] font-extrabold uppercase tracking-widest mb-1.5" style="color:#4b5563">Full Name</label>
               <div class="relative">

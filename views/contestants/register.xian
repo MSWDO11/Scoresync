@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
@@ -44,6 +44,7 @@
 
     <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:24px;padding:28px 24px">
       <form method="POST" action="/events/{{event.id}}/self-register" class="space-y-4">
+    <input type="hidden" name="_csrf" value="{{csrfToken}}">
 
         <div>
           <label class="block text-xs font-bold uppercase tracking-wider mb-1.5" style="color:#475569">Full Name *</label>

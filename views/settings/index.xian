@@ -1,4 +1,4 @@
-{{> head }}
+﻿{{> head }}
 <body class="min-h-screen flex flex-col" style="background:#0a0f1e">
 {{> navbar }}
 <div class="flex flex-1 overflow-hidden">
@@ -43,6 +43,7 @@
         </div>
         <div class="px-6 py-5 space-y-4">
           <form action="/settings/update" method="POST" class="space-y-4">
+    <input type="hidden" name="_csrf" value="{{csrfToken}}">
             <input type="hidden" name="avatar" id="avatar-b64"/>
 
             <!-- Profile Picture Frame -->
@@ -202,6 +203,7 @@ function handleAvatarUpload(input) {
         </div>
         <div class="px-6 py-5">
           <form action="/settings/suggest-feature" method="POST" class="space-y-4">
+    <input type="hidden" name="_csrf" value="{{csrfToken}}">
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div class="sm:col-span-2">
                 <label class="block text-[10px] font-extrabold uppercase tracking-widest mb-1.5" style="color:#4b5563">Feature Title</label>

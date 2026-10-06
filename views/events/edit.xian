@@ -1,4 +1,4 @@
-{{> head }}
+﻿{{> head }}
 <body class="min-h-screen flex flex-col" style="background:#0a0f1e">
 {{> navbar }}
 <div class="flex flex-1 overflow-hidden">
@@ -13,6 +13,7 @@
   </div>
 
   <form method="POST" action="/events/{{event.id}}/update" class="animate-fadeup-1">
+    <input type="hidden" name="_csrf" value="{{csrfToken}}">
     <div class="grid lg:grid-cols-3 gap-5">
       <div class="lg:col-span-2 space-y-5">
 
@@ -256,6 +257,7 @@
           <div class="px-6 py-5">
             <p class="text-xs text-slate-500 leading-relaxed mb-3">Deleting this event will permanently remove all contestants, criteria, and scores.</p>
             <form method="POST" action="/events/{{event.id}}/delete" onsubmit="return confirm('DELETE this event? This CANNOT be undone.')">
+    <input type="hidden" name="_csrf" value="{{csrfToken}}">
               <button type="submit" class="btn-danger w-full justify-center py-2.5"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>Delete This Event</button>
             </form>
           </div>

@@ -4,6 +4,7 @@ import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import {
   collection, getDocs, getDoc, doc, setDoc, updateDoc, deleteDoc, query, orderBy,
 } from "firebase/firestore";
+import { sanitizeText, sanitizeEmail, sanitizeRole } from "../utils/sanitize.js";
 
 // ─── List all users ───────────────────────────────────────────────────────────
 export const listUsers = async (req, res) => {
@@ -108,7 +109,7 @@ export const rejectUser = async (req, res) => {
 // ─── Edit user role ───────────────────────────────────────────────────────────
 export const updateUserRole = async (req, res) => {
   const { id } = req.params;
-  const { role } = req.body;
+  const role   = sanitizeRole(req.body.role, ["judge", "encoder", "organizer"]);
   const allowed = ["judge", "encoder", "organizer"]; // admin NOT in allowed — cannot assign or change to/from admin
 
   if (!allowed.includes(role)) {
@@ -169,7 +170,10 @@ export const deleteUser = async (req, res) => {
 
 // ─── Create user (admin) ──────────────────────────────────────────────────────
 export const createUser = async (req, res) => {
-  const { name, email, password, role } = req.body;
+  const name     = sanitizeText(req.body.name, 100);
+  const email    = sanitizeEmail(req.body.email);
+  const password = req.body.password || "";
+  const role     = sanitizeRole(req.body.role, ["judge", "encoder", "organizer"]);
   const allowed = ["judge", "encoder", "organizer"]; // admin cannot be created via this form
 
   if (!name || !email || !password || !allowed.includes(role)) {

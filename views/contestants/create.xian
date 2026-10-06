@@ -1,4 +1,4 @@
-{{> head }}
+﻿{{> head }}
 <body class="min-h-screen flex flex-col" style="background:#0a0f1e">
 {{> navbar }}
 <div class="flex flex-1 overflow-hidden">
@@ -85,6 +85,7 @@
           </div>
         </div>
         <form method="POST" action="/events/{{event.id}}/contestants" id="contestantForm" class="px-6 py-5 space-y-4">
+    <input type="hidden" name="_csrf" value="{{csrfToken}}">
           <!-- Hidden photo field is outside this form but submitted via JS before submit -->
           <input type="hidden" name="photo" id="photo-b64-form"/>
 

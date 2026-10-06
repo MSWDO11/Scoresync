@@ -1,4 +1,4 @@
-{{> head }}
+﻿{{> head }}
 <body class="min-h-screen flex flex-col" style="background:#0a0f1e">
 {{> navbar }}
 <div class="flex flex-1 overflow-hidden">
@@ -29,6 +29,7 @@
 
         <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 z-10">
           <form id="auditForm" method="POST" action="/analytics/run" class="flex flex-col sm:flex-row gap-2">
+    <input type="hidden" name="_csrf" value="{{csrfToken}}">
             <select name="eventId" class="text-white text-xs font-semibold rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-purple-500"
               style="background:#1e293b;border:1px solid rgba(255,255,255,0.12)">
               <option value="all">All Festival Events</option>
@@ -172,16 +173,19 @@
               </div>
               <div class="flex items-center gap-2">
                 <form method="POST" action="/analytics/flags/{{id}}/status" class="inline">
+    <input type="hidden" name="_csrf" value="{{csrfToken}}">
                   <input type="hidden" name="status" value="reviewed">
                   <button type="submit" class="text-[11px] font-bold px-2.5 py-1 rounded-lg transition"
                     style="background:rgba(255,255,255,0.07);color:#94a3b8;border:1px solid rgba(255,255,255,0.1)">Mark Reviewed</button>
                 </form>
                 <form method="POST" action="/analytics/flags/{{id}}/status" class="inline">
+    <input type="hidden" name="_csrf" value="{{csrfToken}}">
                   <input type="hidden" name="status" value="dismissed">
                   <button type="submit" class="text-[11px] font-bold px-2.5 py-1 rounded-lg transition"
                     style="background:rgba(16,185,129,0.12);color:#6ee7b7;border:1px solid rgba(16,185,129,0.2)">Dismiss</button>
                 </form>
                 <form method="POST" action="/analytics/flags/{{id}}/status" class="inline">
+    <input type="hidden" name="_csrf" value="{{csrfToken}}">
                   <input type="hidden" name="status" value="action_taken">
                   <button type="submit" class="text-[11px] font-bold px-2.5 py-1 rounded-lg transition"
                     style="background:rgba(139,92,246,0.12);color:#c4b5fd;border:1px solid rgba(139,92,246,0.2)">Action Taken</button>

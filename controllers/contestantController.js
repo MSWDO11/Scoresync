@@ -4,6 +4,7 @@ import {
   updateDoc, deleteDoc, serverTimestamp,
 } from "firebase/firestore";
 import { autoCreateRegistrationRecord, autoDeleteRegistrationRecord } from "./inventoryController.js";
+import { sanitizeText } from "../utils/sanitize.js";
 
 // Contestants are sub-collections under events: events/{eventId}/contestants
 
@@ -44,7 +45,15 @@ export const addContestantPage = async (req, res) => {
 
 // ─── Store contestant ─────────────────────────────────────────────────────────
 export const storeContestant = async (req, res) => {
-  const { name, number, barangay, age, gender, description, photo, platform, registrationFee } = req.body;
+  const name            = sanitizeText(req.body.name, 100);
+  const number          = sanitizeText(req.body.number, 10);
+  const barangay        = sanitizeText(req.body.barangay, 100);
+  const age             = sanitizeText(req.body.age, 5);
+  const gender          = sanitizeText(req.body.gender, 20);
+  const description     = sanitizeText(req.body.description, 500);
+  const photo           = req.body.photo || "";
+  const platform        = sanitizeText(req.body.platform, 500);
+  const registrationFee = req.body.registrationFee || "";
   const { eventId } = req.params;
   try {
     // ── Enforce maxContestants limit ─────────────────────────────────────────
@@ -115,7 +124,14 @@ export const editContestantPage = async (req, res) => {
 // ─── Update contestant ────────────────────────────────────────────────────────
 export const updateContestant = async (req, res) => {
   const { eventId, id } = req.params;
-  const { name, number, barangay, age, gender, description, photo, platform } = req.body;
+  const name        = sanitizeText(req.body.name, 100);
+  const number      = sanitizeText(req.body.number, 10);
+  const barangay    = sanitizeText(req.body.barangay, 100);
+  const age         = sanitizeText(req.body.age, 5);
+  const gender      = sanitizeText(req.body.gender, 20);
+  const description = sanitizeText(req.body.description, 500);
+  const photo       = req.body.photo || "";
+  const platform    = sanitizeText(req.body.platform, 500);
   try {
     await updateDoc(doc(db, "events", eventId, "contestants", id), {
       name,

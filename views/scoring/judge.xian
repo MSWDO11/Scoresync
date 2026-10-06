@@ -1,4 +1,4 @@
-{{> head }}
+﻿{{> head }}
 <body class="min-h-screen flex flex-col" style="background:#060b18;overflow-x:hidden">
 {{> navbar }}
 <div class="flex flex-1 overflow-hidden">
@@ -69,6 +69,7 @@
 
   {{#if contestants.length}}
   <form id="scoringForm" method="POST" action="/events/{{event.id}}/scoring">
+    <input type="hidden" name="_csrf" value="{{csrfToken}}">
     {{#each contestants}}
     <div class="contestant-panel" data-idx="{{@index}}" data-contestant-id="{{id}}">
 

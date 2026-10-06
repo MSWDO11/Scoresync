@@ -122,6 +122,7 @@
     <!-- Card -->
     <div class="auth-card">
       <form method="POST" action="/login" class="space-y-5">
+    <input type="hidden" name="_csrf" value="{{csrfToken}}">
 
         <!-- Email -->
         <div>

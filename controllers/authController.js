@@ -9,6 +9,8 @@ import {
   doc, setDoc, getDoc, getDocs,
   collection, query, limit,
 } from "firebase/firestore";
+import { recordFailedLogin, clearFailedLogins } from "../middleware/rateLimit.js";
+import { sanitizeText, sanitizeEmail, sanitizeRole } from "../utils/sanitize.js";
 
 // ─── Page renderers ───────────────────────────────────────────────────────────
 
@@ -42,7 +44,14 @@ export const setupPage = async (req, res) => {
 };
 
 export const setupAdmin = async (req, res) => {
-  const { name, email, password } = req.body;
+  const name     = sanitizeText(req.body.name, 100);
+  const email    = sanitizeEmail(req.body.email);
+  const password = req.body.password || "";
+
+  if (!name || !email) {
+    req.flash("error_msg", "Please provide a valid name and email.");
+    return res.redirect("/setup");
+  }
 
   // Only allow if no users exist yet
   const snap = await getDocs(query(collection(db, "users"), limit(1)));
@@ -76,45 +85,20 @@ export const setupAdmin = async (req, res) => {
   }
 };
 
-// ─── Fix role for existing Firebase Auth user ─────────────────────────────────
-// Visit /fix-role?email=you@email.com&role=admin  (one-time use, then remove)
-
-export const fixRole = async (req, res) => {
-  const { email, role } = req.query;
-  const allowed = ["admin", "judge", "encoder"];
-
-  if (!email || !allowed.includes(role)) {
-    return res.json({ error: "Provide ?email=...&role=admin|judge|encoder" });
-  }
-
-  try {
-    // Find user doc by email
-    const usersSnap = await getDocs(collection(db, "users"));
-    const userDoc = usersSnap.docs.find(d => d.data().email === email);
-
-    if (!userDoc) {
-      return res.json({ error: `No Firestore user found with email: ${email}` });
-    }
-
-    await setDoc(doc(db, "users", userDoc.id), {
-      ...userDoc.data(),
-      role,
-    });
-
-    return res.json({
-      success: true,
-      message: `Role updated to "${role}" for ${email}. Log out and log back in.`,
-      uid: userDoc.id,
-    });
-  } catch (err) {
-    return res.json({ error: err.message });
-  }
-};
+// ─── Fix role endpoint removed for security ──────────────────────────────────
 
 // ─── Login ────────────────────────────────────────────────────────────────────
 
 export const loginUser = async (req, res) => {
-  const { email, password } = req.body;
+  const email    = sanitizeEmail(req.body.email);
+  const password = req.body.password || "";
+  const ip       = req.headers["x-forwarded-for"]?.split(",")[0].trim() || req.socket.remoteAddress || "unknown";
+
+  if (!email) {
+    req.flash("error_msg", "Invalid email address.");
+    return res.redirect("/login");
+  }
+
   try {
     const credential = await signInWithEmailAndPassword(auth, email, password);
     const uid = credential.user.uid;
@@ -125,6 +109,7 @@ export const loginUser = async (req, res) => {
     // Check account status (Admin accounts are exempt and auto-approved)
     if (profile.role !== "admin" && profile.status === "pending") {
       await signOut(auth);
+      recordFailedLogin(ip);
       req.flash(
         "error_msg",
         "Your account request is still pending approval by the Admin. Please wait for Gmail confirmation."
@@ -134,19 +119,22 @@ export const loginUser = async (req, res) => {
 
     if (profile.role !== "admin" && profile.status === "rejected") {
       await signOut(auth);
+      recordFailedLogin(ip);
       req.flash("error_msg", "Your account request was declined by the Admin.");
       return res.redirect("/login");
     }
+
+    // Successful login — clear failed attempt counter
+    clearFailedLogins(ip);
 
     req.session.userId    = uid;
     req.session.userName  = profile.name   || email;
     req.session.userRole  = profile.role   || "encoder";
     // Note: avatar NOT stored in session (too large for cookie) — loaded from Firestore per request
 
-    console.log(`✅ Login: ${email} as ${req.session.userRole}`);
     res.redirect("/dashboard");
   } catch (err) {
-    console.error("Login error:", err.code, err.message);
+    recordFailedLogin(ip);
     req.flash("error_msg", friendlyError(err.code));
     res.redirect("/login");
   }
@@ -155,10 +143,17 @@ export const loginUser = async (req, res) => {
 // ─── Register ─────────────────────────────────────────────────────────────────
 
 export const registerUser = async (req, res) => {
-  const { name, email, password, role } = req.body;
-  const allowedRoles = ["judge", "encoder", "organizer"];   // admin only via /setup
+  const name     = sanitizeText(req.body.name, 100);
+  const email    = sanitizeEmail(req.body.email);
+  const password = req.body.password || "";
+  const role     = sanitizeRole(req.body.role, ["judge", "encoder", "organizer"]);
 
-  if (!allowedRoles.includes(role)) {
+  if (!name || !email) {
+    req.flash("error_msg", "Please provide a valid name and email address.");
+    return res.redirect("/register");
+  }
+
+  if (!role) {
     req.flash("error_msg", "Invalid role selected.");
     return res.redirect("/register");
   }

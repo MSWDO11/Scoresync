@@ -5,6 +5,7 @@ import {
   updateDoc, deleteDoc, query, orderBy, serverTimestamp,
 } from "firebase/firestore";
 import { applyAutoStatus } from "../utils/autoStatus.js";
+import { sanitizeText } from "../utils/sanitize.js";
 
 const EVENTS = "events";
 const PAYMENT_TYPES = ['cultural','choral','dance','culinary','booth','sports','academic','other'];

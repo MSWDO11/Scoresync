@@ -1,5 +1,6 @@
 import { db } from "../models/firebaseConfig.js";
 import { doc, getDoc, updateDoc, collection, getDocs, addDoc, serverTimestamp, query, orderBy, limit } from "firebase/firestore";
+import { sanitizeText } from "../utils/sanitize.js";
 
 export const settingsPage = async (req, res) => {
   try {
@@ -61,15 +62,34 @@ export const updateSettings = async (req, res) => {
     const { name, avatar } = req.body;
     if (req.session.userId) {
       const updates = {};
+
+      // Sanitize name: strip HTML tags, trim whitespace
       if (name && name.trim()) {
-        updates.name = name.trim();
-        req.session.userName = name.trim();
+        const cleanName = name.trim().replace(/<[^>]*>/g, "").slice(0, 100);
+        if (cleanName) {
+          updates.name = cleanName;
+          req.session.userName = cleanName;
+        }
       }
-      // Save avatar (base64) to Firestore if provided and valid
-      if (avatar && typeof avatar === 'string' && avatar.startsWith('data:image')) {
+
+      // Validate avatar: must be a valid image data URL, max 2MB
+      if (avatar && typeof avatar === "string") {
+        const validMime = /^data:image\/(jpeg|jpg|png|webp|gif);base64,/.test(avatar);
+        // Base64 string length * 0.75 ≈ actual byte size
+        const approxBytes = Math.round((avatar.length * 3) / 4);
+        const maxBytes = 2 * 1024 * 1024; // 2MB
+
+        if (!validMime) {
+          req.flash("error_msg", "Invalid image format. Only JPEG, PNG, WebP, or GIF allowed.");
+          return res.redirect("/settings");
+        }
+        if (approxBytes > maxBytes) {
+          req.flash("error_msg", "Profile photo must be under 2MB.");
+          return res.redirect("/settings");
+        }
         updates.avatar = avatar;
-        // Do NOT store avatar in session — cookie-session has 4KB limit
       }
+
       if (Object.keys(updates).length > 0) {
         await updateDoc(doc(db, "users", req.session.userId), updates);
       }
@@ -78,14 +98,16 @@ export const updateSettings = async (req, res) => {
     res.redirect("/settings");
   } catch (err) {
     console.error("Update settings error:", err);
-    req.flash("error_msg", "Failed to update settings. " + err.message);
+    req.flash("error_msg", "Failed to update settings.");
     res.redirect("/settings");
   }
 };
 
 export const suggestFeature = async (req, res) => {
   try {
-    const { title, category, description } = req.body;
+    const title       = sanitizeText(req.body.title, 150);
+    const category    = sanitizeText(req.body.category, 50);
+    const description = sanitizeText(req.body.description, 1000);
     if (title && description) {
       await addDoc(collection(db, "feature_requests"), {
         title: title.trim(),

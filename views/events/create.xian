@@ -1,4 +1,4 @@
-{{> head }}
+﻿{{> head }}
 <body class="min-h-screen flex flex-col" style="background:#0a0f1e">
 {{> navbar }}
 <div class="flex flex-1 overflow-hidden">
@@ -13,6 +13,7 @@
   </div>
 
   <form method="POST" action="/events" class="animate-fadeup-1">
+    <input type="hidden" name="_csrf" value="{{csrfToken}}">
     <div class="grid lg:grid-cols-3 gap-5">
       <div class="lg:col-span-2 space-y-5">
 

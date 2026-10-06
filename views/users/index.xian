@@ -1,4 +1,4 @@
-{{> head }}
+﻿{{> head }}
 <body class="min-h-screen flex flex-col" style="background:#0a0f1e">
 {{> navbar }}
 <div class="flex flex-1 overflow-hidden">
@@ -114,12 +114,14 @@
             <td class="text-right pr-5">
               <div class="flex items-center justify-end gap-2">
                 <form method="POST" action="/users/{{id}}/approve" class="inline">
+    <input type="hidden" name="_csrf" value="{{csrfToken}}">
                   <button type="submit" class="btn-sm btn-sm-green text-xs px-3 py-1.5 flex items-center gap-1 shadow-sm">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
                     Approve
                   </button>
                 </form>
                 <form method="POST" action="/users/{{id}}/reject" onsubmit="return confirm('Reject account request for {{name}}?')" class="inline">
+    <input type="hidden" name="_csrf" value="{{csrfToken}}">
                   <button type="submit" class="btn-sm btn-sm-red text-xs px-2.5 py-1.5 flex items-center gap-1">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                     Reject
@@ -180,6 +182,7 @@
               </span>
               {{else}}
               <form method="POST" action="/users/{{id}}/role" class="flex items-center gap-2">
+    <input type="hidden" name="_csrf" value="{{csrfToken}}">
                 <select name="role" class="text-xs rounded-lg px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-blue-400 form-input-bare">
                   <option value="judge"     {{#if (eq role 'judge')}}selected{{/if}}>Judge</option>
                   <option value="encoder"   {{#if (eq role 'encoder')}}selected{{/if}}>Participant</option>
@@ -197,6 +200,7 @@
                 </a>
                 {{#unless (eq role 'admin')}}
                 <form method="POST" action="/users/{{id}}/delete" onsubmit="return confirm('Remove {{name}}?')" class="inline">
+    <input type="hidden" name="_csrf" value="{{csrfToken}}">
                   <button type="submit" class="btn-sm btn-sm-red text-xs px-2.5 py-1.5" title="Delete User"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>
                 </form>
                 {{/unless}}
@@ -235,6 +239,7 @@
     </div>
 
     <form method="POST" action="/users" class="p-6 space-y-4">
+    <input type="hidden" name="_csrf" value="{{csrfToken}}">
       <div>
         <label class="block text-xs font-semibold uppercase tracking-wide mb-1.5" style="color:#64748b">Full Name</label>
         <input type="text" name="name" required placeholder="e.g. Maria Santos" class="form-input-bare"/>
