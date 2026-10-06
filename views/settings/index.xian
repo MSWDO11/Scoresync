@@ -299,11 +299,14 @@ function handleAvatarUpload(input) {
             </span>
           </div>
           <div class="pt-2">
-            <a href="/logout" class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs transition"
-              style="background:rgba(239,68,68,0.10);color:#fca5a5;border:1px solid rgba(239,68,68,0.18)">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-              Sign Out
-            </a>
+            <form method="POST" action="/logout">
+              <input type="hidden" name="_csrf" value="{{csrfToken}}">
+              <button type="submit" class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs transition"
+                style="background:rgba(239,68,68,0.10);color:#fca5a5;border:1px solid rgba(239,68,68,0.18);cursor:pointer">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                Sign Out
+              </button>
+            </form>
           </div>
         </div>
       </div>

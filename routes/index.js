@@ -20,6 +20,7 @@ router.post("/register",        registerUser);
 router.get( "/forgot-password", forgotPasswordPage);
 router.post("/forgot-password", forgotPassword);
 router.get( "/logout",          logoutUser);
+router.post("/logout",          logoutUser);
 
 // One-time admin setup (works only when zero users exist)
 router.get( "/setup",           setupPage);
