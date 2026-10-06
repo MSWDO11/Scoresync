@@ -60,7 +60,7 @@ export const storeEvent = async (req, res) => {
     name, description, date, time, endTime, venue, type, status,
     organizer, maxContestants, prizes, rules, theme, notes,
     paymentMethod, paymentAccountName, paymentAccountNumber, paymentQR,
-    otherType,
+    otherType, coverPhoto,
   } = req.body;
   try {
     const evRef = await addDoc(collection(db, EVENTS), {
@@ -79,6 +79,7 @@ export const storeEvent = async (req, res) => {
       rules:                rules || "",
       theme:                theme || "blue",
       notes:                notes || "",
+      coverPhoto:           (coverPhoto && coverPhoto.startsWith('data:image')) ? coverPhoto : "",
       paymentMethod:        paymentMethod        || "",
       paymentAccountName:   paymentAccountName   || "",
       paymentAccountNumber: paymentAccountNumber || "",
@@ -224,7 +225,7 @@ export const updateEvent = async (req, res) => {
     name, description, date, time, endTime, venue, type, status,
     organizer, maxContestants, prizes, rules, theme, notes,
     paymentMethod, paymentAccountName, paymentAccountNumber, paymentQR,
-    otherType,
+    otherType, coverPhoto,
   } = req.body;
   try {
     await updateDoc(doc(db, EVENTS, req.params.id), {
@@ -237,6 +238,7 @@ export const updateEvent = async (req, res) => {
       rules:                rules                || "",
       theme:                theme                || "blue",
       notes:                notes                || "",
+      coverPhoto:           (coverPhoto && coverPhoto.startsWith('data:image')) ? coverPhoto : "",
       paymentMethod:        paymentMethod        || "",
       paymentAccountName:   paymentAccountName   || "",
       paymentAccountNumber: paymentAccountNumber || "",
