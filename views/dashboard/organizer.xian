@@ -13,11 +13,6 @@
     style="background:#111827;border:1px solid rgba(255,255,255,0.08)">
     <div class="absolute -right-12 -top-12 w-64 h-64 rounded-full blur-3xl pointer-events-none" style="background:rgba(217,119,6,0.07)"></div>
     <div class="relative z-10 space-y-2">
-      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-extrabold"
-        style="background:rgba(245,158,11,0.15);color:#fcd34d;border:1px solid rgba(245,158,11,0.25)">
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3H8a2 2 0 0 0-2 2v2h12V5a2 2 0 0 0-2-2z"/></svg>
-        Organizer Panel
-      </div>
       <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight leading-tight" style="color:#f1f5f9">
         Welcome, <span style="background:linear-gradient(90deg,#fbbf24,#f97316);-webkit-background-clip:text;-webkit-text-fill-color:transparent">{{userName}}</span> 👋
       </h1>
