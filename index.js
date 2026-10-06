@@ -40,7 +40,7 @@ app.use(cookieSession({
   keys:     [process.env.SESSION_SECRET || "change-this-in-production",
              "scoresync-fallback-key-9x7z"],
   maxAge:   1000 * 60 * 60 * 8, // 8 hours
-  secure:   process.env.NODE_ENV === "production", // HTTPS only in production
+  secure:   false,   // Vercel handles HTTPS at edge — cookie must work over proxy
   sameSite: "lax",
   httpOnly: true,
   overwrite: true,
