@@ -48,13 +48,14 @@ app.use(cookieSession({
 
 // ─── Custom flash (replaces connect-flash — works natively with cookie-session)
 app.use((req, res, next) => {
-  // Read and clear flash from session
-  const msgs = req.session._flash || {};
-  req.session._flash = {};
+  // Read and clear flash from session — guard against null session (after logout)
+  const msgs = req.session?._flash || {};
+  if (req.session) req.session._flash = {};
 
   req.flash = (type, msg) => {
     if (type && msg) {
       // Write flash
+      if (!req.session) return;
       if (!req.session._flash) req.session._flash = {};
       if (!req.session._flash[type]) req.session._flash[type] = [];
       req.session._flash[type].push(msg);
