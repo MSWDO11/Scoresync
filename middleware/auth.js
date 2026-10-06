@@ -3,7 +3,7 @@ import { doc, getDoc } from "firebase/firestore";
 
 // Middleware: require a logged-in session
 export const requireAuth = (req, res, next) => {
-  if (!req.session.userId) {
+  if (!req.session?.userId) {
     req.flash("error_msg", "Please log in to continue.");
     return res.redirect("/login");
   }
@@ -12,7 +12,7 @@ export const requireAuth = (req, res, next) => {
 
 // Middleware: restrict to specific roles
 export const requireRole = (...roles) => (req, res, next) => {
-  if (!req.session.userId) {
+  if (!req.session?.userId) {
     req.flash("error_msg", "Please log in to continue.");
     return res.redirect("/login");
   }

@@ -15,13 +15,12 @@ import { sanitizeText, sanitizeEmail, sanitizeRole } from "../utils/sanitize.js"
 // ─── Page renderers ───────────────────────────────────────────────────────────
 
 export const loginPage = (req, res) => {
-  if (req.session.userId) return res.redirect("/dashboard");
+  if (req.session?.userId) return res.redirect("/dashboard");
   res.render("login", { title: "Login" });
 };
 
 export const registerPage = (req, res) => {
-  if (req.session.userId) {
-    // Allow admin to access register page when explicitly adding a user (e.g. ?role=judge)
+  if (req.session?.userId) {
     if (req.session.userRole === "admin" && !req.query.role) return res.redirect("/users");
     if (req.session.userRole !== "admin") return res.redirect("/dashboard");
   }
