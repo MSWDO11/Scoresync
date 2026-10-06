@@ -6,6 +6,8 @@ import { applyAutoStatus } from "../utils/autoStatus.js";
 
 export const dashboardPage = async (req, res) => {
   const role = req.session.userRole;
+  // Prevent browser from caching dashboard — back button after logout must not show it
+  res.setHeader('Cache-Control', 'no-store, private');
   try {
     // Load recent events for all roles
     const q = query(collection(db, "events"), orderBy("createdAt", "desc"), limit(5));

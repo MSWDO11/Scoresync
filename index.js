@@ -150,7 +150,7 @@ registerPartials(fs.existsSync(partialsPath) ? partialsPath : altPartialsPath);
 // Set sensible cache headers on all HTML responses
 app.use((req, res, next) => {
   if (req.method === 'GET') {
-    res.setHeader('Cache-Control', 'no-cache, must-revalidate');
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
     res.setHeader('X-Content-Type-Options', 'nosniff');
   }
   next();

@@ -201,13 +201,15 @@ export const forgotPassword = async (req, res) => {
 export const logoutUser = async (req, res) => {
   try { await signOut(auth); } catch (_) {}
   // Clear session keys individually instead of setting to null
-  // (setting to null crashes middleware that reads req.session on the next request)
   if (req.session) {
     req.session.userId   = null;
     req.session.userName = null;
     req.session.userRole = null;
     req.session._flash   = {};
   }
+  // Prevent browser back-button from showing cached dashboard (bfcache)
+  res.setHeader('Clear-Site-Data', '"cache"');
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
   res.redirect("/login");
 };
 
