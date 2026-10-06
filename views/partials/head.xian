@@ -512,5 +512,14 @@
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/sw.js').catch(() => {});
     }
+    // bfcache fix: when user navigates back to this page, check if still logged in
+    window.addEventListener('pageshow', function(e) {
+      if (e.persisted) {
+        // Page was restored from bfcache — verify session is still valid
+        fetch('/dashboard', { method: 'HEAD', cache: 'no-store', redirect: 'manual' })
+          .then(r => { if (r.type === 'opaqueredirect' || r.status === 302 || r.url.includes('/login')) { window.location.replace('/login'); } })
+          .catch(() => {});
+      }
+    });
   </script>
 </head>
