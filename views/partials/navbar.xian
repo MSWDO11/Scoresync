@@ -26,21 +26,21 @@
   <div class="flex items-center gap-2 sm:gap-2.5 ml-auto flex-shrink-0">
 
     <!-- Role badge -->
-    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-extrabold"
+    <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-[11px] font-extrabold"
       style="{{#if isAdmin}}background:rgba(37,99,235,0.15);color:#93c5fd;border:1px solid rgba(37,99,235,0.3){{else}}{{#if isJudge}}background:rgba(139,92,246,0.15);color:#c4b5fd;border:1px solid rgba(139,92,246,0.3){{else}}{{#if isOrganizer}}background:rgba(245,158,11,0.15);color:#fcd34d;border:1px solid rgba(245,158,11,0.3){{else}}background:rgba(16,185,129,0.15);color:#6ee7b7;border:1px solid rgba(16,185,129,0.3){{/if}}{{/if}}{{/if}}">
       {{#if isAdmin}}
       <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1l3 6 6.5 1-4.8 4.5 1.2 6.5L12 16l-5.9 3 1.2-6.5L2.5 8 9 7z"/></svg>
       {{else}}{{#if isJudge}}
       <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
       {{else}}
-      <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="7" width="20" height="14" rx="2"/></svg>
+      <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3H8a2 2 0 0 0-2 2v2h12V5a2 2 0 0 0-2-2z"/></svg>
       {{/if}}{{/if}}
-      <span class="capitalize">{{#if isEncoder}}Participant{{else}}{{userRole}}{{/if}}</span>
+      <span id="navbar-role-label" class="capitalize" style="display:none">{{#if isEncoder}}Participant{{else}}{{userRole}}{{/if}}</span>
     </span>
 
     <!-- Profile Pill -->
-    <a href="/settings" class="flex items-center gap-2 pl-1 pr-3 py-1 rounded-full border transition group"
-      style="background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.12)">
+    <a id="navbar-profile-pill" href="/settings" class="flex items-center gap-2 pl-1 py-1 rounded-full border transition group"
+      style="background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.12);padding-right:12px">
       <div class="w-7 h-7 rounded-full overflow-hidden flex-shrink-0 shadow" style="border:1.5px solid rgba(255,255,255,0.2)">
         {{#if userAvatar}}
         <img src="{{userAvatar}}" alt="{{userName}}" class="navbar-avatar-img w-full h-full object-cover"/>
@@ -48,11 +48,34 @@
         <div class="w-full h-full grad-brand flex items-center justify-center text-white text-xs font-black">{{ userInitial }}</div>
         {{/if}}
       </div>
-      <span class="text-xs font-bold text-slate-300 max-w-[160px] sm:max-w-[200px] truncate group-hover:text-white transition">{{ userName }}</span>
+      <span id="navbar-username-label" class="text-xs font-bold text-slate-300 truncate" style="display:none;max-width:120px">{{ userName }}</span>
     </a>
 
   </div>
 </nav>
+
+<script>
+(function() {
+  function applyNavbarLayout() {
+    var roleLabel     = document.getElementById('navbar-role-label');
+    var usernameLabel = document.getElementById('navbar-username-label');
+    var profilePill   = document.getElementById('navbar-profile-pill');
+    if (!roleLabel) return;
+    // Always show both — hide only on very small phones (< 360px)
+    if (window.innerWidth < 360) {
+      roleLabel.style.display        = 'none';
+      usernameLabel.style.display    = 'none';
+      profilePill.style.paddingRight = '4px';
+    } else {
+      roleLabel.style.display        = 'inline';
+      usernameLabel.style.display    = 'inline';
+      profilePill.style.paddingRight = '12px';
+    }
+  }
+  applyNavbarLayout();
+  window.addEventListener('resize', applyNavbarLayout);
+})();
+</script>
 
 
 

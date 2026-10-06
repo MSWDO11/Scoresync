@@ -494,6 +494,9 @@
       const sidebar = document.querySelector('.sidebar');
       const overlay = document.getElementById('sidebar-overlay');
       if (sidebar) {
+        // Always strip collapsed on mobile before opening
+        sidebar.classList.remove('collapsed');
+        sidebar.style.removeProperty('width');
         sidebar.classList.toggle('open');
       }
       if (overlay) {

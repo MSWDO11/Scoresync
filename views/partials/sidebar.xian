@@ -192,82 +192,81 @@
 <style>
   .sidebar-icon { width:16px; height:16px; flex-shrink:0; }
 
-  /* â”€â”€ Collapsed sidebar (desktop only) â”€â”€ */
-  .sidebar.collapsed {
-    width: 64px !important;
+  /* Collapsed sidebar — desktop only */
+  @media (min-width: 768px) {
+    .sidebar.collapsed { width: 64px !important; }
+    .sidebar.collapsed .sidebar-label-text,
+    .sidebar.collapsed .sidebar-section,
+    .sidebar.collapsed .sidebar-link span,
+    .sidebar.collapsed .sidebar-link .ml-auto { display: none !important; }
+    .sidebar.collapsed .sidebar-link { justify-content: center; padding: 10px; border-left-color: transparent !important; }
+    .sidebar.collapsed .sidebar-link:hover { transform: none; }
+    .sidebar.collapsed .sidebar-brand-content { justify-content: center; }
+    .sidebar.collapsed #sidebar-collapse-btn {
+      position: absolute; right: -14px; top: 50%; transform: translateY(-50%);
+      background: #0d1424; border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 999px; width: 26px; height: 26px; z-index: 60;
+      box-shadow: 2px 0 8px rgba(0,0,0,0.4);
+    }
+    .sidebar.collapsed nav button span { display: none !important; }
+    .sidebar.collapsed nav button { justify-content: center; padding: 10px; }
   }
-  .sidebar.collapsed .sidebar-label-text,
-  .sidebar.collapsed .sidebar-section,
-  .sidebar.collapsed .sidebar-link span,
-  .sidebar.collapsed .sidebar-link .ml-auto {
-    display: none !important;
+
+  /* Mobile — sidebar is always a full-width overlay drawer, never collapsed */
+  @media (max-width: 767px) {
+    .sidebar.collapsed { width: 260px !important; }
+    .sidebar.collapsed .sidebar-label-text,
+    .sidebar.collapsed .sidebar-section,
+    .sidebar.collapsed .sidebar-link span,
+    .sidebar.collapsed .sidebar-link .ml-auto { display: revert !important; }
+    .sidebar.collapsed .sidebar-link { justify-content: flex-start !important; padding: 9px 13px !important; }
+    .sidebar.collapsed .sidebar-brand-content { justify-content: flex-start !important; }
+    .sidebar.collapsed nav button span { display: inline !important; }
+    .sidebar.collapsed nav button { justify-content: space-between !important; padding: 8px 13px !important; }
   }
-  .sidebar.collapsed .sidebar-link {
-    justify-content: center;
-    padding: 10px;
-    border-left-color: transparent !important;
-  }
-  .sidebar.collapsed .sidebar-link:hover {
-    transform: none;
-  }
-  .sidebar.collapsed .sidebar-brand-content {
-    justify-content: center;
-  }
-  .sidebar.collapsed #sidebar-collapse-btn {
-    position: absolute;
-    right: -14px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: #0d1424;
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 999px;
-    width: 26px;
-    height: 26px;
-    z-index: 60;
-    box-shadow: 2px 0 8px rgba(0,0,0,0.4);
-  }
-  /* Hide organizer collapsible toggle labels when sidebar is collapsed */
-  .sidebar.collapsed nav button span { display: none !important; }
-  .sidebar.collapsed nav button { justify-content: center; padding: 10px; }
 </style>
 <script>
 function toggleSection(sectionId, chevronId) {
-  const section = document.getElementById(sectionId);
-  const chevron = document.getElementById(chevronId);
+  var section = document.getElementById(sectionId);
+  var chevron = document.getElementById(chevronId);
   if (!section) return;
-  const isHidden = section.style.display === 'none';
+  var isHidden = section.style.display === 'none';
   section.style.display = isHidden ? '' : 'none';
   if (chevron) chevron.style.transform = isHidden ? '' : 'rotate(-90deg)';
 }
 
 function toggleSidebarCollapse() {
-  const sidebar = document.getElementById('main-sidebar');
-  const icon    = document.getElementById('sidebar-collapse-icon');
+  var sidebar = document.getElementById('main-sidebar');
+  var icon = document.getElementById('sidebar-collapse-icon');
   if (!sidebar) return;
-  const collapsed = sidebar.classList.toggle('collapsed');
-  // Flip arrow direction
-  if (icon) icon.setAttribute('d', collapsed
-    ? 'M9 18l6-6-6-6'   // chevron right (expand)
-    : 'M15 18l-6-6 6-6' // chevron left  (collapse)
-  );
-  // Persist preference
-  try { localStorage.setItem('ss_sidebar_collapsed', collapsed ? '1' : '0'); } catch(e){}
+  var collapsed = sidebar.classList.toggle('collapsed');
+  if (icon) icon.setAttribute('d', collapsed ? 'M9 18l6-6-6-6' : 'M15 18l-6-6 6-6');
+  try { localStorage.setItem('ss_sidebar_collapsed', collapsed ? '1' : '0'); } catch(e) {}
 }
 
-// Restore collapsed state on load
-(function() {
+function fixSidebarForViewport() {
   try {
-    if (localStorage.getItem('ss_sidebar_collapsed') === '1') {
-      const sidebar = document.getElementById('main-sidebar');
-      const icon    = document.getElementById('sidebar-collapse-icon');
-      if (sidebar) sidebar.classList.add('collapsed');
-      if (icon) icon.setAttribute('d', 'M9 18l6-6-6-6');
+    var sidebar = document.getElementById('main-sidebar');
+    var icon = document.getElementById('sidebar-collapse-icon');
+    if (window.innerWidth < 768) {
+      // Mobile: always strip collapsed class and inline width, clear localStorage
+      if (sidebar) {
+        sidebar.classList.remove('collapsed');
+        sidebar.style.removeProperty('width');
+      }
+      try { localStorage.removeItem('ss_sidebar_collapsed'); } catch(e) {}
+    } else {
+      // Desktop: restore from preference
+      if (localStorage.getItem('ss_sidebar_collapsed') === '1') {
+        if (sidebar) sidebar.classList.add('collapsed');
+        if (icon) icon.setAttribute('d', 'M9 18l6-6-6-6');
+      }
     }
   } catch(e) {}
-})();
+}
+// Run immediately and also after DOM is ready
+fixSidebarForViewport();
+document.addEventListener('DOMContentLoaded', fixSidebarForViewport);
+// Re-check on resize (e.g. rotating phone)
+window.addEventListener('resize', function() { fixSidebarForViewport(); });
 </script>
-
-
-
-
-
