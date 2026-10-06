@@ -1,5 +1,5 @@
-// ScoreSync Service Worker — cache static assets for faster loads
-const CACHE = 'scoresync-v2';
+// ScoreSync Service Worker — cache static assets only, never HTML or navigation
+const CACHE = 'scoresync-v4';
 const STATIC = [
   '/tailwind.css',
   '/fa.embedded.css',
@@ -23,12 +23,21 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
-  // Only cache GET requests for static assets
+  // ONLY cache GET requests
   if (e.request.method !== 'GET') return;
+
   const url = new URL(e.request.url);
-  const isStatic = STATIC.some(s => url.pathname === s) ||
+
+  // NEVER cache HTML pages, navigation, or any server routes
+  // Only cache explicitly listed static assets and webfonts
+  const isStaticAsset = STATIC.some(s => url.pathname === s) ||
     url.pathname.startsWith('/webfonts/');
-  if (!isStatic) return; // Don't cache HTML/API — always fresh
+
+  if (!isStaticAsset) {
+    // Always fetch from network — never serve cached HTML
+    return;
+  }
+
   e.respondWith(
     caches.match(e.request).then(cached => cached || fetch(e.request).then(res => {
       const clone = res.clone();
