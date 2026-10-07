@@ -63,11 +63,11 @@
       <svg width="11" height="11" viewBox="0 0 24 24" fill="#fbbf24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3" fill="white"/></svg>
       Municipality of Mansalay, Oriental Mindoro
     </div>
-    <h1 class="text-5xl sm:text-6xl font-black leading-tight tracking-tight mb-6">
+    <h1 class="text-3xl sm:text-5xl font-black leading-tight tracking-tight mb-6">
       Automated Tabulation<br/>
       <span class="text-yellow-300">&amp; Event Management</span>
     </h1>
-    <p class="text-blue-100 text-lg max-w-2xl mx-auto mb-10 leading-relaxed">
+    <p class="text-blue-100 text-base max-w-2xl mx-auto mb-10 leading-relaxed">
       ScoreSync powers municipal competitions with real-time scoring, transparent tabulation, and instant results — built for Mansalay and beyond.
     </p>
     <div class="flex flex-wrap gap-3 justify-center">
@@ -105,7 +105,7 @@
     <div class="text-center mb-16">
       <span class="inline-block text-xs font-bold px-3 py-1 rounded-full mb-4 uppercase tracking-widest"
         style="background:rgba(59,130,246,0.15);color:#93c5fd;border:1px solid rgba(59,130,246,0.25)">Features</span>
-      <h2 class="text-4xl font-black tracking-tight" style="color:#f1f5f9">Everything You Need</h2>
+      <h2 class="text-3xl font-black tracking-tight" style="color:#f1f5f9">Everything You Need</h2>
       <p class="mt-3 text-base max-w-lg mx-auto" style="color:#475569">Built for pageants, sports fests, talent shows, and any scored competition.</p>
     </div>
     <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -173,7 +173,7 @@
   <div class="max-w-4xl mx-auto text-center mb-14">
     <span class="inline-block text-xs font-bold px-3 py-1 rounded-full mb-4 uppercase tracking-widest"
       style="background:rgba(16,185,129,0.15);color:#6ee7b7;border:1px solid rgba(16,185,129,0.25)">How It Works</span>
-    <h2 class="text-4xl font-black tracking-tight" style="color:#f1f5f9">Up &amp; running in minutes</h2>
+    <h2 class="text-3xl font-black tracking-tight" style="color:#f1f5f9">Up &amp; running in minutes</h2>
   </div>
   <div class="max-w-4xl mx-auto grid md:grid-cols-3 gap-8">
     <div class="text-center">
@@ -206,7 +206,7 @@
     <div class="w-16 h-16 rounded-full overflow-hidden flex items-center justify-center mx-auto mb-6 shadow-xl" style="border:3px solid rgba(255,255,255,0.25)">
       <img src="/scoresync-logo.png" alt="ScoreSync" class="w-full h-full object-cover" style="object-position:center center;transform:scale(1.35);transform-origin:center center"/>
     </div>
-    <h2 class="text-4xl font-black mb-4 tracking-tight">Ready to run your next competition?</h2>
+    <h2 class="text-3xl font-black mb-4 tracking-tight">Ready to run your next competition?</h2>
     <p class="text-blue-100 mb-8 text-base">Join ScoreSync and bring efficiency and transparency to Mansalay's events.</p>
     <div class="flex gap-3 justify-center flex-wrap">
       <a href="/register" class="inline-flex items-center gap-2 bg-yellow-400 hover:bg-yellow-300 text-slate-900 font-black px-10 py-4 rounded-xl shadow-xl transition text-sm">
