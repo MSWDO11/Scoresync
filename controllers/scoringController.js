@@ -3,6 +3,7 @@ import {
   collection, getDocs, getDoc, doc,
   setDoc, updateDoc, addDoc, serverTimestamp,
 } from "firebase/firestore";
+import { sanitizeText } from "../utils/sanitize.js";
 
 const CRITERIA_COLORS = [
   "#2563eb","#7c3aed","#059669","#dc2626",
@@ -153,6 +154,49 @@ export const submitScores = async (req, res) => {
   }
 };
 
+// ─── Shared tie-breaking helper ───────────────────────────────────────────────
+function applyTieBreaking(ranked, criteria) {
+  // Sort criteria by weight descending for tiebreaker priority
+  const criteriaByWeightDesc = [...criteria].sort((a, b) => Number(b.weight) - Number(a.weight));
+
+  let i = 0;
+  while (i < ranked.length) {
+    let j = i + 1;
+    while (j < ranked.length && parseFloat(ranked[j].finalScore) === parseFloat(ranked[i].finalScore)) j++;
+    const group = ranked.slice(i, j);
+    if (group.length > 1) {
+      group.forEach(c => { c.tieDetected = true; });
+      let resolved = false;
+      for (const cr of criteriaByWeightDesc) {
+        const vals = group.map(c => {
+          const bd = c.breakdown ? c.breakdown.find(b => b.name === cr.name) : null;
+          return bd ? parseFloat(bd.avg) : 0;
+        });
+        const maxVal = Math.max(...vals);
+        const minVal = Math.min(...vals);
+        if (maxVal !== minVal) {
+          group.sort((a, b) => {
+            const aAvg = parseFloat((a.breakdown ? (a.breakdown.find(bd => bd.name === cr.name) || {}) : {}).avg || 0);
+            const bAvg = parseFloat((b.breakdown ? (b.breakdown.find(bd => bd.name === cr.name) || {}) : {}).avg || 0);
+            return bAvg - aAvg;
+          });
+          for (let k = 0; k < group.length; k++) ranked[i + k] = group[k];
+          group.forEach(c => { c.tieBroken = true; c.tiebreakCriteria = cr.name; });
+          resolved = true;
+          break;
+        }
+      }
+      if (!resolved) {
+        group.forEach(c => { c.tieBroken = false; });
+      }
+    } else {
+      group[0].tieDetected = false;
+      group[0].tieBroken   = false;
+    }
+    i = j;
+  }
+}
+
 // ─── Results / Leaderboard ────────────────────────────────────────────────────
 export const resultsPage = async (req, res) => {
   const { eventId } = req.params;
@@ -213,6 +257,10 @@ export const resultsPage = async (req, res) => {
     });
 
     ranked.sort((a, b) => b.finalScore - a.finalScore);
+
+    // Apply tie-breaking before rank assignment
+    applyTieBreaking(ranked, criteria);
+
     const topScore = ranked.length ? parseFloat(ranked[0].finalScore) : 0;
     ranked.forEach((c, i) => {
       c.rank       = i + 1;
@@ -250,6 +298,24 @@ export const resultsPage = async (req, res) => {
       };
     });
 
+    // Build judgeProgressData (same shape as getScoringProgress returns)
+    const judgeProgressData = judgeEntries.map(([jId, jName], idx) => {
+      const scoredCount = new Set(
+        allScores.filter(s => s.judgeId === jId).map(s => s.contestantId)
+      ).size;
+      const completionPct = contestants.length
+        ? Math.round((scoredCount / contestants.length) * 100)
+        : 0;
+      return {
+        judgeId:          jId,
+        judgeName:        jName,
+        alias:            `Judge ${idx + 1}`,
+        scoredCount,
+        totalContestants: contestants.length,
+        completionPct,
+      };
+    });
+
     res.render("scoring/results", {
       title:       `Results — ${ev.name}`,
       event:       ev,
@@ -257,6 +323,7 @@ export const resultsPage = async (req, res) => {
       criteria,
       judgeCount,
       judgeBreakdown,
+      judgeProgressData,
       userName:    req.session.userName,
       userRole:    req.session.userRole,
       userInitial: (req.session.userName || "U")[0].toUpperCase(),
@@ -291,14 +358,17 @@ export const displayBoard = async (req, res) => {
     allScores.forEach(s => { if (s.judgeId) judgeMap[s.judgeId] = true; });
     const ranked = contestants.map(c => {
       let total = 0;
-      criteria.forEach(cr => {
+      const breakdown = criteria.map((cr, i) => {
         const judgeScores = allScores.filter(s => s.contestantId === c.id && s.criteriaId === cr.id);
         const avg = judgeScores.length ? judgeScores.reduce((sum, s) => sum + s.score, 0) / judgeScores.length : 0;
         total += (avg / (Number(cr.maxScore) || 100)) * (Number(cr.weight) || 0);
+        return { name: cr.name, avg: avg.toFixed(2) };
       });
-      return { ...c, finalScore: total.toFixed(4), finalScoreDisplay: total.toFixed(2) };
+      return { ...c, breakdown, finalScore: total.toFixed(4), finalScoreDisplay: total.toFixed(2) };
     });
     ranked.sort((a, b) => b.finalScore - a.finalScore);
+    // Apply tie-breaking (no breakdown available in displayBoard, ties may remain)
+    applyTieBreaking(ranked, criteria);
     const topScore = ranked.length ? parseFloat(ranked[0].finalScore) : 0;
     ranked.forEach((c, i) => { c.rank = i + 1; c.gapToFirst = (topScore - parseFloat(c.finalScore)).toFixed(2); });
     res.render("scoring/display", {
@@ -342,6 +412,8 @@ export const publicResults = async (req, res) => {
       return { ...c, breakdown, finalScore: totalWeighted.toFixed(4), finalScoreDisplay: totalWeighted.toFixed(2) };
     });
     ranked.sort((a, b) => b.finalScore - a.finalScore);
+    // Apply tie-breaking before rank assignment
+    applyTieBreaking(ranked, criteria);
     ranked.forEach((c, i) => { c.rank = i + 1; });
     res.render("scoring/public", { title: `Results — ${ev.name}`, event: ev, ranked, criteria, judgeCount: Object.keys(judgeMap).length });
   } catch (err) {
@@ -364,5 +436,138 @@ export const toggleScoreLock = async (req, res) => {
     console.error(err);
     req.flash("error_msg", "Failed to toggle score lock.");
     res.redirect(`/events/${eventId}`);
+  }
+};
+
+// ─── CSV Export of Results ────────────────────────────────────────────────────
+export const exportResults = async (req, res) => {
+  const { eventId } = req.params;
+  try {
+    const [eSnap, cSnap, crSnap, sSnap] = await Promise.all([
+      getDoc(doc(db, "events", eventId)),
+      getDocs(collection(db, "events", eventId, "contestants")),
+      getDocs(collection(db, "events", eventId, "criteria")),
+      getDocs(collection(db, "events", eventId, "scores")),
+    ]);
+
+    if (!eSnap.exists()) return res.status(404).send("Event not found.");
+
+    const contestants = cSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const criteria    = crSnap.docs.map((d, i) => ({
+      id: d.id,
+      ...d.data(),
+      color: CRITERIA_COLORS[i % CRITERIA_COLORS.length],
+    }));
+    const allScores = sSnap.docs.map(d => d.data());
+
+    const ranked = contestants.map(c => {
+      let totalWeighted = 0;
+      const breakdown = criteria.map(cr => {
+        const judgeScores = allScores.filter(
+          s => s.contestantId === c.id && s.criteriaId === cr.id
+        );
+        const avg = judgeScores.length
+          ? judgeScores.reduce((sum, s) => sum + s.score, 0) / judgeScores.length
+          : 0;
+        const weighted = (avg / (Number(cr.maxScore) || 100)) * (Number(cr.weight) || 0);
+        totalWeighted += weighted;
+        return {
+          name:    cr.name,
+          avg:     avg.toFixed(2),
+          weighted: weighted.toFixed(2),
+        };
+      });
+      return {
+        ...c,
+        breakdown,
+        finalScore:        totalWeighted.toFixed(4),
+        finalScoreDisplay: totalWeighted.toFixed(2),
+      };
+    });
+
+    ranked.sort((a, b) => b.finalScore - a.finalScore);
+    applyTieBreaking(ranked, criteria);
+    const topScore = ranked.length ? parseFloat(ranked[0].finalScore) : 0;
+    ranked.forEach((c, i) => {
+      c.rank       = i + 1;
+      c.gapToFirst = (topScore - parseFloat(c.finalScore)).toFixed(2);
+    });
+
+    // Build CSV
+    function q(val) {
+      return `"${String(val).replace(/"/g, '""')}"`;
+    }
+    const headerCols = [
+      "Rank", "No.", "Name", "Barangay",
+      ...criteria.map(cr => cr.name),
+      "Final Score (%)", "Gap to 1st",
+    ];
+    const headerRow = headerCols.map(q).join(",");
+    const dataRows = ranked.map(c => {
+      const critCols = c.breakdown.map(bd => q(bd.avg));
+      return [
+        q(c.rank),
+        q(c.number || ""),
+        q(sanitizeText(c.name || "")),
+        q(sanitizeText(c.barangay || "")),
+        ...critCols,
+        q(c.finalScoreDisplay),
+        q(c.gapToFirst),
+      ].join(",");
+    });
+    const csvContent = [headerRow, ...dataRows].join("\r\n");
+
+    res.setHeader("Content-Type", "text/csv; charset=utf-8");
+    res.setHeader("Content-Disposition", `attachment; filename="results-${eventId}.csv"`);
+    return res.status(200).send(csvContent);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send("Could not export results.");
+  }
+};
+
+// ─── Judge Scoring Progress (JSON endpoint) ───────────────────────────────────
+export const getScoringProgress = async (req, res) => {
+  const { eventId } = req.params;
+  try {
+    const [eSnap, cSnap, sSnap] = await Promise.all([
+      getDoc(doc(db, "events", eventId)),
+      getDocs(collection(db, "events", eventId, "contestants")),
+      getDocs(collection(db, "events", eventId, "scores")),
+    ]);
+
+    if (!eSnap.exists()) return res.status(404).json({ error: "Event not found." });
+
+    const contestants = cSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const allScores   = sSnap.docs.map(d => d.data());
+
+    const judgeMap = {};
+    allScores.forEach(s => {
+      if (s.judgeId && !judgeMap[s.judgeId]) {
+        judgeMap[s.judgeId] = s.judgeName || "Judge";
+      }
+    });
+
+    const progressArray = Object.entries(judgeMap).map(([jId, jName], idx) => {
+      const scoredCount = new Set(
+        allScores.filter(s => s.judgeId === jId).map(s => s.contestantId)
+      ).size;
+      const completionPct = contestants.length
+        ? Math.round((scoredCount / contestants.length) * 100)
+        : 0;
+      return {
+        judgeId:          jId,
+        judgeName:        jName,
+        alias:            `Judge ${idx + 1}`,
+        scoredCount,
+        totalContestants: contestants.length,
+        completionPct,
+      };
+    });
+
+    return res.json(progressArray);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Could not load scoring progress." });
   }
 };

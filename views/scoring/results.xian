@@ -39,6 +39,10 @@
           AI Audit
         </a>
         {{/if}}
+        <a href="/events/{{event.id}}/results/export" class="btn-sm btn-sm-green text-xs no-print">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export CSV
+        </a>
         <button onclick="window.print()" class="btn-sm btn-sm-gray text-xs no-print">
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
           Print
@@ -199,6 +203,16 @@
         <!-- Name + barangay -->
         <div class="flex-1 min-w-0">
           <div class="font-extrabold text-sm leading-tight truncate" style="color:#e2e8f0">{{name}}</div>
+          {{#if tieDetected}}
+            {{#if tieBroken}}
+            <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold mt-0.5" style="background:rgba(217,119,6,0.18);color:#d97706">⚖ Tie Broken</span>
+            {{else}}
+            <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold mt-0.5" style="background:rgba(220,38,38,0.18);color:#ef4444">⚖ Tie</span>
+            {{/if}}
+            {{#if tiebreakCriteria}}
+            <div class="text-[10px] mt-0.5" style="color:#94a3b8">via {{tiebreakCriteria}}</div>
+            {{/if}}
+          {{/if}}
           {{#if barangay}}<div class="text-xs mt-0.5" style="color:#64748b">Brgy. {{barangay}}{{#if age}} &bull; {{age}} yrs{{/if}}</div>{{/if}}
           <!-- Mini criteria bars -->
           <div class="flex gap-1 mt-2 flex-wrap">
@@ -284,6 +298,14 @@
           <td class="font-mono text-slate-400 text-sm text-center">{{number}}</td>
           <td>
             <div class="font-extrabold text-sm" style="color:#e2e8f0">{{name}}</div>
+            {{#if tieDetected}}
+              {{#if tieBroken}}
+              <span class="inline-flex items-center px-1 py-0.5 rounded text-[9px] font-bold" style="background:rgba(217,119,6,0.18);color:#d97706">⚖ Tie Broken</span>
+              {{else}}
+              <span class="inline-flex items-center px-1 py-0.5 rounded text-[9px] font-bold" style="background:rgba(220,38,38,0.18);color:#ef4444">⚖ Tie</span>
+              {{/if}}
+              {{#if tiebreakCriteria}}<div class="text-[9px]" style="color:#94a3b8">{{tiebreakCriteria}}</div>{{/if}}
+            {{/if}}
             {{#if age}}<div class="text-xs" style="color:#64748b">{{age}} yrs</div>{{/if}}
           </td>
           <td class="text-sm hidden sm:table-cell" style="color:#64748b">{{barangay}}</td>
@@ -314,6 +336,68 @@
       </tbody>
     </table>
   </div>
+
+  <!-- ── Judge Scoring Progress ── -->
+  {{#if ranked.length}}
+  <div class="section-card animate-fadeup-2 no-print">
+    <div class="section-header">
+      <h2>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Judge Scoring Progress
+      </h2>
+      <span class="badge badge-purple text-xs">Live</span>
+    </div>
+    <div id="judgeProgressList" class="px-5 py-3">
+      {{#each judgeProgressData}}
+      <div class="flex items-center gap-3 py-2" style="border-top:1px solid rgba(255,255,255,0.06)">
+        <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-extrabold flex-shrink-0 shadow-sm grad-purple">
+          {{add1 @index}}
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="font-bold text-sm" style="color:#e2e8f0">{{alias}}</div>
+          <div class="text-[11px]" style="color:#64748b">{{scoredCount}} / {{totalContestants}} contestants scored</div>
+          <div class="mt-1 h-1.5 rounded-full overflow-hidden" style="background:rgba(255,255,255,0.08)">
+            <div class="h-full rounded-full transition-all" style="width:{{completionPct}}%;background:#7c3aed"></div>
+          </div>
+        </div>
+        <div class="text-[10px] text-purple-400 font-bold flex-shrink-0">{{completionPct}}%</div>
+      </div>
+      {{/each}}
+    </div>
+    <script>
+      (function() {
+        const EVENT_ID = "{{event.id}}";
+        async function loadJudgeProgress() {
+          try {
+            const resp = await fetch('/events/' + EVENT_ID + '/scoring-progress');
+            if (!resp.ok) return;
+            const data = await resp.json();
+            const container = document.getElementById('judgeProgressList');
+            if (!container) return;
+            if (!Array.isArray(data) || data.length === 0) return;
+            container.innerHTML = data.map((j, idx) => {
+              const pct = j.completionPct || 0;
+              return '<div class="flex items-center gap-3 py-2" style="border-top:1px solid rgba(255,255,255,0.06)">'
+                + '<div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-extrabold flex-shrink-0 shadow-sm grad-purple">' + (idx + 1) + '</div>'
+                + '<div class="flex-1 min-w-0">'
+                + '<div class="font-bold text-sm" style="color:#e2e8f0">' + (j.alias || ('Judge ' + (idx + 1))) + '</div>'
+                + '<div class="text-[11px]" style="color:#64748b">' + j.scoredCount + ' / ' + j.totalContestants + ' contestants scored</div>'
+                + '<div class="mt-1 h-1.5 rounded-full overflow-hidden" style="background:rgba(255,255,255,0.08)">'
+                + '<div class="h-full rounded-full transition-all" style="width:' + pct + '%;background:#7c3aed"></div>'
+                + '</div></div>'
+                + '<div class="text-[10px] text-purple-400 font-bold flex-shrink-0">' + pct + '%</div>'
+                + '</div>';
+            }).join('');
+          } catch(e) { /* silently ignore fetch errors */ }
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+          loadJudgeProgress();
+          setInterval(loadJudgeProgress, 10000);
+        });
+      })();
+    </script>
+  </div>
+  {{/if}}
 
   <!-- ── Per-Judge Breakdown ── -->
   {{#if judgeBreakdown.length}}

@@ -106,11 +106,14 @@ router.post("/events/:eventId/criteria/:id/delete", requireAuth, requireRole("ad
 import {
   scoringPage, submitScores, resultsPage,
   displayBoard, publicResults, toggleScoreLock,
+  exportResults, getScoringProgress,
 } from "../controllers/scoringController.js";
 
-router.get( "/events/:eventId/scoring",  requireAuth, requireRole("admin","judge","organizer"), scoringPage);
-router.post("/events/:eventId/scoring",  requireAuth, requireRole("admin","judge","organizer"), submitScores);
-router.get( "/events/:eventId/results",  requireAuth,                               resultsPage);
+router.get( "/events/:eventId/scoring",          requireAuth, requireRole("admin","judge","organizer"), scoringPage);
+router.post("/events/:eventId/scoring",          requireAuth, requireRole("admin","judge","organizer"), submitScores);
+router.get( "/events/:eventId/results",          requireAuth,                               resultsPage);
+router.get( "/events/:eventId/results/export",   requireAuth,                               exportResults);
+router.get( "/events/:eventId/scoring-progress", requireAuth,                               getScoringProgress);
 // Public routes — no login required
 router.get( "/events/:eventId/display",  displayBoard);
 router.get( "/events/:eventId/public",   publicResults);
