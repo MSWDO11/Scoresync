@@ -33,15 +33,6 @@ router.post("/setup",           setupAdmin);
 
 // Emergency role fixer removed for security
 
-// ─── Session debug (remove after testing) ────────────────────────────────────
-router.get("/debug-session", requireAuth, (req, res) => {
-  res.json({
-    userId:   req.session.userId,
-    userName: req.session.userName,
-    userRole: req.session.userRole,
-  });
-});
-
 // ─── Dashboard ────────────────────────────────────────────────────────────────
 import { dashboardPage } from "../controllers/dashboardController.js";
 

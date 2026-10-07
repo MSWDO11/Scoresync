@@ -361,8 +361,10 @@ export const displayBoard = async (req, res) => {
       const breakdown = criteria.map((cr, i) => {
         const judgeScores = allScores.filter(s => s.contestantId === c.id && s.criteriaId === cr.id);
         const avg = judgeScores.length ? judgeScores.reduce((sum, s) => sum + s.score, 0) / judgeScores.length : 0;
-        total += (avg / (Number(cr.maxScore) || 100)) * (Number(cr.weight) || 0);
-        return { name: cr.name, avg: avg.toFixed(2) };
+        const weighted = (avg / (Number(cr.maxScore) || 100)) * (Number(cr.weight) || 0);
+        const barPct   = Math.min((avg / (Number(cr.maxScore) || 100)) * 100, 100).toFixed(1);
+        total += weighted;
+        return { name: cr.name, weight: cr.weight, color: CRITERIA_COLORS[i % CRITERIA_COLORS.length], avg: avg.toFixed(2), weighted: weighted.toFixed(2), barPct };
       });
       return { ...c, breakdown, finalScore: total.toFixed(4), finalScoreDisplay: total.toFixed(2) };
     });
@@ -499,7 +501,7 @@ export const exportResults = async (req, res) => {
     }
     const headerCols = [
       "Rank", "No.", "Name", "Barangay",
-      ...criteria.map(cr => cr.name),
+      ...criteria.map(cr => sanitizeText(cr.name || "").replace(/,/g, " ")),
       "Final Score (%)", "Gap to 1st",
     ];
     const headerRow = headerCols.map(q).join(",");
