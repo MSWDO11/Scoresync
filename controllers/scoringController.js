@@ -42,6 +42,15 @@ export const scoringPage = async (req, res) => {
       return res.redirect("/dashboard");
     }
 
+    // Block judge if not assigned to this event
+    if (req.session.userRole === 'judge') {
+      const assignedJudges = ev.assignedJudges || [];
+      if (assignedJudges.length > 0 && !assignedJudges.includes(judgeId)) {
+        req.flash("error_msg", `You are not assigned to "${ev.name}". Please ask the organizer or admin to assign you to this event.`);
+        return res.redirect("/dashboard");
+      }
+    }
+
     const contestants = cSnap.docs.map(d => ({ id: d.id, ...d.data() }));
     const criteria    = crSnap.docs.map((d, i) => ({
       id: d.id,
