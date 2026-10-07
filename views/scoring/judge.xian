@@ -696,6 +696,14 @@
     if (entryEl && entryEl.value) syncQuickPicks(p, parseFloat(entryEl.value));
   });
   goToContestant(0);
+
+  // Auto-close sidebar on mobile so it doesn't cover scoring content
+  if (window.innerWidth < 768) {
+    var sidebar = document.querySelector('.sidebar');
+    var overlay = document.getElementById('sidebar-overlay');
+    if (sidebar) { sidebar.classList.remove('open'); }
+    if (overlay) { overlay.classList.add('hidden'); }
+  }
 })();
 </script>
 
