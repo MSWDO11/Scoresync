@@ -9,6 +9,10 @@
   <div class="sticky top-0 z-20 -mx-4 sm:-mx-6 px-4 sm:px-6 py-3 no-print" style="background:rgba(10,15,30,0.96);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.07);box-shadow:0 4px 24px rgba(0,0,0,0.4)">
     <div class="flex flex-wrap items-center justify-between gap-3">
       <div class="flex items-center gap-3 min-w-0">
+        <a href="/events/{{event.id}}" class="btn-sm btn-sm-gray text-xs no-print flex items-center gap-1.5 flex-shrink-0">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+          Back
+        </a>
         <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 shadow" style="background:linear-gradient(135deg,#1e3a8a,#2563eb)">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
         </div>
