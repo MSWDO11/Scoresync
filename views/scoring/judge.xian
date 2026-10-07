@@ -109,7 +109,7 @@
     {{#each contestants}}
     <!-- ══ Contestant Panel ══ -->
     <div class="contestant-panel" data-idx="{{@index}}" data-contestant-id="{{id}}"
-      style="background:#0a1628;border:1px solid rgba(201,162,39,0.2);border-radius:20px;margin:16px;padding:0;overflow:hidden">
+      style="background:linear-gradient(160deg,#0a1628 0%,#0d1f3c 100%);border:1px solid rgba(201,162,39,0.2);border-radius:20px;margin:16px;padding:0;overflow:hidden">
 
       <!-- Two-column layout: photo left, scoring right -->
       <div class="judge-card-inner">
@@ -117,10 +117,13 @@
         <!-- ── Left column: Photo ── -->
         <div class="judge-photo-col">
           {{#if photo}}
-          <img src="{{photo}}" alt="{{name}}"
-            style="width:100%;height:100%;object-fit:cover;object-position:center top;border-radius:16px;border:2px solid #c9a227;display:block"/>
+          <div style="position:relative;width:100%;height:100%;min-height:300px;border-radius:16px;overflow:hidden">
+            <img src="{{photo}}" alt="{{name}}"
+              style="width:100%;height:100%;object-fit:cover;object-position:center top;border-radius:16px;border:2px solid #c9a227;display:block;box-shadow:0 0 0 2px #c9a227,0 0 32px rgba(201,162,39,0.25)"/>
+            <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0.07) 0%,transparent 40%);pointer-events:none;border-radius:16px"></div>
+          </div>
           {{else}}
-          <div style="width:100%;height:100%;min-height:220px;border-radius:16px;border:2px solid #c9a227;background:linear-gradient(160deg,#0d1f3c,#1a2f50);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px">
+          <div style="width:100%;height:100%;min-height:220px;border-radius:16px;border:2px solid #c9a227;background:linear-gradient(160deg,#0d1f3c,#1a2f50);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;box-shadow:0 0 0 2px #c9a227,0 0 32px rgba(201,162,39,0.25)">
             <span style="font-size:3rem;font-weight:900;color:#c9a227;line-height:1">#{{number}}</span>
             <span style="font-size:0.7rem;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:0.1em">No Photo</span>
           </div>
@@ -128,17 +131,20 @@
         </div>
 
         <!-- ── Right column: Scoring ── -->
-        <div class="judge-scoring-col">
+        <div class="judge-scoring-col" style="position:relative">
+
+          <!-- Crown SVG watermark -->
+          <svg width="80" height="80" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="position:absolute;top:12px;right:16px;opacity:0.04;pointer-events:none;z-index:0" stroke="#c9a227" stroke-width="1.2"><path d="M2 20h20M4 20l2-8 6 4 6-4 2 8"/><circle cx="4" cy="10" r="2" fill="#c9a227"/><circle cx="12" cy="6" r="2" fill="#c9a227"/><circle cx="20" cy="10" r="2" fill="#c9a227"/></svg>
 
           <!-- Header: crown + judging system label -->
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
             <span style="font-size:1.1rem;line-height:1">👑</span>
-            <span style="font-size:0.65rem;font-weight:900;letter-spacing:0.18em;text-transform:uppercase;color:#c9a227">Judging System</span>
+            <span style="font-size:0.65rem;font-weight:900;letter-spacing:0.22em;text-transform:uppercase;color:#c9a227">Judging System</span>
           </div>
 
           <!-- Contestant name + number -->
           <div style="margin-bottom:4px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
-            <h2 style="font-size:1.45rem;font-weight:900;color:#f1f5f9;margin:0;line-height:1.15">{{name}}</h2>
+            <h2 style="font-size:1.45rem;font-weight:900;letter-spacing:0.01em;color:#f1f5f9;margin:0;line-height:1.15">{{name}}</h2>
             <span style="font-size:1rem;font-weight:900;color:#c9a227">#{{number}}</span>
           </div>
 
@@ -149,22 +155,25 @@
             {{#if platform}}<span style="margin-left:6px">&bull; {{platform}}</span>{{/if}}
           </div>
 
+          <!-- Gold divider -->
+          <div style="height:1px;background:linear-gradient(90deg,rgba(201,162,39,0.4),rgba(201,162,39,0.08));margin:0 0 14px 0;border-radius:1px"></div>
+
           <!-- ── Criteria rows (all visible at once) ── -->
           {{#each scores}}
           <div class="criteria-panel" data-contestant-id="{{../id}}" data-criteria-idx="{{@index}}"
-            style="background:rgba(255,255,255,0.04);border-bottom:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:10px 12px;margin-bottom:6px">
+            style="background:rgba(255,255,255,0.04);border:1px solid rgba(201,162,39,0.15);border-radius:10px;padding:14px 16px;margin-bottom:6px;transition:border-color 0.2s,background 0.2s">
 
             <!-- Criteria name row -->
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:8px;flex-wrap:wrap">
-              <span style="font-size:0.82rem;font-weight:700;color:#f1f5f9">{{criteriaName}}</span>
-              <span style="font-size:0.7rem;font-weight:900;background:linear-gradient(135deg,#8b6914,#c9a227);color:#0a1628;padding:2px 10px;border-radius:999px;flex-shrink:0">{{weight}}%</span>
+              <span style="font-size:0.86rem;font-weight:700;color:#f1f5f9;text-transform:capitalize">{{criteriaName}}</span>
+              <span style="font-size:0.7rem;font-weight:900;background:linear-gradient(135deg,#8b6914,#c9a227);color:#0a1628;padding:3px 12px;border-radius:999px;flex-shrink:0">{{weight}}%</span>
             </div>
 
             <!-- Progress bar + input row -->
             <div style="display:flex;align-items:center;gap:10px">
               <!-- Progress bar -->
-              <div style="flex:1;height:7px;border-radius:6px;overflow:hidden;background:rgba(255,255,255,0.06);min-width:0">
-                <div class="criteria-bar" style="height:100%;width:0%;border-radius:6px;background:linear-gradient(90deg,#8b6914,#c9a227,#f0c040);transition:width 0.3s ease"></div>
+              <div style="flex:1;height:8px;border-radius:6px;overflow:hidden;background:rgba(255,255,255,0.06);min-width:0">
+                <div class="criteria-bar" style="height:100%;width:0%;border-radius:6px;background:linear-gradient(90deg,#8b6914,#c9a227,#f0c040);background-size:200% auto;animation:shimmer 2.5s linear infinite;transition:width 0.3s ease"></div>
               </div>
               <!-- Visible score input -->
               <div style="display:flex;align-items:center;gap:5px;flex-shrink:0">
@@ -174,7 +183,7 @@
                   placeholder="0"
                   data-max="{{maxScore}}"
                   oninput="handleScoreInput(this)"
-                  style="width:90px;height:44px;font-size:1.4rem;font-weight:900;text-align:center;border-radius:10px;border:1.5px solid rgba(201,162,39,0.4);background:rgba(0,0,0,0.3);color:#f0c040;outline:none;-webkit-appearance:none;-moz-appearance:textfield"/>
+                  style="width:100px;height:44px;font-size:1.4rem;font-weight:900;text-align:center;border-radius:12px;border:1.5px solid rgba(201,162,39,0.4);background:rgba(0,0,0,0.3);color:#f0c040;outline:none;-webkit-appearance:none;-moz-appearance:textfield"/>
                 <span style="font-size:0.72rem;font-weight:700;color:#94a3b8;white-space:nowrap">/{{maxScore}}</span>
               </div>
             </div>
@@ -202,20 +211,22 @@
           <!-- Live total display -->
           <div class="contestant-total-display" style="display:flex;align-items:center;justify-content:space-between;padding:12px 0 4px 0;border-top:1px solid rgba(201,162,39,0.15);margin-top:8px">
             <span style="font-size:0.75rem;font-weight:900;text-transform:uppercase;letter-spacing:0.1em;color:#94a3b8">Total</span>
-            <span class="contestant-total" style="font-size:1.5rem;font-weight:900;color:#f0c040">0.00%</span>
+            <div style="display:flex;align-items:center">
+              <span class="contestant-total" style="font-size:2rem;font-weight:900;background:linear-gradient(135deg,#f0c040,#c9a227);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">0.00%</span>
+              <span class="contestant-fill-label" style="font-size:0.65rem;font-weight:900;background:rgba(201,162,39,0.12);color:#f0c040;border:1px solid rgba(201,162,39,0.25);padding:2px 8px;border-radius:999px;margin-left:8px;white-space:nowrap">0/{{scores.length}} filled</span>
+            </div>
           </div>
-          <div class="contestant-fill-label" style="font-size:0.7rem;color:#64748b;text-align:right;margin-bottom:12px">0/{{scores.length}} filled</div>
 
           <!-- Overall progress bar (thin) -->
-          <div style="height:3px;border-radius:2px;overflow:hidden;background:rgba(255,255,255,0.04);margin-bottom:14px">
-            <div class="contestant-progress-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#8b6914,#c9a227);transition:width 0.5s ease"></div>
+          <div style="height:6px;border-radius:2px;overflow:hidden;background:rgba(255,255,255,0.04);margin-bottom:14px;margin-top:4px">
+            <div class="contestant-progress-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#8b6914,#c9a227,#f0c040);transition:width 0.5s ease"></div>
           </div>
 
           <!-- SUBMIT button -->
           <button type="button"
+            class="submit-btn"
             onclick="submitContestant({{@index}})"
-            style="width:100%;padding:14px;border-radius:14px;background:linear-gradient(135deg,#8b6914,#c9a227);color:#0a1628;font-weight:900;font-size:1rem;border:none;cursor:pointer;letter-spacing:0.06em;text-transform:uppercase;transition:opacity 0.15s ease;box-shadow:0 4px 20px rgba(201,162,39,0.35)"
-            onmouseover="this.style.opacity='0.88'" onmouseout="this.style.opacity='1'">
+            style="width:100%;padding:16px;border-radius:14px;background:linear-gradient(135deg,#8b6914,#c9a227,#f0c040,#c9a227);background-size:300% auto;color:#0a1628;font-weight:900;font-size:15px;border:none;cursor:pointer;letter-spacing:0.1em;text-transform:uppercase;box-shadow:0 4px 24px rgba(201,162,39,0.4)">
             ✓ Submit Scores
           </button>
 
@@ -326,6 +337,26 @@ main::-webkit-scrollbar { display:none; }
 /* GPU compositing hints */
 .nav-dot { will-change: background, transform; }
 #scoring-main { will-change: scroll-position; }
+
+/* Criteria panel hover & filled state */
+.criteria-panel:hover { border-color: rgba(201,162,39,0.35) !important; background: rgba(255,255,255,0.07) !important; }
+.criteria-panel.has-score { border-left: 3px solid #c9a227 !important; }
+
+/* Shimmer animation for progress bar fill */
+@keyframes shimmer {
+  0%   { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
+
+/* Submit button */
+.submit-btn {
+  background-size: 300% auto;
+  transition: background-position 0.5s ease, box-shadow 0.2s ease, opacity 0.15s ease;
+}
+.submit-btn:hover {
+  background-position: right center;
+  box-shadow: 0 6px 32px rgba(201,162,39,0.6);
+}
 </style>
 
 <script>
@@ -389,6 +420,9 @@ main::-webkit-scrollbar { display:none; }
     const bar = panel.querySelector('.criteria-bar');
     if (bar) { bar.style.width = pct.toFixed(1) + '%'; }
 
+    // Toggle filled state accent
+    panel.classList.toggle('has-score', val > 0);
+
     // Hidden compat elements
     const disp = panel.querySelector('.score-display');
     if (disp) disp.textContent = val > 0 ? val : '—';
@@ -427,7 +461,7 @@ main::-webkit-scrollbar { display:none; }
       bar.style.width = pct + '%';
       bar.style.background = filled === panels.length
         ? 'linear-gradient(90deg,#10b981,#34d399)'
-        : 'linear-gradient(90deg,#8b6914,#c9a227)';
+        : 'linear-gradient(90deg,#8b6914,#c9a227,#f0c040)';
     }
     // Nav dot
     const dot = document.querySelector('.nav-dot[data-idx="' + cp.dataset.idx + '"]');
