@@ -77,58 +77,12 @@
 
       <!-- More dropdown -->
       <div class="relative" id="admin-more-wrap">
-        <button type="button" onclick="toggleDropdown('admin-more')"
+        <button type="button" onclick="toggleDropdown('admin-more', this)"
           class="btn-sm btn-sm-gray flex items-center gap-1.5">
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
           More
           <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
         </button>
-        <div id="admin-more" class="hidden absolute right-0 top-full mt-1 rounded-xl overflow-hidden z-50 min-w-[180px]"
-          style="background:#111827;border:1px solid rgba(255,255,255,0.12);box-shadow:0 8px 32px rgba(0,0,0,0.5);z-index:9999">
-          <a href="/events/{{event.id}}/edit" class="dropdown-item">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Edit Event
-          </a>
-          <button type="button" onclick="openAddJudgeModal();closeDropdown('admin-more')" class="dropdown-item w-full text-left">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Assign Judge
-          </button>
-          <a href="/events/{{event.id}}/criteria" class="dropdown-item">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg> Criteria
-          </a>
-          <a href="/events/{{event.id}}/display" target="_blank" class="dropdown-item">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg> Display Board
-          </a>
-          <a href="/events/{{event.id}}/public" target="_blank" class="dropdown-item">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> Public Results
-          </a>
-          <a href="/events/{{event.id}}/self-register" target="_blank" class="dropdown-item">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg> Reg QR
-          </a>
-          <a href="/events/{{event.id}}/results/export" class="dropdown-item">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Export CSV
-          </a>
-          <a href="/analytics?eventId={{event.id}}" class="dropdown-item" style="color:#c4b5fd">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg> AI Score Audit
-          </a>
-          <form method="POST" action="/events/{{event.id}}/lock" class="block">
-            <input type="hidden" name="_csrf" value="{{csrfToken}}">
-            <button type="submit" class="dropdown-item w-full text-left {{#if event.scoringLocked}}text-red-400{{/if}}">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-              {{#if event.scoringLocked}}Unlock Scores{{else}}Lock Scores{{/if}}
-            </button>
-          </form>
-          {{#if event.isPaymentType}}
-          <a href="#finance" onclick="document.getElementById('finance')?.scrollIntoView({behavior:'smooth'});closeDropdown('admin-more')" class="dropdown-item" style="color:#6ee7b7">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> Finance
-          </a>
-          {{/if}}
-          <div style="height:1px;background:rgba(255,255,255,0.07);margin:4px 0"></div>
-          <form method="POST" action="/events/{{event.id}}/delete" onsubmit="return confirm('Delete this event? This cannot be undone.')">
-            <input type="hidden" name="_csrf" value="{{csrfToken}}">
-            <button type="submit" class="dropdown-item w-full text-left" style="color:#fca5a5">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg> Delete Event
-            </button>
-          </form>
-        </div>
       </div>
 
       {{/if}}{{#if isJudge}}
@@ -185,48 +139,12 @@
 
       <!-- Organizer More dropdown -->
       <div class="relative" id="org-more-wrap">
-        <button type="button" onclick="toggleDropdown('org-more')"
+        <button type="button" onclick="toggleDropdown('org-more', this)"
           class="btn-sm btn-sm-gray flex items-center gap-1.5">
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
           More
           <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
         </button>
-        <div id="org-more" class="hidden absolute right-0 top-full mt-1 rounded-xl overflow-hidden z-50 min-w-[180px]"
-          style="background:#111827;border:1px solid rgba(255,255,255,0.12);box-shadow:0 8px 32px rgba(0,0,0,0.5);z-index:9999">
-          <a href="/events/{{event.id}}/edit" class="dropdown-item">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Edit Event
-          </a>
-          <button type="button" onclick="openAddJudgeModal();closeDropdown('org-more')" class="dropdown-item w-full text-left">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Assign Judge
-          </button>
-          <a href="/events/{{event.id}}/criteria" class="dropdown-item">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg> Criteria
-          </a>
-          <a href="/events/{{event.id}}/display" target="_blank" class="dropdown-item">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg> Display Board
-          </a>
-          <a href="/events/{{event.id}}/public" target="_blank" class="dropdown-item">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> Public Results
-          </a>
-          <a href="/events/{{event.id}}/self-register" target="_blank" class="dropdown-item">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg> Reg QR
-          </a>
-          <a href="/events/{{event.id}}/results/export" class="dropdown-item">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Export CSV
-          </a>
-          {{#if event.isPaymentType}}
-          <a href="#finance" onclick="document.getElementById('finance')?.scrollIntoView({behavior:'smooth'});closeDropdown('org-more')" class="dropdown-item" style="color:#6ee7b7">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> Finance
-          </a>
-          {{/if}}
-          <div style="height:1px;background:rgba(255,255,255,0.07);margin:4px 0"></div>
-          <form method="POST" action="/events/{{event.id}}/delete" onsubmit="return confirm('Delete this event? This cannot be undone.')">
-            <input type="hidden" name="_csrf" value="{{csrfToken}}">
-            <button type="submit" class="dropdown-item w-full text-left" style="color:#fca5a5">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg> Delete Event
-            </button>
-          </form>
-        </div>
       </div>
 
       {{/if}}
@@ -831,25 +749,69 @@
 }
 </style>
 <script>
-function toggleDropdown(id) {
-  var el = document.getElementById(id);
-  if (!el) return;
-  var isHidden = el.classList.contains('hidden');
-  // Close all dropdowns first
-  document.querySelectorAll('[id$="-more"]').forEach(function(d) { d.classList.add('hidden'); });
-  if (isHidden) el.classList.remove('hidden');
+// Shared dropdown portal — appended to body so overflow:hidden never clips it
+var _portal = null;
+function getPortal() {
+  if (!_portal) {
+    _portal = document.createElement('div');
+    _portal.id = 'dropdown-portal';
+    _portal.style.cssText = 'position:fixed;z-index:99999;top:0;left:0;pointer-events:none';
+    document.body.appendChild(_portal);
+  }
+  return _portal;
 }
+
+function toggleDropdown(id, btn) {
+  var portal  = getPortal();
+  var content = document.getElementById(id + '-content');
+  if (!content) return;
+
+  // If already visible, hide it
+  if (content.style.display === 'block') {
+    content.style.display = 'none';
+    portal.style.pointerEvents = 'none';
+    return;
+  }
+
+  // Hide all other dropdowns
+  portal.querySelectorAll('[data-dropdown]').forEach(function(el) { el.style.display = 'none'; });
+
+  // Position it below the button using fixed coords
+  var rect = btn.getBoundingClientRect();
+  content.style.display   = 'block';
+  content.style.position  = 'fixed';
+  content.style.top       = (rect.bottom + 6) + 'px';
+  content.style.right     = (window.innerWidth - rect.right) + 'px';
+  content.style.left      = 'auto';
+  portal.style.pointerEvents = 'auto';
+
+  // Move into portal if not already there
+  if (content.parentNode !== portal) {
+    portal.appendChild(content);
+  }
+}
+
 function closeDropdown(id) {
-  var el = document.getElementById(id);
-  if (el) el.classList.add('hidden');
+  var content = document.getElementById(id + '-content');
+  if (content) content.style.display = 'none';
+  if (_portal) _portal.style.pointerEvents = 'none';
 }
-// Close dropdown when clicking outside
+
+// Close when clicking outside
 document.addEventListener('click', function(e) {
-  var inDropdown = e.target.closest('[id$="-more-wrap"]') || e.target.closest('[id$="-more"]');
-  if (!inDropdown) {
-    document.querySelectorAll('[id$="-more"]').forEach(function(d) { d.classList.add('hidden'); });
+  if (!_portal) return;
+  var inBtn = e.target.closest('[id$="-more-wrap"]');
+  var inMenu = e.target.closest('[data-dropdown]');
+  if (!inBtn && !inMenu) {
+    _portal.querySelectorAll('[data-dropdown]').forEach(function(el) { el.style.display = 'none'; });
+    _portal.style.pointerEvents = 'none';
   }
 });
+
+// Reposition on scroll/resize
+window.addEventListener('scroll', function() {
+  if (_portal) _portal.querySelectorAll('[data-dropdown]').forEach(function(el) { el.style.display = 'none'; });
+}, true);
 </script>
 <script>
 /* ── Finance form toggle + type switcher ── */
@@ -1063,6 +1025,35 @@ window._onTimerEventEnd = function() {
       {{/if}}
     </form>
   </div>
+</div>
+
+<!-- ── Dropdown content (portaled to body via JS to avoid overflow clipping) ── -->
+<div id="admin-more-content" data-dropdown style="display:none;background:#111827;border:1px solid rgba(255,255,255,0.12);border-radius:12px;overflow:hidden;min-width:190px;box-shadow:0 12px 40px rgba(0,0,0,0.7)">
+  <a href="/events/{{event.id}}/edit" class="dropdown-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Edit Event</a>
+  <button type="button" onclick="openAddJudgeModal();closeDropdown('admin-more')" class="dropdown-item w-full text-left"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Assign Judge</button>
+  <a href="/events/{{event.id}}/criteria" class="dropdown-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg> Criteria</a>
+  <a href="/events/{{event.id}}/display" target="_blank" class="dropdown-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg> Display Board</a>
+  <a href="/events/{{event.id}}/public" target="_blank" class="dropdown-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> Public Results</a>
+  <a href="/events/{{event.id}}/self-register" target="_blank" class="dropdown-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg> Reg QR</a>
+  <a href="/events/{{event.id}}/results/export" class="dropdown-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Export CSV</a>
+  <a href="/analytics?eventId={{event.id}}" class="dropdown-item" style="color:#c4b5fd"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg> AI Score Audit</a>
+  <form method="POST" action="/events/{{event.id}}/lock"><input type="hidden" name="_csrf" value="{{csrfToken}}"><button type="submit" class="dropdown-item w-full text-left {{#if event.scoringLocked}}" style="color:#fca5a5{{/if}}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> {{#if event.scoringLocked}}Unlock Scores{{else}}Lock Scores{{/if}}</button></form>
+  {{#if event.isPaymentType}}<a href="#finance" onclick="document.getElementById('finance')?.scrollIntoView({behavior:'smooth'});closeDropdown('admin-more')" class="dropdown-item" style="color:#6ee7b7"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> Finance</a>{{/if}}
+  <div style="height:1px;background:rgba(255,255,255,0.07);margin:4px 0"></div>
+  <form method="POST" action="/events/{{event.id}}/delete" onsubmit="return confirm('Delete this event? This cannot be undone.')"><input type="hidden" name="_csrf" value="{{csrfToken}}"><button type="submit" class="dropdown-item w-full text-left" style="color:#fca5a5"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg> Delete Event</button></form>
+</div>
+
+<div id="org-more-content" data-dropdown style="display:none;background:#111827;border:1px solid rgba(255,255,255,0.12);border-radius:12px;overflow:hidden;min-width:190px;box-shadow:0 12px 40px rgba(0,0,0,0.7)">
+  <a href="/events/{{event.id}}/edit" class="dropdown-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Edit Event</a>
+  <button type="button" onclick="openAddJudgeModal();closeDropdown('org-more')" class="dropdown-item w-full text-left"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Assign Judge</button>
+  <a href="/events/{{event.id}}/criteria" class="dropdown-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg> Criteria</a>
+  <a href="/events/{{event.id}}/display" target="_blank" class="dropdown-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg> Display Board</a>
+  <a href="/events/{{event.id}}/public" target="_blank" class="dropdown-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> Public Results</a>
+  <a href="/events/{{event.id}}/self-register" target="_blank" class="dropdown-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg> Reg QR</a>
+  <a href="/events/{{event.id}}/results/export" class="dropdown-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Export CSV</a>
+  {{#if event.isPaymentType}}<a href="#finance" onclick="document.getElementById('finance')?.scrollIntoView({behavior:'smooth'});closeDropdown('org-more')" class="dropdown-item" style="color:#6ee7b7"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> Finance</a>{{/if}}
+  <div style="height:1px;background:rgba(255,255,255,0.07);margin:4px 0"></div>
+  <form method="POST" action="/events/{{event.id}}/delete" onsubmit="return confirm('Delete this event? This cannot be undone.')"><input type="hidden" name="_csrf" value="{{csrfToken}}"><button type="submit" class="dropdown-item w-full text-left" style="color:#fca5a5"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg> Delete Event</button></form>
 </div>
 
 <script>
