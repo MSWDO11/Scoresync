@@ -78,6 +78,13 @@
   {{#if success_msg}}<div class="alert-success m-4">{{success_msg}}</div>{{/if}}
   {{#if error_msg}}<div class="alert-error m-4">{{error_msg}}</div>{{/if}}
 
+  {{#if hasExistingScores}}
+  <div class="mx-4 mt-3 rounded-xl px-4 py-3 flex items-start gap-2.5 no-print" style="background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.25)">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#818cf8" stroke-width="2" class="flex-shrink-0 mt-0.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    <div class="text-xs" style="color:#a5b4fc">You have previously submitted scores for this event. Your existing scores are shown below — you can update them and re-submit.</div>
+  </div>
+  {{/if}}
+
   <!-- Offline mode big button strip -->
   <div id="offline-mode-strip" class="mx-4 mt-3 mb-1 rounded-2xl overflow-hidden" style="border:1px solid rgba(255,255,255,0.08)">
     <button type="button" onclick="toggleOfflineMode()"
@@ -334,6 +341,7 @@
   let saveTimer;
   window._currentIdx = 0;
   window._currentCriteria = {}; // contestantId → criteriaIdx
+  window._hasExistingScores = {{#if hasExistingScores}}true{{else}}false{{/if}};
   const totalContestants = {{contestants.length}};
 
   /* ══ Build number pads ══ */
@@ -518,7 +526,7 @@
     const cp      = document.querySelector('.contestant-panel[data-idx="' + window._currentIdx + '"]');
     const panels  = cp?.querySelectorAll('.criteria-panel') || [];
     const btnLbl  = cp?.querySelector('.btn-label');
-    if (btnLbl) btnLbl.textContent = idx >= panels.length - 1 ? 'Save Scores & Finish' : 'Next Criteria →';
+    if (btnLbl) btnLbl.textContent = idx >= panels.length - 1 ? (window._hasExistingScores ? 'Update Scores' : 'Save Scores & Finish') : 'Next Criteria →';
   }
 
   window.prevCriteria = function(cid) {

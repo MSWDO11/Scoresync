@@ -66,6 +66,8 @@ export const scoringPage = async (req, res) => {
       }
     });
 
+    const hasExistingScores = Object.keys(scoreMap).length > 0;
+
     const matrix = contestants.map(c => ({
       ...c,
       scores: criteria.map(cr => ({
@@ -85,6 +87,7 @@ export const scoringPage = async (req, res) => {
       criteria,
       judgeId,
       scoringLocked: ev.scoringLocked || false,
+      hasExistingScores,
       userName:    req.session.userName,
       userRole:    req.session.userRole,
       userInitial: (req.session.userName || "U")[0].toUpperCase(),
@@ -125,34 +128,82 @@ export const submitScores = async (req, res) => {
       return res.redirect(`/events/${eventId}/scoring`);
     }
 
+    // Fetch existing score docs for this judge+event to detect edits vs initial submissions
+    const existingScoresSnap = await getDocs(collection(db, "events", eventId, "scores"));
+    const existingScoreMap = {};
+    existingScoresSnap.docs.forEach(d => {
+      const s = d.data();
+      if (s.judgeId === judgeId) {
+        existingScoreMap[d.id] = s.score;
+      }
+    });
+
     const writes = [];
+    const auditEdits = [];
+    let newSubmitCount = 0;
+
     for (const [contestantId, criteriaMap] of Object.entries(scores || {})) {
       for (const [criteriaId, rawScore] of Object.entries(criteriaMap || {})) {
         const score = parseFloat(rawScore);
         if (isNaN(score)) continue;
         const docId = `${judgeId}_${contestantId}_${criteriaId}`;
-        writes.push(
-          setDoc(doc(db, "events", eventId, "scores", docId), {
-            judgeId,
-            judgeName:   req.session.userName || "Unknown",
-            contestantId,
-            criteriaId,
-            score,
-            submittedAt: serverTimestamp(),
-          })
-        );
+        const isEdit = docId in existingScoreMap;
+        const prevScore = isEdit ? existingScoreMap[docId] : null;
+
+        const scoreData = {
+          judgeId,
+          judgeName:   req.session.userName || "Unknown",
+          contestantId,
+          criteriaId,
+          score,
+          submittedAt: isEdit ? (existingScoresSnap.docs.find(d => d.id === docId)?.data()?.submittedAt ?? serverTimestamp()) : serverTimestamp(),
+        };
+        if (isEdit) {
+          scoreData.lastEditedAt = serverTimestamp();
+        }
+
+        writes.push(setDoc(doc(db, "events", eventId, "scores", docId), scoreData));
+
+        if (isEdit && prevScore !== score) {
+          auditEdits.push({ contestantId, criteriaId, previousScore: prevScore, newScore: score });
+        } else if (!isEdit) {
+          newSubmitCount++;
+        }
       }
     }
     await Promise.all(writes);
 
-    // Audit trail log
-    await addDoc(collection(db, "events", eventId, "audit_log"), {
-      action:    "scores_submitted",
-      judgeId,
-      judgeName: req.session.userName || "Unknown",
-      scoreCount: Object.values(scores || {}).reduce((t, cm) => t + Object.keys(cm).length, 0),
-      timestamp: serverTimestamp(),
-    });
+    // Write audit log entries
+    const auditWrites = [];
+    if (auditEdits.length > 0) {
+      for (const edit of auditEdits) {
+        auditWrites.push(
+          addDoc(collection(db, "events", eventId, "audit_log"), {
+            action:        "score_edited",
+            judgeId,
+            judgeName:     req.session.userName || "Unknown",
+            contestantId:  edit.contestantId,
+            criteriaId:    edit.criteriaId,
+            previousScore: edit.previousScore,
+            newScore:      edit.newScore,
+            timestamp:     serverTimestamp(),
+          })
+        );
+      }
+    }
+    if (newSubmitCount > 0 || (auditEdits.length === 0 && Object.keys(scores || {}).length > 0)) {
+      auditWrites.push(
+        addDoc(collection(db, "events", eventId, "audit_log"), {
+          action:     auditEdits.length > 0 ? "scores_updated" : "scores_submitted",
+          judgeId,
+          judgeName:  req.session.userName || "Unknown",
+          scoreCount: Object.values(scores || {}).reduce((t, cm) => t + Object.keys(cm).length, 0),
+          editCount:  auditEdits.length,
+          timestamp:  serverTimestamp(),
+        })
+      );
+    }
+    await Promise.all(auditWrites);
 
     req.flash("success_msg", "Scores submitted successfully.");
     res.redirect(`/events/${eventId}/scoring`);
@@ -534,6 +585,144 @@ export const exportResults = async (req, res) => {
   } catch (err) {
     console.error(err);
     return res.status(500).send("Could not export results.");
+  }
+};
+
+// ─── Report Page ──────────────────────────────────────────────────────────────
+export const reportPage = async (req, res) => {
+  const { eventId } = req.params;
+  try {
+    const [eSnap, cSnap, crSnap, sSnap, sigSnap] = await Promise.all([
+      getDoc(doc(db, "events", eventId)),
+      getDocs(collection(db, "events", eventId, "contestants")),
+      getDocs(collection(db, "events", eventId, "criteria")),
+      getDocs(collection(db, "events", eventId, "scores")),
+      getDocs(collection(db, "events", eventId, "report_signatures")),
+    ]);
+
+    if (!eSnap.exists()) return res.redirect("/events");
+
+    const ev          = { id: eSnap.id, ...eSnap.data() };
+    const contestants = cSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const criteria    = crSnap.docs.map((d, i) => ({
+      id: d.id,
+      ...d.data(),
+      color: ["#2563eb","#7c3aed","#059669","#dc2626","#d97706","#0891b2","#be185d","#65a30d"][i % 8],
+    }));
+    const allScores   = sSnap.docs.map(d => d.data());
+    const sigMap      = {};
+    sigSnap.docs.forEach(d => { sigMap[d.id] = d.data(); });
+
+    // Build judge map
+    const judgeMap = {};
+    allScores.forEach(s => {
+      if (s.judgeId && !judgeMap[s.judgeId]) {
+        judgeMap[s.judgeId] = s.judgeName || "Judge";
+      }
+    });
+
+    // Build ranked results (same logic as resultsPage)
+    const COLORS = ["#2563eb","#7c3aed","#059669","#dc2626","#d97706","#0891b2","#be185d","#65a30d"];
+    const ranked = contestants.map(c => {
+      let totalWeighted = 0;
+      const breakdown = criteria.map((cr, i) => {
+        const judgeScores = allScores.filter(s => s.contestantId === c.id && s.criteriaId === cr.id);
+        const avg = judgeScores.length
+          ? judgeScores.reduce((sum, s) => sum + s.score, 0) / judgeScores.length
+          : 0;
+        const weighted = (avg / (Number(cr.maxScore) || 100)) * (Number(cr.weight) || 0);
+        totalWeighted += weighted;
+        return { name: cr.name, weight: cr.weight, avg: avg.toFixed(2), weighted: weighted.toFixed(2), color: COLORS[i % 8] };
+      });
+      return { ...c, breakdown, finalScore: totalWeighted.toFixed(4), finalScoreDisplay: totalWeighted.toFixed(2) };
+    });
+    ranked.sort((a, b) => b.finalScore - a.finalScore);
+
+    applyTieBreaking(ranked, criteria);
+    const topScore = ranked.length ? parseFloat(ranked[0].finalScore) : 0;
+    ranked.forEach((c, i) => {
+      c.rank       = i + 1;
+      c.gapToFirst = (topScore - parseFloat(c.finalScore)).toFixed(2);
+    });
+
+    // Build judge breakdown for the per-judge scores section
+    const judgeEntries = Object.entries(judgeMap);
+    const judgeBreakdown = judgeEntries.map(([jId, jName], idx) => {
+      const scoredCount   = new Set(allScores.filter(s => s.judgeId === jId).map(s => s.contestantId)).size;
+      const completionPct = contestants.length ? Math.round((scoredCount / contestants.length) * 100) : 0;
+      const sig = sigMap[jId];
+      // Per-contestant per-criteria scores for this judge
+      const contestantScores = ranked.map(c => ({
+        name:   c.name,
+        number: c.number,
+        scores: criteria.map(cr => {
+          const s = allScores.find(sc => sc.judgeId === jId && sc.contestantId === c.id && sc.criteriaId === cr.id);
+          return { criteriaName: cr.name, value: s ? s.score : null };
+        }),
+        total: (() => {
+          let t = 0;
+          criteria.forEach(cr => {
+            const s = allScores.find(sc => sc.judgeId === jId && sc.contestantId === c.id && sc.criteriaId === cr.id);
+            if (s) t += (s.score / (Number(cr.maxScore) || 100)) * (Number(cr.weight) || 0);
+          });
+          return t.toFixed(2);
+        })(),
+      }));
+      return {
+        judgeId:          jId,
+        judgeName:        jName,
+        alias:            `Judge ${idx + 1}`,
+        scoredCount,
+        totalContestants: contestants.length,
+        completionPct,
+        signed:           !!sig,
+        signedAt:         sig ? sig.signedAt : null,
+        contestantScores,
+        isSelf:           jId === req.session.userId,
+      };
+    });
+
+    res.render("scoring/report", {
+      title:        `Report — ${ev.name}`,
+      event:        ev,
+      ranked,
+      criteria,
+      judgeBreakdown,
+      judgeCount:   judgeEntries.length,
+      generatedAt:  new Date().toLocaleString("en-PH", { timeZone: "Asia/Manila" }),
+      userName:     req.session.userName,
+      userRole:     req.session.userRole,
+      userInitial:  (req.session.userName || "U")[0].toUpperCase(),
+      isAdmin:      req.session.userRole === "admin",
+      isJudge:      req.session.userRole === "judge",
+      isOrganizer:  req.session.userRole === "organizer",
+      currentUserId: req.session.userId,
+    });
+  } catch (err) {
+    console.error(err);
+    req.flash("error_msg", "Could not load report.");
+    res.redirect(`/events/${eventId}`);
+  }
+};
+
+// ─── Confirm Signature ────────────────────────────────────────────────────────
+export const confirmSignature = async (req, res) => {
+  const { eventId } = req.params;
+  const judgeId     = req.session.userId;
+  const judgeName   = sanitizeText(req.session.userName || "Unknown");
+  try {
+    await setDoc(doc(db, "events", eventId, "report_signatures", judgeId), {
+      judgeId,
+      judgeName,
+      eventId,
+      signedAt: serverTimestamp(),
+    });
+    req.flash("success_msg", "Your signature has been recorded. Thank you.");
+    res.redirect(`/events/${eventId}/report`);
+  } catch (err) {
+    console.error(err);
+    req.flash("error_msg", "Failed to save signature.");
+    res.redirect(`/events/${eventId}/report`);
   }
 };
 

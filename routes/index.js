@@ -97,7 +97,7 @@ router.post("/events/:eventId/criteria/:id/delete", requireAuth, requireRole("ad
 import {
   scoringPage, submitScores, resultsPage,
   displayBoard, publicResults, toggleScoreLock,
-  exportResults, getScoringProgress,
+  exportResults, getScoringProgress, reportPage, confirmSignature,
 } from "../controllers/scoringController.js";
 
 router.get( "/events/:eventId/scoring",          requireAuth, requireRole("admin","judge","organizer"), scoringPage);
@@ -110,6 +110,9 @@ router.get( "/events/:eventId/display",  displayBoard);
 router.get( "/events/:eventId/public",   publicResults);
 // Score lock
 router.post("/events/:eventId/lock",     requireAuth, requireRole("admin","organizer"), toggleScoreLock);
+// Report & signatures
+router.get( "/events/:eventId/report",      requireAuth, reportPage);
+router.post("/events/:eventId/report/sign", requireAuth, confirmSignature);
 
 // ─── AI Score Analytics (admin only) ──────────────────────────────────────────
 import {
