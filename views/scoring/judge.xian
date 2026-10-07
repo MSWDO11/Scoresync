@@ -35,14 +35,13 @@
 
         <!-- Offline toggle button -->
         <button type="button" id="offline-toggle-btn" onclick="toggleOfflineMode()"
-          class="relative flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition"
-          style="background:rgba(16,185,129,0.10);border:1px solid rgba(16,185,129,0.25);color:#e2e8f0"
+          class="relative flex items-center gap-2 px-4 py-2 rounded-xl font-bold transition"
+          style="background:rgba(16,185,129,0.12);border:2px solid rgba(16,185,129,0.35);color:#e2e8f0;font-size:12px;min-width:130px;justify-content:center"
           title="Toggle offline mode">
-          <span id="offline-status-dot" style="width:8px;height:8px;border-radius:50%;flex-shrink:0;background:#34d399;box-shadow:0 0 6px #10b981;display:inline-block"></span>
-          <span id="offline-status-label">🌐 Online</span>
-          <!-- Pending badge -->
+          <span id="offline-status-dot" style="width:9px;height:9px;border-radius:50%;flex-shrink:0;background:#34d399;box-shadow:0 0 7px #10b981;display:inline-block"></span>
+          <span id="offline-status-label" style="white-space:nowrap">🌐 Online</span>
           <span id="offline-pending-badge"
-            style="display:none;position:absolute;top:-6px;right:-6px;background:#ef4444;color:#fff;border-radius:999px;font-size:10px;font-weight:900;min-width:18px;height:18px;align-items:center;justify-content:center;padding:0 4px">0</span>
+            style="display:none;position:absolute;top:-8px;right:-8px;background:#ef4444;color:#fff;border-radius:999px;font-size:10px;font-weight:900;min-width:20px;height:20px;align-items:center;justify-content:center;padding:0 4px;border:2px solid #060b18">0</span>
         </button>
       </div>
     </div>
@@ -78,6 +77,32 @@
 
   {{#if success_msg}}<div class="alert-success m-4">{{success_msg}}</div>{{/if}}
   {{#if error_msg}}<div class="alert-error m-4">{{error_msg}}</div>{{/if}}
+
+  <!-- Offline mode big button strip -->
+  <div id="offline-mode-strip" class="mx-4 mt-3 mb-1 rounded-2xl overflow-hidden" style="border:1px solid rgba(255,255,255,0.08)">
+    <button type="button" onclick="toggleOfflineMode()"
+      class="w-full flex items-center justify-between px-5 py-3.5 transition"
+      id="offline-strip-btn"
+      style="background:rgba(255,255,255,0.03)">
+      <div class="flex items-center gap-3">
+        <div id="offline-strip-icon" class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+          style="background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.3)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.5"><path d="M1 1l22 22"/><path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"/><path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"/><path d="M10.71 5.05A16 16 0 0 1 22.56 9"/><path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
+        </div>
+        <div class="text-left">
+          <div id="offline-strip-title" class="text-sm font-extrabold" style="color:#e2e8f0">Offline Mode</div>
+          <div id="offline-strip-desc" class="text-xs mt-0.5" style="color:#475569">Tap to enable — scores saved to device when no signal</div>
+        </div>
+      </div>
+      <div class="flex items-center gap-2 flex-shrink-0">
+        <span id="offline-pending-strip" class="hidden px-2 py-0.5 rounded-full text-xs font-extrabold" style="background:rgba(239,68,68,0.15);color:#fca5a5;border:1px solid rgba(239,68,68,0.3)">0 pending</span>
+        <!-- Toggle switch -->
+        <div id="offline-toggle-switch" class="relative w-12 h-6 rounded-full transition-all duration-300" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15)">
+          <div id="offline-toggle-knob" class="absolute top-0.5 left-0.5 w-5 h-5 rounded-full transition-all duration-300" style="background:#475569"></div>
+        </div>
+      </div>
+    </button>
+  </div>
 
   {{#if contestants.length}}
   <form id="scoringForm" method="POST" action="/events/{{event.id}}/scoring">

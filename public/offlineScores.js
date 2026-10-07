@@ -1,23 +1,19 @@
 /**
- * ScoreSync — Offline Score Entry
- * - Auto switches to offline when no internet
- * - Manual toggle button to force offline anytime
- * - Saves scores to IndexedDB, auto-syncs when back online
+ * ScoreSync Offline Score Entry
+ * Auto-detects no signal + manual toggle button with toggle switch UI
  */
+var DB_NAME    = 'scoresync-offline';
+var DB_VERSION = 1;
+var STORE      = 'pending-scores';
+var MANUAL_KEY = 'ss_offline_manual';
 
-const DB_NAME    = 'scoresync-offline';
-const DB_VERSION = 1;
-const STORE      = 'pending-scores';
-const MANUAL_KEY = 'ss_offline_manual';
-
-// ── Offline state ─────────────────────────────────────────────────────────────
 function isOffline() {
   return !navigator.onLine || localStorage.getItem(MANUAL_KEY) === '1';
 }
 
-// ── IndexedDB ─────────────────────────────────────────────────────────────────
+// IndexedDB
 function openDB() {
-  return new Promise((resolve, reject) => {
+  return new Promise(function(resolve, reject) {
     var req = indexedDB.open(DB_NAME, DB_VERSION);
     req.onupgradeneeded = function(e) {
       var db = e.target.result;
@@ -33,7 +29,6 @@ function openDB() {
 function savePending(url, formData) {
   return openDB().then(function(db) {
     var scores = {};
-    var entries = formData.entries ? formData.entries() : [];
     for (var pair of formData.entries()) {
       if (pair[0] !== '_csrf') scores[pair[0]] = pair[1];
     }
@@ -68,15 +63,15 @@ function deletePending(id) {
   });
 }
 
-// ── Banner ────────────────────────────────────────────────────────────────────
+// Banner
 function showBanner(msg, type, persist) {
   var banner = document.getElementById('offline-banner');
   if (!banner) {
     banner = document.createElement('div');
     banner.id = 'offline-banner';
     banner.style.cssText = 'position:fixed;bottom:76px;left:50%;transform:translateX(-50%);' +
-      'z-index:9999;padding:10px 20px;border-radius:12px;font-size:13px;' +
-      'font-weight:700;text-align:center;max-width:92vw;min-width:220px;' +
+      'z-index:9999;padding:10px 20px;border-radius:12px;font-size:13px;font-weight:700;' +
+      'text-align:center;max-width:92vw;min-width:220px;' +
       'box-shadow:0 4px 24px rgba(0,0,0,0.55);transition:opacity 0.3s;' +
       'font-family:Inter,sans-serif;pointer-events:none;';
     document.body.appendChild(banner);
@@ -96,112 +91,105 @@ function showBanner(msg, type, persist) {
   banner.style.display    = 'block';
   banner.textContent      = msg;
   clearTimeout(banner._t);
-  if (!persist) {
-    banner._t = setTimeout(function() { banner.style.opacity = '0'; }, 3500);
-  }
+  if (!persist) banner._t = setTimeout(function() { banner.style.opacity = '0'; }, 3500);
 }
 
-// ── Update toggle button ──────────────────────────────────────────────────────
+// Update all UI elements
 function updateBtn() {
-  var btn   = document.getElementById('offline-toggle-btn');
-  var dot   = document.getElementById('offline-status-dot');
-  var label = document.getElementById('offline-status-label');
-  var badge = document.getElementById('offline-pending-badge');
-  if (!btn) return;
-
   var manual   = localStorage.getItem(MANUAL_KEY) === '1';
   var noSignal = !navigator.onLine;
 
+  // Top bar small button
+  var dot   = document.getElementById('offline-status-dot');
+  var label = document.getElementById('offline-status-label');
+  var topBtn = document.getElementById('offline-toggle-btn');
+
+  // Strip button
+  var stripTitle = document.getElementById('offline-strip-title');
+  var stripDesc  = document.getElementById('offline-strip-desc');
+  var switchEl   = document.getElementById('offline-toggle-switch');
+  var knob       = document.getElementById('offline-toggle-knob');
+
   if (noSignal) {
-    btn.style.background  = 'rgba(239,68,68,0.15)';
-    btn.style.borderColor = 'rgba(239,68,68,0.4)';
-    if (dot)   { dot.style.background = '#f87171'; dot.style.boxShadow = '0 0 6px #ef4444'; }
-    if (label) label.textContent = '📵 No Signal';
+    if (topBtn) { topBtn.style.background = 'rgba(239,68,68,0.15)'; topBtn.style.borderColor = 'rgba(239,68,68,0.4)'; }
+    if (dot)    { dot.style.background = '#f87171'; dot.style.boxShadow = '0 0 7px #ef4444'; }
+    if (label)  label.textContent = '📵 No Signal';
+    if (stripTitle) stripTitle.textContent = '📵 No Signal — Offline Mode Active';
+    if (stripDesc)  stripDesc.style.color  = '#f87171';
+    if (stripDesc)  stripDesc.textContent  = 'No internet. Scores saved to your device automatically.';
+    if (switchEl)   switchEl.style.background = '#ef4444';
+    if (knob)       { knob.style.transform = 'translateX(24px)'; knob.style.background = '#fff'; }
   } else if (manual) {
-    btn.style.background  = 'rgba(245,158,11,0.15)';
-    btn.style.borderColor = 'rgba(245,158,11,0.4)';
-    if (dot)   { dot.style.background = '#fbbf24'; dot.style.boxShadow = '0 0 6px #f59e0b'; }
-    if (label) label.textContent = '✈ Offline Mode';
+    if (topBtn) { topBtn.style.background = 'rgba(245,158,11,0.15)'; topBtn.style.borderColor = 'rgba(245,158,11,0.4)'; }
+    if (dot)    { dot.style.background = '#fbbf24'; dot.style.boxShadow = '0 0 7px #f59e0b'; }
+    if (label)  label.textContent = '✈ Offline Mode';
+    if (stripTitle) stripTitle.textContent = '✈ Offline Mode ON';
+    if (stripDesc)  stripDesc.style.color  = '#fbbf24';
+    if (stripDesc)  stripDesc.textContent  = 'Scores saved locally. Tap to go online and sync.';
+    if (switchEl)   switchEl.style.background = '#f59e0b';
+    if (knob)       { knob.style.transform = 'translateX(24px)'; knob.style.background = '#fff'; }
   } else {
-    btn.style.background  = 'rgba(16,185,129,0.10)';
-    btn.style.borderColor = 'rgba(16,185,129,0.25)';
-    if (dot)   { dot.style.background = '#34d399'; dot.style.boxShadow = '0 0 6px #10b981'; }
-    if (label) label.textContent = '🌐 Online';
+    if (topBtn) { topBtn.style.background = 'rgba(16,185,129,0.12)'; topBtn.style.borderColor = 'rgba(16,185,129,0.35)'; }
+    if (dot)    { dot.style.background = '#34d399'; dot.style.boxShadow = '0 0 7px #10b981'; }
+    if (label)  label.textContent = '🌐 Online';
+    if (stripTitle) stripTitle.textContent = 'Offline Mode';
+    if (stripDesc)  stripDesc.style.color  = '#475569';
+    if (stripDesc)  stripDesc.textContent  = 'Tap to enable — scores saved to device when no signal.';
+    if (switchEl)   switchEl.style.background = 'rgba(255,255,255,0.1)';
+    if (knob)       { knob.style.transform = 'translateX(0px)'; knob.style.background = '#475569'; }
   }
 
   getPending().then(function(items) {
     var n = items.length;
-    if (badge) {
-      badge.textContent   = n > 0 ? n : '';
-      badge.style.display = n > 0 ? 'flex' : 'none';
-    }
+    var badge = document.getElementById('offline-pending-badge');
+    var strip = document.getElementById('offline-pending-strip');
+    if (badge) { badge.textContent = n > 0 ? n : ''; badge.style.display = n > 0 ? 'flex' : 'none'; }
+    if (strip) { strip.textContent = n + ' pending'; strip.style.display = n > 0 ? 'inline' : 'none'; }
   }).catch(function() {});
 }
 
-// ── Sync pending ──────────────────────────────────────────────────────────────
+// Sync pending
 function syncPending() {
   getPending().then(function(pending) {
-    if (pending.length === 0) { updateBtn(); return; }
-    showBanner('⟳ Syncing ' + pending.length + ' offline score(s)…', 'info', false);
-
+    if (!pending.length) { updateBtn(); return; }
+    showBanner('Syncing ' + pending.length + ' score(s)...', 'info', false);
     var csrf = '';
     var meta = document.querySelector('meta[name="csrf-token"]');
     if (meta) csrf = meta.content || '';
-
-    var synced = 0, failed = 0;
-    var total  = pending.length;
-
+    var done = 0, synced = 0, failed = 0, total = pending.length;
     pending.forEach(function(item) {
       var body = new URLSearchParams();
       Object.keys(item.scores).forEach(function(k) { body.append(k, item.scores[k]); });
       if (csrf) body.append('_csrf', csrf);
-
-      fetch(item.url, {
-        method:      'POST',
-        headers:     { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body:        body.toString(),
-        credentials: 'same-origin',
-      }).then(function(res) {
-        if (res.ok || res.redirected || res.status < 400) {
-          return deletePending(item.id).then(function() {
-            synced++;
-            check();
-          });
-        } else {
-          failed++;
-          check();
-        }
-      }).catch(function() {
-        failed++;
-        check();
-      });
+      fetch(item.url, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: body.toString(), credentials: 'same-origin' })
+        .then(function(res) {
+          if (res.ok || res.redirected || res.status < 400) {
+            return deletePending(item.id).then(function() { synced++; finish(); });
+          } else { failed++; finish(); }
+        }).catch(function() { failed++; finish(); });
     });
-
-    function check() {
-      if (synced + failed < total) return;
-      if (synced > 0 && failed === 0) {
-        showBanner('✓ ' + synced + ' score(s) synced!', 'success', false);
-      } else if (synced > 0) {
-        showBanner('✓ ' + synced + ' synced, ' + failed + ' failed — will retry', 'warning', false);
-      } else {
-        showBanner('⚠ Sync failed — will retry when reconnected', 'offline', true);
-      }
+    function finish() {
+      done++;
+      if (done < total) return;
+      if (synced > 0 && failed === 0) showBanner('✓ ' + synced + ' score(s) synced!', 'success', false);
+      else if (synced > 0) showBanner('✓ ' + synced + ' synced, ' + failed + ' failed', 'warning', false);
+      else showBanner('Sync failed — will retry when reconnected', 'offline', true);
       updateBtn();
     }
   }).catch(function() {});
 }
 
-// ── Manual toggle (called from button onclick) ────────────────────────────────
+// Toggle handler
 window.toggleOfflineMode = function() {
   if (!navigator.onLine) {
-    showBanner('📵 No internet — already in offline mode.', 'offline', false);
+    showBanner('📵 No internet — already offline.', 'offline', false);
     updateBtn();
     return;
   }
   var manual = localStorage.getItem(MANUAL_KEY) === '1';
   if (manual) {
     localStorage.removeItem(MANUAL_KEY);
-    showBanner('🌐 Online mode restored. Syncing…', 'success', false);
+    showBanner('🌐 Online mode. Syncing...', 'success', false);
     updateBtn();
     setTimeout(syncPending, 400);
   } else {
@@ -211,24 +199,19 @@ window.toggleOfflineMode = function() {
   }
 };
 
-// ── Offline-aware submit (called by judge.xian instead of form.submit()) ──────
+// Offline-aware submit
 window.offlineAwareSubmit = function(form) {
   if (!isOffline()) {
-    // Online — sync pending first then submit normally
     syncPending();
     form.submit();
     return;
   }
-
-  // Offline — save to IndexedDB
   var formData = new FormData(form);
   savePending(form.action, formData).then(function() {
     return getPending();
   }).then(function(items) {
-    showBanner('📦 Saved offline (' + items.length + ' pending). Will sync when online.', 'warning', true);
+    showBanner('📦 Saved offline (' + items.length + ' pending). Syncs when online.', 'warning', true);
     updateBtn();
-
-    // Visual feedback on submit buttons
     var btns = form.querySelectorAll('button[type="submit"], input[type="submit"]');
     btns.forEach(function(btn) {
       var orig = btn.tagName === 'BUTTON' ? btn.textContent : btn.value;
@@ -242,38 +225,27 @@ window.offlineAwareSubmit = function(form) {
       }, 2500);
     });
   }).catch(function() {
-    showBanner('⚠ Could not save offline. Storage may be full.', 'error', false);
+    showBanner('Could not save offline. Storage may be full.', 'error', false);
   });
 };
 
-// ── Init ──────────────────────────────────────────────────────────────────────
+// Init
 function init() {
   updateBtn();
-
-  // Show pending count on load
   getPending().then(function(items) {
-    if (items.length > 0) {
-      showBanner('📦 ' + items.length + ' score(s) pending sync', 'warning', true);
-    }
+    if (items.length > 0) showBanner('📦 ' + items.length + ' score(s) pending sync', 'warning', true);
   }).catch(function() {});
-
-  // Sync on load if online
-  if (navigator.onLine && localStorage.getItem(MANUAL_KEY) !== '1') {
-    syncPending();
-  }
-
-  // Auto-detect connection changes
+  if (navigator.onLine && localStorage.getItem(MANUAL_KEY) !== '1') syncPending();
   window.addEventListener('online', function() {
     if (localStorage.getItem(MANUAL_KEY) !== '1') {
       updateBtn();
-      showBanner('🌐 Connection restored — syncing…', 'success', false);
+      showBanner('🌐 Connection restored — syncing...', 'success', false);
       setTimeout(syncPending, 600);
     }
   });
-
   window.addEventListener('offline', function() {
     updateBtn();
-    showBanner('📵 No signal — offline mode active. Scores saved locally.', 'offline', true);
+    showBanner('📵 No signal — offline mode active.', 'offline', true);
   });
 }
 
