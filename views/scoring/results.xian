@@ -375,19 +375,42 @@
             const container = document.getElementById('judgeProgressList');
             if (!container) return;
             if (!Array.isArray(data) || data.length === 0) return;
-            container.innerHTML = data.map((j, idx) => {
+            // Use textContent assignment to prevent XSS — never inject user data via innerHTML
+            const frag = document.createDocumentFragment();
+            data.forEach((j, idx) => {
               const pct = j.completionPct || 0;
-              return '<div class="flex items-center gap-3 py-2" style="border-top:1px solid rgba(255,255,255,0.06)">'
-                + '<div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-extrabold flex-shrink-0 shadow-sm grad-purple">' + (idx + 1) + '</div>'
-                + '<div class="flex-1 min-w-0">'
-                + '<div class="font-bold text-sm" style="color:#e2e8f0">' + (j.alias || ('Judge ' + (idx + 1))) + '</div>'
-                + '<div class="text-[11px]" style="color:#64748b">' + j.scoredCount + ' / ' + j.totalContestants + ' contestants scored</div>'
-                + '<div class="mt-1 h-1.5 rounded-full overflow-hidden" style="background:rgba(255,255,255,0.08)">'
-                + '<div class="h-full rounded-full transition-all" style="width:' + pct + '%;background:#7c3aed"></div>'
-                + '</div></div>'
-                + '<div class="text-[10px] text-purple-400 font-bold flex-shrink-0">' + pct + '%</div>'
-                + '</div>';
-            }).join('');
+              const row = document.createElement('div');
+              row.className = 'flex items-center gap-3 py-2';
+              row.style.borderTop = '1px solid rgba(255,255,255,0.06)';
+              const num = document.createElement('div');
+              num.className = 'w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-extrabold flex-shrink-0 shadow-sm grad-purple';
+              num.textContent = idx + 1;
+              const info = document.createElement('div');
+              info.className = 'flex-1 min-w-0';
+              const name = document.createElement('div');
+              name.className = 'font-bold text-sm';
+              name.style.color = '#e2e8f0';
+              name.textContent = j.alias || ('Judge ' + (idx + 1));
+              const sub = document.createElement('div');
+              sub.className = 'text-[11px]';
+              sub.style.color = '#64748b';
+              sub.textContent = j.scoredCount + ' / ' + j.totalContestants + ' contestants scored';
+              const barWrap = document.createElement('div');
+              barWrap.className = 'mt-1 h-1.5 rounded-full overflow-hidden';
+              barWrap.style.background = 'rgba(255,255,255,0.08)';
+              const bar = document.createElement('div');
+              bar.className = 'h-full rounded-full transition-all';
+              bar.style.cssText = 'width:' + Math.min(100, pct) + '%;background:#7c3aed';
+              barWrap.appendChild(bar);
+              info.appendChild(name); info.appendChild(sub); info.appendChild(barWrap);
+              const pctEl = document.createElement('div');
+              pctEl.className = 'text-[10px] text-purple-400 font-bold flex-shrink-0';
+              pctEl.textContent = pct + '%';
+              row.appendChild(num); row.appendChild(info); row.appendChild(pctEl);
+              frag.appendChild(row);
+            });
+            container.innerHTML = '';
+            container.appendChild(frag);
           } catch(e) { /* silently ignore fetch errors */ }
         }
         document.addEventListener('DOMContentLoaded', function() {
