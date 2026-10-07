@@ -199,11 +199,20 @@
           </div>
         </div>
 
-        <!-- ── Number pad (1 to maxScore or 1-10 grid) ── -->
+        <!-- ── Score Input ── -->
         <div>
-          <div class="text-[10px] font-extrabold uppercase tracking-wider mb-2" style="color:#374151">Your Score</div>
-          <!-- Number pad rendered by JS -->
-          <div class="numpad-grid flex flex-wrap gap-2 max-w-full" data-max="{{maxScore}}"></div>
+          <div class="text-[10px] font-extrabold uppercase tracking-wider mb-2" style="color:#374151">Your Score <span style="color:#475569;font-weight:500;text-transform:none;font-size:10px">(max: {{maxScore}})</span></div>
+          <div class="flex items-center gap-3">
+            <input type="number"
+              class="score-entry-input"
+              min="0" max="{{maxScore}}" step="0.5"
+              placeholder="0"
+              data-max="{{maxScore}}"
+              oninput="handleScoreInput(this)"
+              style="width:120px;font-size:2rem;font-weight:900;text-align:center;padding:10px 14px;border-radius:14px;border:2px solid rgba(99,102,241,0.3);background:rgba(99,102,241,0.08);color:#a5b4fc;outline:none"/>
+            <div style="font-size:1.2rem;font-weight:700;color:#374151">/&nbsp;{{maxScore}}</div>
+          </div>
+          <div class="score-error text-xs font-bold mt-1.5 hidden" style="color:#f87171"></div>
         </div>
 
 
@@ -230,7 +239,7 @@
           min="0" max="{{maxScore}}" step="0.5"
           class="score-input sr-only"
           data-weight="{{weight}}" data-max="{{maxScore}}"
-          readonly tabindex="-1"/>
+          tabindex="-1"/>
 
       </div>
       {{/each}}
@@ -345,47 +354,55 @@
   const totalContestants = {{contestants.length}};
 
   /* ══ Build number pads ══ */
-  document.querySelectorAll('.numpad-grid').forEach(grid => {
-    const max = parseInt(grid.dataset.max) || 100;
-    const panel = grid.closest('.criteria-panel');
-    const input = panel?.querySelector('.score-input');
-    // Show 1..max if max<=20, else 10-point steps
-    let nums;
-    if (max <= 20) {
-      nums = Array.from({length: max}, (_, i) => i + 1);
-    } else {
-      nums = [];
-      for (let i = 10; i <= max; i += 10) nums.push(i);
-    }
-    nums.forEach(n => {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'numpad-btn';
-      btn.textContent = n;
-      btn.dataset.val = n;
-      btn.onclick = () => selectScore(panel, n, btn);
-      grid.appendChild(btn);
-    });
-    // Restore existing value
-    if (input && input.value) {
-      const base = Math.floor(parseFloat(input.value));
-      const dec  = parseFloat((parseFloat(input.value) - base).toFixed(1));
-      const btn  = grid.querySelector('[data-val="' + base + '"]');
-      if (btn) { btn.classList.add('selected'); }
-      // Fine-tune
-      const ft = panel?.querySelectorAll('.finetune-btn');
-      ft?.forEach(b => { if (parseFloat(b.dataset.delta) === dec) b.classList.add('selected'); });
+  document.querySelectorAll('.criteria-panel').forEach(panel => {
+    const input    = panel.querySelector('.score-input');
+    const entryEl  = panel.querySelector('.score-entry-input');
+    if (!entryEl || !input) return;
+    // Pre-fill from existing score
+    if (input.value) {
+      entryEl.value = input.value;
+      updateBox(panel);
     }
   });
 
-  /* ══ Select a base score ══ */
+  /* ══ Handle score text input ══ */
+  window.handleScoreInput = function(entryEl) {
+    const panel  = entryEl.closest('.criteria-panel');
+    const input  = panel.querySelector('.score-input');
+    const errEl  = panel.querySelector('.score-error');
+    const max    = parseFloat(entryEl.dataset.max) || 100;
+    let val      = parseFloat(entryEl.value);
+
+    // Validate
+    if (isNaN(val) || entryEl.value === '') {
+      if (errEl) { errEl.textContent = ''; errEl.classList.add('hidden'); }
+      input.value = '';
+      entryEl.style.borderColor = 'rgba(99,102,241,0.3)';
+      updateBox(panel);
+      schedSave();
+      return;
+    }
+    if (val < 0) val = 0;
+    if (val > max) {
+      val = max;
+      entryEl.value = max;
+      if (errEl) { errEl.textContent = 'Max score is ' + max; errEl.classList.remove('hidden'); }
+      entryEl.style.borderColor = 'rgba(239,68,68,0.6)';
+    } else {
+      if (errEl) { errEl.textContent = ''; errEl.classList.add('hidden'); }
+      entryEl.style.borderColor = 'rgba(99,102,241,0.6)';
+    }
+    input.value = val;
+    updateBox(panel);
+    schedSave();
+  };
+
+  /* ══ Select a base score (kept for backward compat) ══ */
   window.selectScore = function(panel, val, btn) {
-    const input = panel.querySelector('.score-input');
-    const grid  = panel.querySelector('.numpad-grid');
-    grid?.querySelectorAll('.numpad-btn').forEach(b => b.classList.remove('selected'));
-    btn.classList.add('selected');
-    const max = parseFloat(input.dataset.max) || 100;
-    input.value = Math.min(val, max);
+    const input   = panel.querySelector('.score-input');
+    const entryEl = panel.querySelector('.score-entry-input');
+    if (input)   input.value   = val;
+    if (entryEl) entryEl.value = val;
     updateBox(panel);
     schedSave();
   };
@@ -575,10 +592,9 @@
         const m = input.name.match(/scores\[([^\]]+)\]\[([^\]]+)\]/);
         if (m && data[cid][m[2]] && input.value === '') {
           input.value = data[cid][m[2]];
-          // Restore numpad selection
-          const base = Math.floor(parseFloat(input.value));
-          const btn  = panel.querySelector('.numpad-btn[data-val="' + base + '"]');
-          if (btn) btn.classList.add('selected');
+          // Also fill the visible entry input
+          const entryEl = panel.querySelector('.score-entry-input');
+          if (entryEl) entryEl.value = data[cid][m[2]];
         }
       });
     } catch(e){}
