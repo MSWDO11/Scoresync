@@ -279,18 +279,6 @@ function handleAvatarUpload(input) {
               {{#if isEncoder}}Participant{{else}}{{userRole}}{{/if}}
             </span>
           </div>
-          <div class="flex items-center justify-between py-1.5" style="border-bottom:1px solid rgba(255,255,255,0.05)">
-            <span style="color:#475569">Database</span>
-            <span class="font-semibold" style="color:#e2e8f0">Firebase Firestore</span>
-          </div>
-          <div class="flex items-center justify-between py-1.5" style="border-bottom:1px solid rgba(255,255,255,0.05)">
-            <span style="color:#475569">Location</span>
-            <span class="font-semibold" style="color:#e2e8f0">Mansalay, Or. Mindoro</span>
-          </div>
-          <div class="flex items-center justify-between py-1.5" style="border-bottom:1px solid rgba(255,255,255,0.05)">
-            <span style="color:#475569">Version</span>
-            <span class="font-semibold" style="color:#e2e8f0">{{systemVersion}}</span>
-          </div>
           <div class="flex items-center justify-between py-1.5">
             <span style="color:#475569">Sync Status</span>
             <span class="inline-flex items-center gap-1.5 font-bold" style="color:#34d399">
