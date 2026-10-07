@@ -504,7 +504,12 @@
     if (empty.length && !confirm(empty.length + ' score(s) empty. Submit anyway?')) return;
     // Clear draft for this judge before submitting
     try { localStorage.removeItem(storeKey); } catch(e){}
-    document.getElementById('scoringForm').submit();
+    // Use offline-aware submit
+    if (window.offlineAwareSubmit) {
+      window.offlineAwareSubmit(document.getElementById('scoringForm'));
+    } else {
+      document.getElementById('scoringForm').submit();
+    }
   };
   window.nextContestant = function(idx) { goToContestant(idx + 1); };
 
