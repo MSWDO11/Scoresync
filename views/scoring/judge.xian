@@ -102,6 +102,13 @@
         </div>
       </div>
     </button>
+    <!-- Open standalone offline scoring app -->
+    <a href="/offline-scoring" class="flex items-center justify-center gap-2 w-full py-2.5 text-xs font-bold transition"
+      style="background:rgba(99,102,241,0.08);border-top:1px solid rgba(255,255,255,0.05);color:#a5b4fc;text-decoration:none"
+      onmouseover="this.style.background='rgba(99,102,241,0.15)'" onmouseout="this.style.background='rgba(99,102,241,0.08)'">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 1l22 22"/><path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
+      Open Standalone Offline Scoring App
+    </a>
   </div>
 
   {{#if contestants.length}}
@@ -573,6 +580,49 @@
   restoreDraft();
   document.querySelectorAll('.criteria-panel').forEach(p => updateBox(p));
   goToContestant(0);
+})();
+</script>
+
+<!-- Save scoring data to localStorage for offline use -->
+<script>
+(function() {
+  try {
+    // Full structured data injected server-side for reliable offline use
+    var scoringData = {
+      eventId:    '{{event.id}}',
+      eventName:  '{{event.name}}',
+      judgeId:    '{{judgeId}}',
+      judgeName:  '{{userName}}',
+      formAction: '/events/{{event.id}}/scoring',
+      savedAt:    Date.now(),
+      contestants: [
+        {{#each contestants}}
+        {
+          id:      '{{id}}',
+          idx:     {{@index}},
+          name:    '{{name}}',
+          number:  '{{number}}',
+          barangay:'{{barangay}}',
+          age:     '{{age}}',
+          photo:   '{{photo}}',
+          criteria: [
+            {{#each scores}}
+            {
+              criteriaId:  '{{criteriaId}}',
+              criteriaName:'{{criteriaName}}',
+              weight:       {{weight}},
+              maxScore:     {{maxScore}},
+              description: '{{description}}',
+              inputName:   'scores[{{../id}}][{{criteriaId}}]',
+            },
+            {{/each}}
+          ]
+        },
+        {{/each}}
+      ]
+    };
+    localStorage.setItem('ss_offline_scoring_data', JSON.stringify(scoringData));
+  } catch(e) {}
 })();
 </script>
 
