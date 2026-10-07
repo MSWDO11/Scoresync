@@ -22,7 +22,7 @@
         <div class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08)">
           <svg id="completion-ring" width="28" height="28" viewBox="0 0 28 28">
             <circle cx="14" cy="14" r="10" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="3"/>
-            <circle id="ring-progress" cx="14" cy="14" r="10" fill="none" stroke="#6366f1" stroke-width="3"
+            <circle id="ring-progress" cx="14" cy="14" r="10" fill="none" stroke="#c9a227" stroke-width="3"
               stroke-dasharray="62.83" stroke-dashoffset="62.83" stroke-linecap="round"
               transform="rotate(-90 14 14)" style="transition:stroke-dashoffset 0.5s,stroke 0.3s"/>
           </svg>
@@ -57,31 +57,15 @@
         onclick="goToContestant({{@index}})">{{number}}</button>
       {{/each}}
     </div>
-
-    <!-- Row 3: Criteria tabs (shown per contestant) -->
-    {{#each contestants}}
-    <div class="criteria-tabs px-4 sm:px-6 py-2 flex items-center gap-2 overflow-x-auto" data-panel-idx="{{@index}}" style="{{#unless @first}}display:none{{/unless}};border-top:1px solid rgba(255,255,255,0.04);-webkit-overflow-scrolling:touch;scrollbar-width:none">
-      {{#each scores}}
-      <button type="button"
-        class="criteria-tab flex-shrink-0 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold transition-all border"
-        data-panel="{{../id}}" data-tab-idx="{{@index}}"
-        style="background:rgba(255,255,255,0.05);color:#64748b;border-color:rgba(255,255,255,0.08);white-space:nowrap"
-        onclick="switchCriteria('{{../id}}', {{@index}})">
-        <span class="tab-check hidden">✓</span>
-        {{criteriaName}}
-      </button>
-      {{/each}}
-    </div>
-    {{/each}}
   </div>
 
   {{#if success_msg}}<div class="alert-success m-4">{{success_msg}}</div>{{/if}}
   {{#if error_msg}}<div class="alert-error m-4">{{error_msg}}</div>{{/if}}
 
   {{#if hasExistingScores}}
-  <div class="mx-4 mt-3 rounded-xl px-4 py-3 flex items-start gap-2.5 no-print" style="background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.25)">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#818cf8" stroke-width="2" class="flex-shrink-0 mt-0.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-    <div class="text-xs" style="color:#a5b4fc">You have previously submitted scores for this event. Your existing scores are shown below — you can update them and re-submit.</div>
+  <div class="mx-4 mt-3 rounded-xl px-4 py-3 flex items-start gap-2.5 no-print" style="background:rgba(201,162,39,0.08);border:1px solid rgba(201,162,39,0.25)">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#c9a227" stroke-width="2" class="flex-shrink-0 mt-0.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    <div class="text-xs" style="color:#f0c040">You have previously submitted scores for this event. Your existing scores are shown below — you can update them and re-submit.</div>
   </div>
   {{/if}}
 
@@ -121,169 +105,126 @@
   {{#if contestants.length}}
   <form id="scoringForm" method="POST" action="/events/{{event.id}}/scoring">
     <input type="hidden" name="_csrf" value="{{csrfToken}}">
-    {{#each contestants}}
-    <div class="contestant-panel" data-idx="{{@index}}" data-contestant-id="{{id}}">
 
-      <!-- Contestant header -->
-      <div class="px-4 sm:px-6 py-4 flex items-center gap-3 flex-wrap sm:flex-nowrap" style="border-bottom:1px solid rgba(255,255,255,0.05)">
-        <!-- Photo thumbnail -->
-        <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl overflow-hidden flex-shrink-0 shadow-lg" style="border:2px solid rgba(99,102,241,0.3)">
+    {{#each contestants}}
+    <!-- ══ Contestant Panel ══ -->
+    <div class="contestant-panel" data-idx="{{@index}}" data-contestant-id="{{id}}"
+      style="background:#0a1628;border:1px solid rgba(201,162,39,0.2);border-radius:20px;margin:16px;padding:0;overflow:hidden">
+
+      <!-- Two-column layout: photo left, scoring right -->
+      <div class="judge-card-inner">
+
+        <!-- ── Left column: Photo ── -->
+        <div class="judge-photo-col">
           {{#if photo}}
-          <img src="{{photo}}" alt="{{name}}" class="w-full h-full object-cover" style="object-position:center top"/>
+          <img src="{{photo}}" alt="{{name}}"
+            style="width:100%;height:100%;object-fit:cover;object-position:center top;border-radius:16px;border:2px solid #c9a227;display:block"/>
           {{else}}
-          <div class="w-full h-full flex items-center justify-center font-black text-white text-lg" style="background:linear-gradient(135deg,#1e3a8a,#4f46e5)">{{number}}</div>
+          <div style="width:100%;height:100%;min-height:220px;border-radius:16px;border:2px solid #c9a227;background:linear-gradient(160deg,#0d1f3c,#1a2f50);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px">
+            <span style="font-size:3rem;font-weight:900;color:#c9a227;line-height:1">#{{number}}</span>
+            <span style="font-size:0.7rem;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:0.1em">No Photo</span>
+          </div>
           {{/if}}
         </div>
-        <div class="flex-1 min-w-0">
-          <div class="text-[10px] font-extrabold uppercase tracking-widest mb-0.5" style="color:#6366f1">Contestant #{{number}}</div>
-          <h2 class="text-xl sm:text-2xl font-extrabold tracking-tight" style="color:#e2e8f0">{{name}}</h2>
-          <div class="text-xs mt-0.5 flex items-center gap-2" style="color:#64748b">
+
+        <!-- ── Right column: Scoring ── -->
+        <div class="judge-scoring-col">
+
+          <!-- Header: crown + judging system label -->
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+            <span style="font-size:1.1rem;line-height:1">👑</span>
+            <span style="font-size:0.65rem;font-weight:900;letter-spacing:0.18em;text-transform:uppercase;color:#c9a227">Judging System</span>
+          </div>
+
+          <!-- Contestant name + number -->
+          <div style="margin-bottom:4px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+            <h2 style="font-size:1.45rem;font-weight:900;color:#f1f5f9;margin:0;line-height:1.15">{{name}}</h2>
+            <span style="font-size:1rem;font-weight:900;color:#c9a227">#{{number}}</span>
+          </div>
+
+          <!-- Barangay / age -->
+          <div style="font-size:0.75rem;color:#94a3b8;margin-bottom:16px">
             {{#if barangay}}<span>Brgy. {{barangay}}</span>{{/if}}
-            {{#if age}}<span>&bull; {{age}} yrs</span>{{/if}}
-            {{#if platform}}<span>&bull; {{platform}}</span>{{/if}}
+            {{#if age}}<span style="margin-left:6px">&bull; {{age}} yrs</span>{{/if}}
+            {{#if platform}}<span style="margin-left:6px">&bull; {{platform}}</span>{{/if}}
           </div>
-        </div>
-        <!-- Contestant total score -->
-        <div class="text-right flex-shrink-0">
-          <div class="contestant-total text-2xl font-black" style="color:#818cf8">0.00%</div>
-          <div class="text-[10px] font-bold uppercase tracking-wider" style="color:#374151">weighted total</div>
-          <div class="contestant-fill-label text-[11px] font-semibold mt-0.5" style="color:#64748b">0/{{scores.length}} filled</div>
-        </div>
-      </div>
 
-      <!-- Overall contestant progress bar -->
-      <div class="h-1" style="background:rgba(255,255,255,0.04)">
-        <div class="contestant-progress-bar h-full transition-all duration-500" style="width:0%;background:linear-gradient(90deg,#4f46e5,#7c3aed)"></div>
-      </div>
+          <!-- ── Criteria rows (all visible at once) ── -->
+          {{#each scores}}
+          <div class="criteria-panel" data-contestant-id="{{../id}}" data-criteria-idx="{{@index}}"
+            style="background:rgba(255,255,255,0.04);border-bottom:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:10px 12px;margin-bottom:6px">
 
-      <!-- ── Criteria panels (one per criteria, tabs switch between them) ── -->
-      {{#each scores}}
-      <div class="criteria-panel px-4 sm:px-6 py-5 sm:py-6"
-        data-contestant-id="{{../id}}" data-criteria-idx="{{@index}}"
-        style="{{#unless @first}}display:none{{/unless}}">
-
-        <!-- ── 1. Criteria Header ── -->
-        <div class="criteria-header-block" style="margin-bottom:18px">
-          <div class="flex items-start justify-between gap-3">
-            <div class="flex-1 min-w-0">
-              <div class="text-[10px] font-extrabold uppercase tracking-widest mb-1" style="color:#6366f1;letter-spacing:0.12em">Criteria {{add1 @index}} of {{../scores.length}}</div>
-              <h3 class="font-black tracking-tight" style="font-size:1.45rem;color:#e2e8f0;line-height:1.2;margin:0 0 4px 0">{{criteriaName}}</h3>
-              {{#if description}}<p class="text-sm" style="color:#64748b;margin:4px 0 0 0">{{description}}</p>{{/if}}
+            <!-- Criteria name row -->
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:8px;flex-wrap:wrap">
+              <span style="font-size:0.82rem;font-weight:700;color:#f1f5f9">{{criteriaName}}</span>
+              <span style="font-size:0.7rem;font-weight:900;background:linear-gradient(135deg,#8b6914,#c9a227);color:#0a1628;padding:2px 10px;border-radius:999px;flex-shrink:0">{{weight}}%</span>
             </div>
-            <div class="flex flex-col items-end gap-2 flex-shrink-0">
-              <span class="weight-pill-badge" style="background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;padding:5px 14px;border-radius:999px;font-size:0.8rem;font-weight:900;letter-spacing:0.04em;box-shadow:0 2px 12px rgba(99,102,241,0.45)">{{weight}}%</span>
-              <span class="saved-badge hidden" style="display:none;align-items:center;gap:5px;padding:5px 12px;border-radius:999px;font-size:0.72rem;font-weight:900;background:rgba(16,185,129,0.2);color:#6ee7b7;border:1.5px solid rgba(16,185,129,0.45);box-shadow:0 0 14px rgba(16,185,129,0.3)">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg>SAVED
-              </span>
-            </div>
-          </div>
-          <!-- Decorative accent line -->
-          <div style="height:3px;border-radius:2px;margin-top:14px;background:linear-gradient(90deg,#6366f1 0%,#7c3aed 40%,transparent 100%)"></div>
-        </div>
 
-        <!-- ── 2. Large Scoreboard Display ── -->
-        <div class="score-board-card" style="background:rgba(0,0,0,0.4);border:1.5px solid rgba(99,102,241,0.35);border-radius:20px;padding:24px 20px;margin-bottom:20px;box-shadow:0 0 32px rgba(99,102,241,0.1),inset 0 1px 0 rgba(255,255,255,0.04);text-align:center">
-          <!-- Main score number -->
-          <div style="display:flex;align-items:flex-end;justify-content:center;gap:8px;margin-bottom:6px">
-            <span class="score-display" style="font-size:5.5rem;font-weight:900;line-height:1;font-variant-numeric:tabular-nums;color:#6366f1;text-shadow:0 0 40px rgba(99,102,241,0.6)">{{#if value}}{{value}}{{else}}—{{/if}}</span>
-            <span style="font-size:1.4rem;font-weight:700;color:#374151;margin-bottom:14px;line-height:1">/{{maxScore}}</span>
-          </div>
-          <div style="font-size:0.7rem;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:#374151;margin-bottom:18px">points out of {{maxScore}}</div>
-          <!-- Donut ring below score -->
-          <div style="display:flex;justify-content:center">
-            <div class="relative" style="width:64px;height:64px;position:relative">
-              <svg width="64" height="64" viewBox="0 0 64 64">
-                <circle cx="32" cy="32" r="26" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="6"/>
-                <circle class="criteria-ring" cx="32" cy="32" r="26" fill="none" stroke="#6366f1" stroke-width="6"
-                  stroke-dasharray="163.36" stroke-dashoffset="163.36" stroke-linecap="round"
-                  transform="rotate(-90 32 32)" style="transition:stroke-dashoffset 0.4s ease"/>
-              </svg>
-              <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">
-                <span class="criteria-pct" style="font-size:0.7rem;font-weight:900;color:#e2e8f0">0%</span>
+            <!-- Progress bar + input row -->
+            <div style="display:flex;align-items:center;gap:10px">
+              <!-- Progress bar -->
+              <div style="flex:1;height:7px;border-radius:6px;overflow:hidden;background:rgba(255,255,255,0.06);min-width:0">
+                <div class="criteria-bar" style="height:100%;width:0%;border-radius:6px;background:linear-gradient(90deg,#8b6914,#c9a227,#f0c040);transition:width 0.3s ease"></div>
+              </div>
+              <!-- Visible score input -->
+              <div style="display:flex;align-items:center;gap:5px;flex-shrink:0">
+                <input type="number"
+                  class="score-entry-input"
+                  min="0" max="{{maxScore}}" step="0.01"
+                  placeholder="0"
+                  data-max="{{maxScore}}"
+                  oninput="handleScoreInput(this)"
+                  style="width:90px;height:44px;font-size:1.4rem;font-weight:900;text-align:center;border-radius:10px;border:1.5px solid rgba(201,162,39,0.4);background:rgba(0,0,0,0.3);color:#f0c040;outline:none;-webkit-appearance:none;-moz-appearance:textfield"/>
+                <span style="font-size:0.72rem;font-weight:700;color:#94a3b8;white-space:nowrap">/{{maxScore}}</span>
               </div>
             </div>
-          </div>
-        </div>
 
-        <!-- ── 3. Score Entry Input ── -->
-        <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:20px;gap:8px">
-          <div style="font-size:0.72rem;font-weight:900;letter-spacing:0.12em;text-transform:uppercase;color:#475569">MAX: {{maxScore}}</div>
-          <input type="number"
-            class="score-entry-input"
-            min="0" max="{{maxScore}}" step="0.5"
-            placeholder="0"
-            data-max="{{maxScore}}"
-            oninput="handleScoreInput(this)"
-            style="width:160px;height:72px;font-size:2.5rem;font-weight:900;text-align:center;border-radius:18px;border:2.5px solid rgba(99,102,241,0.35);background:rgba(99,102,241,0.1);color:#a5b4fc;outline:none;-moz-appearance:textfield"/>
-          <div class="score-error" style="font-size:0.72rem;font-weight:700;color:#f87171;display:none;min-height:16px"></div>
-        </div>
-
-        <!-- ── 4. Quick-pick row (populated by JS) ── -->
-        <div class="quick-picks-row" style="display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:22px"></div>
-
-        <!-- ── 5. Score Breakdown Card ── -->
-        <div class="score-breakdown-card" style="background:rgba(255,255,255,0.025);border:1px solid rgba(99,102,241,0.18);border-radius:16px;padding:16px 18px;border-left:3px solid #6366f1">
-          <div style="font-size:0.68rem;font-weight:900;letter-spacing:0.13em;text-transform:uppercase;color:#6366f1;margin-bottom:12px">Score Breakdown</div>
-          <!-- Row 1: progress bar -->
-          <div style="margin-bottom:10px">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
-              <span style="font-size:0.7rem;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:0.08em">Score Progress</span>
-              <span class="criteria-pct-label" style="font-size:0.75rem;font-weight:900;color:#818cf8">0%</span>
+            <!-- Hidden elements for JS compatibility (display:none wrapper) -->
+            <div style="display:none">
+              <span class="score-display"></span>
+              <span class="criteria-pct"></span>
+              <span class="criteria-pct-label"></span>
+              <span class="weighted-preview"></span>
+              <svg><circle class="criteria-ring" stroke-dasharray="163.36" stroke-dashoffset="163.36"/></svg>
+              <!-- Actual hidden form input -->
+              <input type="number"
+                name="scores[{{../id}}][{{criteriaId}}]"
+                value="{{value}}"
+                min="0" max="{{maxScore}}" step="0.01"
+                class="score-input sr-only"
+                data-weight="{{weight}}" data-max="{{maxScore}}"
+                tabindex="-1"/>
             </div>
-            <div style="height:8px;border-radius:6px;overflow:hidden;background:rgba(255,255,255,0.06)">
-              <div class="criteria-bar" style="height:100%;width:0%;border-radius:6px;background:#6366f1;transition:width 0.3s ease"></div>
-            </div>
-          </div>
-          <!-- Row 2: weighted contribution -->
-          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-top:1px solid rgba(255,255,255,0.05)">
-            <span style="font-size:0.72rem;font-weight:700;color:#475569">Contributes to final score</span>
-            <span class="weighted-preview" style="font-size:1rem;font-weight:900;color:#6ee7b7">0.00%</span>
-          </div>
-          <!-- Row 3: weight badge -->
-          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-top:1px solid rgba(255,255,255,0.05)">
-            <span style="font-size:0.72rem;font-weight:700;color:#475569">Weight of total score</span>
-            <span style="font-size:0.78rem;font-weight:900;background:rgba(99,102,241,0.18);color:#a5b4fc;padding:3px 10px;border-radius:999px;border:1px solid rgba(99,102,241,0.3)">{{weight}}% of total</span>
-          </div>
-        </div>
 
-        <!-- Hidden actual input -->
-        <input type="number"
-          name="scores[{{../id}}][{{criteriaId}}]"
-          value="{{value}}"
-          min="0" max="{{maxScore}}" step="0.5"
-          class="score-input sr-only"
-          data-weight="{{weight}}" data-max="{{maxScore}}"
-          tabindex="-1"/>
+          </div>
+          {{/each}}
 
-      </div>
-      {{/each}}
+          <!-- Live total display -->
+          <div class="contestant-total-display" style="display:flex;align-items:center;justify-content:space-between;padding:12px 0 4px 0;border-top:1px solid rgba(201,162,39,0.15);margin-top:8px">
+            <span style="font-size:0.75rem;font-weight:900;text-transform:uppercase;letter-spacing:0.1em;color:#94a3b8">Total</span>
+            <span class="contestant-total" style="font-size:1.5rem;font-weight:900;color:#f0c040">0.00%</span>
+          </div>
+          <div class="contestant-fill-label" style="font-size:0.7rem;color:#64748b;text-align:right;margin-bottom:12px">0/{{scores.length}} filled</div>
 
-      <!-- Criteria nav + Save button -->
-      <div class="px-4 sm:px-6 py-4 flex items-center gap-3" style="border-top:1px solid rgba(255,255,255,0.05);background:rgba(255,255,255,0.01)">
-        <button type="button"
-          class="flex items-center gap-1.5 px-4 py-2.5 rounded-xl font-bold text-sm transition"
-          style="background:rgba(255,255,255,0.05);color:#64748b;border:1px solid rgba(255,255,255,0.08)"
-          onclick="prevCriteria('{{id}}')">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-          Prev
-        </button>
-        <button type="button"
-          class="flex-1 py-2.5 rounded-xl font-extrabold text-sm text-white transition active:scale-[0.98]"
-          style="background:linear-gradient(135deg,#4f46e5,#7c3aed);box-shadow:0 4px 20px rgba(99,102,241,0.3)"
-          onclick="nextOrSave('{{id}}', {{@index}}, {{scores.length}})">
-          <span class="btn-label">Next Criteria →</span>
-        </button>
-        <button type="button"
-          class="flex items-center gap-1.5 px-4 py-2.5 rounded-xl font-bold text-sm transition"
-          style="background:rgba(255,255,255,0.05);color:#64748b;border:1px solid rgba(255,255,255,0.08)"
-          onclick="nextContestant({{@index}})">
-          Next
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-        </button>
-      </div>
+          <!-- Overall progress bar (thin) -->
+          <div style="height:3px;border-radius:2px;overflow:hidden;background:rgba(255,255,255,0.04);margin-bottom:14px">
+            <div class="contestant-progress-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#8b6914,#c9a227);transition:width 0.5s ease"></div>
+          </div>
+
+          <!-- SUBMIT button -->
+          <button type="button"
+            onclick="submitContestant({{@index}})"
+            style="width:100%;padding:14px;border-radius:14px;background:linear-gradient(135deg,#8b6914,#c9a227);color:#0a1628;font-weight:900;font-size:1rem;border:none;cursor:pointer;letter-spacing:0.06em;text-transform:uppercase;transition:opacity 0.15s ease;box-shadow:0 4px 20px rgba(201,162,39,0.35)"
+            onmouseover="this.style.opacity='0.88'" onmouseout="this.style.opacity='1'">
+            ✓ Submit Scores
+          </button>
+
+        </div><!-- /.judge-scoring-col -->
+      </div><!-- /.judge-card-inner -->
 
     </div>
     {{/each}}
+
   </form>
 
   {{else}}
@@ -307,11 +248,11 @@
       Previous
     </button>
     <div class="flex-1 text-center text-xs font-bold" style="color:#374151">
-      Contestant <span id="bottom-pos" style="color:#6366f1">1</span> / {{contestants.length}}
+      Contestant <span id="bottom-pos" style="color:#c9a227">1</span> / {{contestants.length}}
     </div>
     <button type="button" id="btn-next-contestant"
-      class="flex items-center gap-2 px-5 py-2.5 rounded-xl font-extrabold text-sm text-white transition active:scale-[0.98]"
-      style="background:linear-gradient(135deg,#4f46e5,#7c3aed);box-shadow:0 4px 16px rgba(99,102,241,0.3)"
+      class="flex items-center gap-2 px-5 py-2.5 rounded-xl font-extrabold text-sm transition active:scale-[0.98]"
+      style="background:linear-gradient(135deg,#8b6914,#c9a227);color:#0a1628;box-shadow:0 4px 16px rgba(201,162,39,0.3)"
       onclick="goToContestant(window._currentIdx + 1)">
       Next →
     </button>
@@ -319,121 +260,106 @@
 </div>
 
 <style>
-.numpad-btn {
-  width:48px; height:48px;
-  display:flex;align-items:center;justify-content:center;
-  border-radius:12px;font-weight:800;font-size:0.9rem;
-  border:2px solid rgba(255,255,255,0.08);
-  background:rgba(255,255,255,0.05);
-  color:#64748b;cursor:pointer;
-  transition:background 60ms ease, border-color 60ms ease, color 60ms ease, transform 60ms ease, box-shadow 60ms ease;
-  flex-shrink:0;
-  -webkit-tap-highlight-color: transparent;
+/* Two-column judge card */
+.judge-card-inner {
+  display: flex;
+  flex-direction: row;
+  min-height: 360px;
 }
-@media (max-width:480px) { .numpad-btn { width:42px; height:42px; font-size:0.85rem; } }
-.numpad-btn:hover { background:rgba(99,102,241,0.18);border-color:rgba(99,102,241,0.4);color:#a5b4fc; }
-.numpad-btn:active { transform:scale(0.93); }
-.numpad-btn.selected { background:rgba(99,102,241,0.9);border-color:#6366f1;color:#fff;box-shadow:0 4px 12px rgba(99,102,241,0.45);transform:scale(1.04); }
-.criteria-tab.active { background:rgba(99,102,241,0.2) !important;color:#a5b4fc !important;border-color:rgba(99,102,241,0.45) !important; }
-.criteria-tab.done { background:rgba(16,185,129,0.12) !important;color:#6ee7b7 !important;border-color:rgba(16,185,129,0.35) !important; }
-.nav-dot.scored { background:rgba(16,185,129,0.25) !important;color:#6ee7b7 !important;border-color:rgba(16,185,129,0.5) !important; }
-.nav-dot.active-dot { background:rgba(99,102,241,0.25) !important;color:#a5b4fc !important;border-color:rgba(99,102,241,0.6) !important; }
-/* All interactive elements in scoring: 60ms transitions */
-.criteria-tab, .nav-dot, .criteria-tab, [onclick] {
-  transition: background 60ms ease, color 60ms ease, border-color 60ms ease !important;
-  -webkit-tap-highlight-color: transparent;
+.judge-photo-col {
+  width: 280px;
+  flex-shrink: 0;
+  padding: 16px 0 16px 16px;
 }
-/* Hide scrollbars on overflow-x rows */
-.criteria-tabs::-webkit-scrollbar, main::-webkit-scrollbar { display:none; }
-.criteria-tabs { -ms-overflow-style:none; }
-/* GPU compositing hints */
-.numpad-btn, .nav-dot, .criteria-tab { will-change: background, transform; }
-#scoring-main { will-change: scroll-position; }
-/* Responsive score display */
-@media (max-width:480px) {
-  .score-display { font-size:3.5rem !important; }
-  .score-board-card { padding:16px 12px !important; }
+.judge-photo-col img, .judge-photo-col > div {
+  height: 100%;
+  min-height: 300px;
 }
+.judge-scoring-col {
+  flex: 1;
+  min-width: 0;
+  padding: 20px 20px 20px 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Mobile: stack photo on top */
+@media (max-width: 768px) {
+  .judge-card-inner {
+    flex-direction: column;
+  }
+  .judge-photo-col {
+    width: 100%;
+    padding: 16px 16px 0 16px;
+  }
+  .judge-photo-col img, .judge-photo-col > div {
+    height: 180px !important;
+    min-height: 180px !important;
+    width: 100%;
+  }
+  .judge-scoring-col {
+    padding: 16px;
+  }
+}
+
 /* Score entry input focus glow */
 .score-entry-input:focus {
-  border-color:#6366f1 !important;
-  box-shadow:0 0 0 3px rgba(99,102,241,0.35), 0 0 24px rgba(99,102,241,0.25) !important;
+  border-color: #f0c040 !important;
+  box-shadow: 0 0 0 2px rgba(240,192,64,0.25) !important;
 }
 /* Hide number input spinners */
 .score-entry-input::-webkit-outer-spin-button,
-.score-entry-input::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
-/* Quick-pick buttons */
-.quick-pick-btn {
-  padding:7px 16px;
-  border-radius:999px;
-  font-size:0.82rem;
-  font-weight:900;
-  background:rgba(99,102,241,0.14);
-  color:#a5b4fc;
-  border:1.5px solid rgba(99,102,241,0.28);
-  cursor:pointer;
-  transition:background 80ms ease, border-color 80ms ease, color 80ms ease, transform 80ms ease, box-shadow 80ms ease;
-  -webkit-tap-highlight-color:transparent;
-  will-change:background,transform;
+.score-entry-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.score-entry-input { -moz-appearance: textfield; }
+
+.nav-dot.scored { background:rgba(16,185,129,0.25) !important;color:#6ee7b7 !important;border-color:rgba(16,185,129,0.5) !important; }
+.nav-dot.active-dot { background:rgba(201,162,39,0.25) !important;color:#f0c040 !important;border-color:rgba(201,162,39,0.6) !important; }
+
+/* All interactive elements: fast transitions */
+.nav-dot, [onclick] {
+  transition: background 60ms ease, color 60ms ease, border-color 60ms ease !important;
+  -webkit-tap-highlight-color: transparent;
 }
-.quick-pick-btn:hover {
-  background:rgba(99,102,241,0.28);
-  border-color:rgba(99,102,241,0.55);
-  color:#e2e8f0;
-}
-.quick-pick-btn:active { transform:scale(0.94); }
-.quick-pick-btn.selected {
-  background:linear-gradient(135deg,#4f46e5,#7c3aed);
-  border-color:#6366f1;
-  color:#fff;
-  box-shadow:0 3px 14px rgba(99,102,241,0.5);
-  transform:scale(1.06);
-}
-/* Saved badge shown as flex */
-.saved-badge:not(.hidden) { display:flex !important; }
+/* Hide scrollbars */
+main::-webkit-scrollbar { display:none; }
+
+/* GPU compositing hints */
+.nav-dot { will-change: background, transform; }
+#scoring-main { will-change: scroll-position; }
 </style>
 
 <script>
 (function() {
-  const COLORS = ["#6366f1","#7c3aed","#059669","#dc2626","#d97706","#0891b2","#be185d","#65a30d"];
-  const CIRC80 = 2 * Math.PI * 26; // r=26 (64px donut) → 163.36
   const CIRC10 = 2 * Math.PI * 10; // r=10 → 62.83
   const storeKey = "scoresync_draft_{{event.id}}_{{judgeId}}";
   let saveTimer;
   window._currentIdx = 0;
-  window._currentCriteria = {}; // contestantId → criteriaIdx
+  window._currentCriteria = {}; // kept for compatibility, not used for display
   window._hasExistingScores = {{#if hasExistingScores}}true{{else}}false{{/if}};
   const totalContestants = {{contestants.length}};
 
-  /* ══ Build number pads ══ */
+  /* ══ Pre-fill visible inputs from existing hidden values ══ */
   document.querySelectorAll('.criteria-panel').forEach(panel => {
-    const input    = panel.querySelector('.score-input');
-    const entryEl  = panel.querySelector('.score-entry-input');
+    const input   = panel.querySelector('.score-input');
+    const entryEl = panel.querySelector('.score-entry-input');
     if (!entryEl || !input) return;
-    // Pre-fill from existing score
     if (input.value) {
       entryEl.value = input.value;
       updateBox(panel);
     }
-    // Build quick-pick buttons
-    generateQuickPicks(panel);
   });
 
   /* ══ Handle score text input ══ */
   window.handleScoreInput = function(entryEl) {
     const panel  = entryEl.closest('.criteria-panel');
     const input  = panel.querySelector('.score-input');
-    const errEl  = panel.querySelector('.score-error');
     const max    = parseFloat(entryEl.dataset.max) || 100;
     let val      = parseFloat(entryEl.value);
 
-    // Validate
     if (isNaN(val) || entryEl.value === '') {
-      if (errEl) { errEl.textContent = ''; errEl.style.display = 'none'; }
       input.value = '';
-      entryEl.style.borderColor = 'rgba(99,102,241,0.35)';
+      entryEl.style.borderColor = 'rgba(201,162,39,0.4)';
       updateBox(panel);
-      syncQuickPicks(panel, '');
       schedSave();
       return;
     }
@@ -441,105 +367,37 @@
     if (val > max) {
       val = max;
       entryEl.value = max;
-      if (errEl) { errEl.textContent = 'Max score is ' + max; errEl.style.display = 'block'; }
       entryEl.style.borderColor = 'rgba(239,68,68,0.6)';
     } else {
-      if (errEl) { errEl.textContent = ''; errEl.style.display = 'none'; }
-      entryEl.style.borderColor = 'rgba(99,102,241,0.6)';
+      entryEl.style.borderColor = 'rgba(201,162,39,0.7)';
     }
     input.value = val;
     updateBox(panel);
-    syncQuickPicks(panel, val);
     schedSave();
   };
 
-  /* ══ Select a base score (kept for backward compat) ══ */
-  window.selectScore = function(panel, val, btn) {
-    const input   = panel.querySelector('.score-input');
-    const entryEl = panel.querySelector('.score-entry-input');
-    if (input)   input.value   = val;
-    if (entryEl) entryEl.value = val;
-    updateBox(panel);
-    schedSave();
-  };
-
-  /* ══ Generate quick-pick buttons for a panel ══ */
-  function generateQuickPicks(panel) {
-    const row    = panel.querySelector('.quick-picks-row');
-    const entryEl = panel.querySelector('.score-entry-input');
-    if (!row || !entryEl) return;
-    const max = parseFloat(entryEl.dataset.max) || 100;
-    // Build 6 evenly-spaced values from 0 to max
-    const steps = 5; // produces 6 values: indices 0..5
-    const picks = [];
-    for (let i = 0; i <= steps; i++) {
-      picks.push(Math.round((max / steps) * i));
-    }
-    // Deduplicate (in case max is very small)
-    const unique = [...new Set(picks)];
-    row.innerHTML = '';
-    unique.forEach(function(v) {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'quick-pick-btn';
-      btn.textContent = v;
-      btn.addEventListener('click', function() {
-        entryEl.value = v;
-        handleScoreInput(entryEl);
-        // selected state handled inside handleScoreInput via syncQuickPicks
-      });
-      row.appendChild(btn);
-    });
-  }
-
-  /* ══ Sync quick-pick selected state ══ */
-  function syncQuickPicks(panel, val) {
-    panel.querySelectorAll('.quick-pick-btn').forEach(function(btn) {
-      btn.classList.toggle('selected', parseFloat(btn.textContent) === parseFloat(val));
-    });
-  }
+  /* ══ updateBox: update progress bar + totals ══ */
   function updateBox(panel) {
-    const input   = panel.querySelector('.score-input');
-    const val     = parseFloat(input.value) || 0;
-    const max     = parseFloat(input.dataset.max) || 100;
-    const weight  = parseFloat(input.dataset.weight) || 0;
-    const pct     = max > 0 ? (val / max) * 100 : 0;
+    const input  = panel.querySelector('.score-input');
+    const val    = parseFloat(input.value) || 0;
+    const max    = parseFloat(input.dataset.max) || 100;
+    const weight = parseFloat(input.dataset.weight) || 0;
+    const pct    = max > 0 ? (val / max) * 100 : 0;
     const contrib = (val / max) * weight;
-    const idx     = parseInt(panel.dataset.criteriaIdx) || 0;
-    const color   = COLORS[idx % COLORS.length];
 
-    // Big score display
-    const disp = panel.querySelector('.score-display');
-    if (disp) { disp.textContent = val > 0 ? val : '—'; disp.style.color = val > 0 ? color : '#374151'; }
-
-    // Donut ring (r=32, circ=201.06)
-    const ring = panel.querySelector('.criteria-ring');
-    if (ring) { ring.style.stroke = color; ring.style.strokeDashoffset = (CIRC80 - (pct / 100) * CIRC80).toFixed(2); }
-    const pctEl = panel.querySelector('.criteria-pct');
-    if (pctEl) { pctEl.textContent = Math.round(pct) + '%'; pctEl.style.color = color; }
-
-    // Bar
+    // Gold progress bar
     const bar = panel.querySelector('.criteria-bar');
-    if (bar) { bar.style.width = pct.toFixed(1) + '%'; bar.style.background = color; }
-    const pctLbl = panel.querySelector('.criteria-pct-label');
-    if (pctLbl) { pctLbl.textContent = Math.round(pct) + '%'; pctLbl.style.color = color; }
+    if (bar) { bar.style.width = pct.toFixed(1) + '%'; }
 
-    // Weighted
+    // Hidden compat elements
+    const disp = panel.querySelector('.score-display');
+    if (disp) disp.textContent = val > 0 ? val : '—';
+    const pctEl = panel.querySelector('.criteria-pct');
+    if (pctEl) pctEl.textContent = Math.round(pct) + '%';
+    const pctLbl = panel.querySelector('.criteria-pct-label');
+    if (pctLbl) pctLbl.textContent = Math.round(pct) + '%';
     const wp = panel.querySelector('.weighted-preview');
     if (wp) wp.textContent = contrib.toFixed(2) + '%';
-
-    // Saved badge
-    const saved = panel.querySelector('.saved-badge');
-    if (saved) saved.classList.toggle('hidden', val === 0);
-
-    // Mark tab done
-    const cid    = panel.dataset.contestantId;
-    const tabIdx = panel.dataset.criteriaIdx;
-    const tab    = document.querySelector('.criteria-tab[data-panel="' + cid + '"][data-tab-idx="' + tabIdx + '"]');
-    if (tab) {
-      tab.querySelector('.tab-check').classList.toggle('hidden', val === 0);
-      tab.classList.toggle('done', val > 0);
-    }
 
     updateContestantPanel(panel.closest('.contestant-panel'));
     updateOverallRing();
@@ -552,6 +410,7 @@
     let total = 0, filled = 0;
     panels.forEach(p => {
       const n = p.querySelector('.score-input');
+      if (!n) return;
       const v = parseFloat(n.value) || 0;
       const m = parseFloat(n.dataset.max) || 100;
       const w = parseFloat(n.dataset.weight) || 0;
@@ -566,7 +425,9 @@
     if (bar) {
       const pct = panels.length > 0 ? (filled / panels.length) * 100 : 0;
       bar.style.width = pct + '%';
-      bar.style.background = filled === panels.length ? 'linear-gradient(90deg,#10b981,#34d399)' : 'linear-gradient(90deg,#4f46e5,#7c3aed)';
+      bar.style.background = filled === panels.length
+        ? 'linear-gradient(90deg,#10b981,#34d399)'
+        : 'linear-gradient(90deg,#8b6914,#c9a227)';
     }
     // Nav dot
     const dot = document.querySelector('.nav-dot[data-idx="' + cp.dataset.idx + '"]');
@@ -575,7 +436,10 @@
     let totalScored = 0;
     document.querySelectorAll('.contestant-panel').forEach(c => {
       const ps = c.querySelectorAll('.criteria-panel');
-      const f  = [...ps].filter(p => parseFloat(p.querySelector('.score-input').value) > 0).length;
+      const f  = [...ps].filter(p => {
+        const n = p.querySelector('.score-input');
+        return n && parseFloat(n.value) > 0;
+      }).length;
       if (f === ps.length && ps.length > 0) totalScored++;
     });
     const sc = document.getElementById('hdr-scored');
@@ -589,7 +453,7 @@
     const pct    = all.length > 0 ? (filled / all.length) * 100 : 0;
     const offset = CIRC10 - (pct / 100) * CIRC10;
     const ring   = document.getElementById('ring-progress');
-    if (ring) { ring.style.strokeDashoffset = offset.toFixed(2); ring.style.stroke = pct >= 100 ? '#10b981' : '#6366f1'; }
+    if (ring) { ring.style.strokeDashoffset = offset.toFixed(2); ring.style.stroke = pct >= 100 ? '#10b981' : '#c9a227'; }
     const el = document.getElementById('overall-pct');
     if (el) el.textContent = Math.round(pct) + '%';
   }
@@ -599,66 +463,38 @@
     idx = parseInt(idx);
     if (isNaN(idx) || idx < 0 || idx >= totalContestants) return;
     document.querySelectorAll('.contestant-panel').forEach((p, i) => p.style.display = i === idx ? '' : 'none');
-    document.querySelectorAll('.criteria-tabs').forEach((t, i) => t.style.display = i === idx ? '' : 'none');
     document.querySelectorAll('.nav-dot').forEach((d, i) => {
       d.classList.toggle('active-dot', i === idx);
     });
     window._currentIdx = idx;
-    document.getElementById('hdr-pos').textContent   = idx + 1;
+    document.getElementById('hdr-pos').textContent    = idx + 1;
     document.getElementById('bottom-pos').textContent = idx + 1;
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    // Restore criteria position for this contestant
-    const cp  = document.querySelector('.contestant-panel[data-idx="' + idx + '"]');
-    const cid = cp?.dataset.contestantId;
-    const ci  = window._currentCriteria[cid] || 0;
-    showCriteria(cid, ci);
     updateOverallRing();
   };
 
-  /* ══ Switch criteria ══ */
-  window.switchCriteria = function(cid, idx) {
-    window._currentCriteria[cid] = idx;
-    showCriteria(cid, idx);
-  };
-  function showCriteria(cid, idx) {
-    document.querySelectorAll('.criteria-panel[data-contestant-id="' + cid + '"]').forEach((p, i) => {
-      p.style.display = i === idx ? '' : 'none';
-    });
-    document.querySelectorAll('.criteria-tab[data-panel="' + cid + '"]').forEach((t, i) => {
-      t.classList.toggle('active', i === idx);
-    });
-    // Update btn label
-    const cp      = document.querySelector('.contestant-panel[data-idx="' + window._currentIdx + '"]');
-    const panels  = cp?.querySelectorAll('.criteria-panel') || [];
-    const btnLbl  = cp?.querySelector('.btn-label');
-    if (btnLbl) btnLbl.textContent = idx >= panels.length - 1 ? (window._hasExistingScores ? 'Update Scores' : 'Save Scores & Finish') : 'Next Criteria →';
-  }
-
-  window.prevCriteria = function(cid) {
-    const ci = (window._currentCriteria[cid] || 0) - 1;
-    if (ci < 0) return;
-    switchCriteria(cid, ci);
-  };
+  /* ══ nextOrSave — kept for compatibility ══ */
   window.nextOrSave = function(cid, panelIdx, total) {
-    const ci = (window._currentCriteria[cid] || 0) + 1;
-    if (ci < total) { switchCriteria(cid, ci); return; }
-    // Last criteria → save
-    const cp     = document.querySelector('.contestant-panel[data-idx="' + panelIdx + '"]');
-    const inputs = cp?.querySelectorAll('.score-input') || [];
-    const empty  = [...inputs].filter(n => !n.value || parseFloat(n.value) < 0);
+    submitContestant(panelIdx);
+  };
+
+  /* ══ submitContestant ══ */
+  window.submitContestant = function(panelIdx) {
+    const cp = document.querySelector('.contestant-panel[data-idx="' + panelIdx + '"]');
+    const inputs = cp ? cp.querySelectorAll('.score-input') : [];
+    const empty = [...inputs].filter(n => !n.value || parseFloat(n.value) < 0);
     if (empty.length && !confirm(empty.length + ' score(s) empty. Submit anyway?')) return;
-    // Clear draft for this judge before submitting
-    try { localStorage.removeItem(storeKey); } catch(e){}
-    // Use offline-aware submit
+    try { localStorage.removeItem(storeKey); } catch(e) {}
     if (window.offlineAwareSubmit) {
       window.offlineAwareSubmit(document.getElementById('scoringForm'));
     } else {
       document.getElementById('scoringForm').submit();
     }
   };
+
   window.nextContestant = function(idx) { goToContestant(idx + 1); };
 
-  /* ══ Draft ══ */
+  /* ══ Draft save/restore ══ */
   function schedSave() { clearTimeout(saveTimer); saveTimer = setTimeout(saveDraft, 600); }
   function saveDraft() {
     const data = {};
@@ -670,17 +506,17 @@
       });
     });
     try { localStorage.setItem(storeKey, JSON.stringify(data)); } catch(e){}
-  }  function restoreDraft() {
+  }
+  function restoreDraft() {
     try {
       const data = JSON.parse(localStorage.getItem(storeKey) || '{}');
       document.querySelectorAll('.criteria-panel').forEach(panel => {
-        const cid = panel.dataset.contestantId;
+        const cid   = panel.dataset.contestantId;
         const input = panel.querySelector('.score-input');
         if (!input || !data[cid]) return;
         const m = input.name.match(/scores\[([^\]]+)\]\[([^\]]+)\]/);
         if (m && data[cid][m[2]] && input.value === '') {
           input.value = data[cid][m[2]];
-          // Also fill the visible entry input
           const entryEl = panel.querySelector('.score-entry-input');
           if (entryEl) entryEl.value = data[cid][m[2]];
         }
@@ -690,14 +526,10 @@
 
   /* ══ Init ══ */
   restoreDraft();
-  document.querySelectorAll('.criteria-panel').forEach(p => {
-    updateBox(p);
-    const entryEl = p.querySelector('.score-entry-input');
-    if (entryEl && entryEl.value) syncQuickPicks(p, parseFloat(entryEl.value));
-  });
+  document.querySelectorAll('.criteria-panel').forEach(p => updateBox(p));
   goToContestant(0);
 
-  // Auto-close sidebar on mobile so it doesn't cover scoring content
+  // Auto-close sidebar on mobile
   if (window.innerWidth < 768) {
     var sidebar = document.querySelector('.sidebar');
     var overlay = document.getElementById('sidebar-overlay');
@@ -711,7 +543,6 @@
 <script>
 (function() {
   try {
-    // Full structured data injected server-side for reliable offline use
     var scoringData = {
       eventId:    '{{event.id}}',
       eventName:  '{{event.name}}',
