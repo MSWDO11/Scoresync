@@ -16,12 +16,9 @@ export async function applyAutoStatus(eventId, event) {
   const endDt   = endStr ? new Date(endStr) : null;
 
   let newStatus;
-  // Auto-complete is disabled — events only complete when organizer/admin manually ends them.
-  // This prevents judges being blocked mid-scoring if an event runs over time.
-  // Auto-start (upcoming → ongoing) is still active.
-  if (!isNaN(startDt) && now >= startDt && event.status !== 'completed') newStatus = 'ongoing';
-  else if (isNaN(startDt) || now < startDt)                               newStatus = 'upcoming';
-  else                                                                     newStatus = event.status; // keep current
+  if (endDt && !isNaN(endDt) && now >= endDt)   newStatus = 'completed';
+  else if (!isNaN(startDt) && now >= startDt)    newStatus = 'ongoing';
+  else                                           newStatus = 'upcoming';
 
   if (newStatus !== event.status) {
     try {
