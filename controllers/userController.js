@@ -5,6 +5,7 @@ import {
   collection, getDocs, getDoc, doc, setDoc, updateDoc, deleteDoc, query, orderBy,
 } from "firebase/firestore";
 import { sanitizeText, sanitizeEmail, sanitizeRole } from "../utils/sanitize.js";
+import { sendMail } from "../utils/mailer.js";
 
 // ─── List all users ───────────────────────────────────────────────────────────
 export const listUsers = async (req, res) => {
@@ -75,12 +76,32 @@ export const approveUser = async (req, res) => {
 
     await updateDoc(doc(db, "users", id), { status: "approved" });
 
-    const emailSubject = encodeURIComponent("ScoreSync Account Approved!");
-    const emailBody = encodeURIComponent(`Hi ${userData.name || 'User'},\n\nYour ScoreSync account request for the role of ${userData.role || 'user'} has been APPROVED by the Administrator.\n\nYou can now log in to the system at ${req.protocol}://${req.get("host")}/login\n\nBest regards,\nScoreSync Admin`);
-    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(userData.email)}&su=${emailSubject}&body=${emailBody}`;
+    // Auto-send approval email
+    const loginUrl = `${req.protocol}://${req.get("host")}/login`;
+    sendMail({
+      to:      userData.email,
+      subject: "ScoreSync Account Approved!",
+      text:    `Hi ${userData.name || 'User'},\n\nYour ScoreSync account request for the role of ${userData.role || 'user'} has been APPROVED by the Administrator.\n\nYou can now log in at: ${loginUrl}\n\nBest regards,\nScoreSync`,
+      html:    `<div style="font-family:Inter,sans-serif;max-width:520px;margin:0 auto;background:#0a0f1e;color:#e2e8f0;border-radius:16px;overflow:hidden">
+        <div style="background:linear-gradient(135deg,#064e3b,#059669);padding:28px 32px">
+          <div style="font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(110,231,183,0.8);margin-bottom:8px">ScoreSync</div>
+          <h1 style="font-size:22px;font-weight:900;color:#fff;margin:0">✓ Account Approved!</h1>
+        </div>
+        <div style="padding:28px 32px">
+          <p style="color:#94a3b8;font-size:14px;margin:0 0 16px">Dear <strong style="color:#e2e8f0">${userData.name || 'User'}</strong>,</p>
+          <p style="color:#94a3b8;font-size:14px;margin:0 0 16px">Your ScoreSync account request has been <strong style="color:#6ee7b7">approved</strong> by the Administrator.</p>
+          <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px 20px;margin-bottom:24px">
+            <div style="font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.08em">Role</div>
+            <div style="font-size:15px;font-weight:800;color:#e2e8f0;margin-top:4px;text-transform:capitalize">${userData.role || 'user'}</div>
+          </div>
+          <a href="${loginUrl}" style="display:inline-block;background:linear-gradient(135deg,#059669,#10b981);color:#fff;font-weight:700;font-size:14px;padding:12px 28px;border-radius:10px;text-decoration:none">Log in to ScoreSync →</a>
+          <p style="color:#475569;font-size:12px;margin-top:24px">If you did not request this account, please ignore this email.</p>
+        </div>
+      </div>`,
+    }).catch(() => {});
 
-    req.flash("success_msg", `Approved account request for ${userData.name} (${userData.email})!`);
-    res.redirect(`/users?notifyEmail=${encodeURIComponent(userData.email)}&notifyName=${encodeURIComponent(userData.name)}&notifyGmail=${encodeURIComponent(gmailUrl)}`);
+    req.flash("success_msg", `Account approved and ${userData.name} notified via email.`);
+    res.redirect("/users");
   } catch (err) {
     console.error(err);
     req.flash("error_msg", "Failed to approve account request.");
