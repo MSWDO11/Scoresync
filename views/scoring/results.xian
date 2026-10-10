@@ -293,7 +293,7 @@
     </div>
 
     {{#each ranked}}
-    <div class="card-flat overflow-hidden hover:shadow-md transition-shadow
+    <div data-contestant-card="1" class="card-flat overflow-hidden hover:shadow-md transition-shadow
       {{#if (eq rank 1)}}ring-2 ring-yellow-300{{/if}}
       {{#if (eq rank 2)}}ring-1 ring-slate-300{{/if}}
       {{#if (eq rank 3)}}ring-1 ring-orange-200{{/if}}">

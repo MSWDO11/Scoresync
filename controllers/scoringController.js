@@ -433,7 +433,6 @@ export const displayBoard = async (req, res) => {
       return { ...c, breakdown, finalScore: total.toFixed(4), finalScoreDisplay: total.toFixed(2) };
     });
     ranked.sort((a, b) => b.finalScore - a.finalScore);
-    // Apply tie-breaking (no breakdown available in displayBoard, ties may remain)
     applyTieBreaking(ranked, criteria);
     const topScore = ranked.length ? parseFloat(ranked[0].finalScore) : 0;
     ranked.forEach((c, i) => { c.rank = i + 1; c.gapToFirst = (topScore - parseFloat(c.finalScore)).toFixed(2); });
@@ -570,7 +569,7 @@ export const exportResults = async (req, res) => {
     ];
     const headerRow = headerCols.map(q).join(",");
     const dataRows = ranked.map(c => {
-      const critCols = c.breakdown.map(bd => q(bd.avg));
+      const critCols = c.breakdown.map(bd => q(sanitizeText(String(bd.avg))));
       return [
         q(c.rank),
         q(c.number || ""),
