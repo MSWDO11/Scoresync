@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{title}} — ScoreSync</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; font-family: 'Inter', sans-serif; }
+    body {
+      margin: 0; background: #060b18; color: #fff;
+      overflow: hidden; height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+    }
+
+    /* ── start screen ── */
+    #start-screen { text-align: center; }
+    #start-screen .event-label {
+      font-size: .75rem; text-transform: uppercase;
+      letter-spacing: .2em; color: rgba(255,255,255,.45); margin-bottom: 12px;
+    }
+    #start-screen .title {
+      font-size: 2.5rem; font-weight: 900;
+      letter-spacing: -.02em; margin-bottom: 8px;
+    }
+    #start-screen .crown {
+      font-size: 5rem; margin-bottom: 24px;
+      filter: drop-shadow(0 4px 16px rgba(251,191,36,.5));
+    }
+    #start-screen .begin-btn {
+      padding: 14px 40px; border-radius: 999px; border: none;
+      cursor: pointer; font-size: 1rem; font-weight: 700;
+      background: linear-gradient(135deg,#b45309,#f59e0b); color: #fff;
+      box-shadow: 0 8px 32px rgba(245,158,11,.4);
+      transition: transform .12s, box-shadow .12s;
+    }
+    #start-screen .begin-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(245,158,11,.55);
+    }
+
+    /* ── reveal screen ── */
+    #reveal-screen {
+      display: none; width: 100%; height: 100%;
+      align-items: center; justify-content: center;
+      flex-direction: column; position: relative;
+    }
+
+    /* ── placement card ── */
+    .placement-card {
+      text-align: center; max-width: 480px; width: 90vw;
+      animation: revealIn .6s cubic-bezier(.22,1,.36,1) both;
+    }
+    @keyframes revealIn {
+      from { opacity: 0; transform: translateY(40px) scale(.92); }
+      to   { opacity: 1; transform: translateY(0)    scale(1);   }
+    }
+    .rank-badge {
+      display: inline-block; padding: 4px 20px; border-radius: 999px;
+      font-size: .65rem; font-weight: 900;
+      letter-spacing: .18em; text-transform: uppercase; margin-bottom: 16px;
+    }
+    .badge-bronze  { background: rgba(205,127,50,.2);  color: #cd7f32; border: 1px solid rgba(205,127,50,.4); }
+    .badge-silver  { background: rgba(148,163,184,.15); color: #94a3b8; border: 1px solid rgba(148,163,184,.3); }
+    .badge-champion{ background: rgba(245,158,11,.18);  color: #f59e0b; border: 1px solid rgba(245,158,11,.4); }
+    .contestant-photo {
+      width: 128px; height: 128px; border-radius: 50%;
+      object-fit: cover; object-position: center top;
+      margin: 0 auto 16px; display: block;
+    }
+    .contestant-number {
+      width: 128px; height: 128px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 16px; font-size: 2.5rem; font-weight: 900;
+      background: linear-gradient(135deg,#1e3a8a,#2563eb); color: #fff;
+    }
+    .contestant-name {
+      font-size: 2.2rem; font-weight: 900;
+      letter-spacing: -.025em; line-height: 1.1; margin-bottom: 8px;
+    }
+    .contestant-barangay { font-size: 1rem; opacity: .55; margin-bottom: 20px; }
+    .final-score { font-size: 3.5rem; font-weight: 900; line-height: 1; }
+    .score-label { font-size: .8rem; opacity: .5; margin-top: 6px; }
+    .champion-glow {
+      box-shadow: 0 0 60px rgba(245,158,11,.5), 0 0 120px rgba(245,158,11,.18);
+      border-radius: 32px; padding: 40px;
+    }
+
+    /* ── nav hint ── */
+    #nav-hint {
+      position: fixed; bottom: 56px; width: 100%;
+      text-align: center; font-size: .72rem;
+      opacity: .3; pointer-events: none;
+    }
+
+    /* ── branding ── */
+    #branding {
+      position: fixed; bottom: 16px; width: 100%;
+      text-align: center; font-size: .72rem;
+      opacity: .35; pointer-events: none;
+    }
+
+    /* ── restart btn ── */
+    #restart-btn {
+      display: none; margin-top: 28px;
+      padding: 10px 28px; border-radius: 999px; border: none;
+      cursor: pointer; font-size: .85rem; font-weight: 700;
+      background: rgba(255,255,255,.08); color: rgba(255,255,255,.7);
+      border: 1px solid rgba(255,255,255,.15); transition: background .1s;
+    }
+    #restart-btn:hover { background: rgba(255,255,255,.14); }
+
+    /* ── confetti ── */
+    .confetti-piece {
+      position: fixed; top: -20px; width: 10px; height: 10px;
+      border-radius: 2px; animation: fall linear forwards;
+      pointer-events: none; z-index: 9999;
+    }
+    @keyframes fall {
+      to { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+    }
+
+    /* ── progress dots ── */
+    #progress-dots {
+      position: fixed; top: 24px; width: 100%;
+      text-align: center; display: flex;
+      align-items: center; justify-content: center; gap: 8px;
+    }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,.2); transition: background .3s; }
+    .dot.active { background: #f59e0b; }
+    .dot.done   { background: rgba(255,255,255,.5); }
+  </style>
+</head>
+<body>
+
+<!-- Start Screen -->
+<div id="start-screen">
+  <div class="event-label">{{event.name}}</div>
+  <div class="title">OFFICIAL RESULTS</div>
+  <div class="crown">👑</div>
+  <button class="begin-btn" onclick="beginReveal()">Click to Begin Reveal</button>
+</div>
+
+<!-- Reveal Screen -->
+<div id="reveal-screen">
+  <div id="progress-dots"></div>
+  <div id="card-container"></div>
+  <button id="restart-btn" onclick="restartReveal()">↺ Restart</button>
+</div>
+
+<!-- Branding -->
+<div id="branding">{{event.name}} &bull; ScoreSync</div>
+<div id="nav-hint">← → Arrow keys or Space to advance</div>
+
+<!-- Placement data (server-side JSON, triple-stash prevents HTML-escaping) -->
+<script id="placements-data" type="application/json">{{{placementsJson}}}</script>
+
+<script>
+(function () {
+  const PLACEMENTS = JSON.parse(document.getElementById('placements-data').textContent);
+  let step = -1; // -1 = start screen
+
+  const RANK_INFO = {
+    3: { label: 'BRONZE',   badgeClass: 'badge-bronze',   scoreColor: '#cd7f32' },
+    2: { label: 'SILVER',   badgeClass: 'badge-silver',   scoreColor: '#94a3b8' },
+    1: { label: 'CHAMPION', badgeClass: 'badge-champion', scoreColor: '#f59e0b' },
+  };
+
+  function getInfo(rank) {
+    return RANK_INFO[rank] || { label: 'RANK ' + rank, badgeClass: 'badge-silver', scoreColor: '#60a5fa' };
+  }
+
+  function buildProgressDots() {
+    const container = document.getElementById('progress-dots');
+    container.innerHTML = '';
+    PLACEMENTS.forEach(function (_, i) {
+      const d = document.createElement('div');
+      d.className = 'dot' + (i < step ? ' done' : i === step ? ' active' : '');
+      container.appendChild(d);
+    });
+  }
+
+  function renderCard(idx) {
+    const c = PLACEMENTS[idx];
+    if (!c) return;
+    const info      = getInfo(c.rank);
+    const container = document.getElementById('card-container');
+    container.innerHTML = '';
+
+    const isChampion = c.rank === 1;
+    const card = document.createElement('div');
+    card.className = 'placement-card' + (isChampion ? ' champion-glow' : '');
+
+    // Rank badge
+    const badge = document.createElement('div');
+    badge.className = 'rank-badge ' + info.badgeClass;
+    badge.textContent = info.label;
+    card.appendChild(badge);
+
+    // Photo or number fallback
+    if (c.photo) {
+      const img = document.createElement('img');
+      img.className = 'contestant-photo';
+      img.src = c.photo;
+      img.alt = '';
+      card.appendChild(img);
+    } else {
+      const num = document.createElement('div');
+      num.className = 'contestant-number';
+      num.textContent = c.number || String(c.rank);
+      card.appendChild(num);
+    }
+
+    // Name
+    const name = document.createElement('div');
+    name.className = 'contestant-name';
+    name.textContent = c.name || '';
+    card.appendChild(name);
+
+    // Barangay
+    if (c.barangay) {
+      const bgy = document.createElement('div');
+      bgy.className = 'contestant-barangay';
+      bgy.textContent = 'Brgy. ' + c.barangay;
+      card.appendChild(bgy);
+    }
+
+    // Score
+    const scoreEl = document.createElement('div');
+    scoreEl.className = 'final-score';
+    scoreEl.style.color = info.scoreColor;
+    scoreEl.textContent = c.finalScoreDisplay + '%';
+    card.appendChild(scoreEl);
+
+    const scoreLbl = document.createElement('div');
+    scoreLbl.className = 'score-label';
+    scoreLbl.textContent = 'weighted average';
+    card.appendChild(scoreLbl);
+
+    container.appendChild(card);
+
+    if (isChampion) spawnConfetti();
+    buildProgressDots();
+
+    // Show restart after last placement
+    const restartBtn = document.getElementById('restart-btn');
+    if (restartBtn) {
+      restartBtn.style.display = (idx >= PLACEMENTS.length - 1) ? 'inline-block' : 'none';
+    }
+  }
+
+  function spawnConfetti() {
+    const colors = ['#f59e0b','#fbbf24','#fff','#a78bfa','#60a5fa','#34d399'];
+    for (let i = 0; i < 50; i++) {
+      const piece = document.createElement('div');
+      piece.className = 'confetti-piece';
+      piece.style.left             = (Math.random() * 100) + 'vw';
+      piece.style.background       = colors[Math.floor(Math.random() * colors.length)];
+      piece.style.animationDuration = (1.5 + Math.random() * 2) + 's';
+      piece.style.animationDelay   = (Math.random() * 1.5) + 's';
+      const size = (6 + Math.random() * 8) + 'px';
+      piece.style.width  = size;
+      piece.style.height = size;
+      document.body.appendChild(piece);
+      piece.addEventListener('animationend', function () { piece.remove(); });
+    }
+  }
+
+  function beginReveal() {
+    document.getElementById('start-screen').style.display = 'none';
+    const rev = document.getElementById('reveal-screen');
+    rev.style.display = 'flex';
+    advance();
+  }
+
+  function advance() {
+    if (step < PLACEMENTS.length - 1) {
+      step++;
+      renderCard(step);
+    }
+  }
+
+  function goBack() {
+    if (step > 0) {
+      step--;
+      renderCard(step);
+    }
+  }
+
+  function restartReveal() {
+    step = -1;
+    document.getElementById('reveal-screen').style.display = 'none';
+    document.getElementById('start-screen').style.display  = 'block';
+    document.getElementById('card-container').innerHTML    = '';
+    document.getElementById('restart-btn').style.display   = 'none';
+    document.querySelectorAll('.confetti-piece').forEach(function (el) { el.remove(); });
+  }
+
+  // Expose for onclick attributes
+  window.beginReveal   = beginReveal;
+  window.restartReveal = restartReveal;
+
+  // Keyboard navigation
+  document.addEventListener('keydown', function (e) {
+    if (step === -1) return;
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); advance(); }
+    if (e.key === 'ArrowLeft')                   { e.preventDefault(); goBack(); }
+  });
+
+  // Click anywhere on reveal screen to advance (except restart btn)
+  const revealScreen = document.getElementById('reveal-screen');
+  if (revealScreen) {
+    revealScreen.addEventListener('click', function (e) {
+      if (e.target.id === 'restart-btn') return;
+      advance();
+    });
+  }
+
+  // Init dots for start state
+  buildProgressDots();
+})();
+</script>
+</body>
+</html>

@@ -815,6 +815,96 @@ export const scoresJson = async (req, res) => {
   }
 };
 
+// ─── Announce / Reveal Page ───────────────────────────────────────────────────
+export const announcePage = async (req, res) => {
+  const { eventId } = req.params;
+  try {
+    const [eSnap, cSnap, crSnap, sSnap] = await Promise.all([
+      getDoc(doc(db, "events", eventId)),
+      getDocs(collection(db, "events", eventId, "contestants")),
+      getDocs(collection(db, "events", eventId, "criteria")),
+      getDocs(collection(db, "events", eventId, "scores")),
+    ]);
+
+    if (!eSnap.exists()) return res.redirect("/events");
+
+    const ev          = { id: eSnap.id, ...eSnap.data() };
+    const contestants = cSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const criteria    = crSnap.docs.map((d, i) => ({
+      id: d.id,
+      ...d.data(),
+      color: CRITERIA_COLORS[i % CRITERIA_COLORS.length],
+    }));
+    const allScores = sSnap.docs.map(d => d.data());
+
+    const ranked = contestants.map(c => {
+      let totalWeighted = 0;
+      const breakdown = criteria.map((cr, i) => {
+        const judgeScores = allScores.filter(
+          s => s.contestantId === c.id && s.criteriaId === cr.id
+        );
+        const avg = judgeScores.length
+          ? judgeScores.reduce((sum, s) => sum + s.score, 0) / judgeScores.length
+          : 0;
+        const weighted = (avg / (Number(cr.maxScore) || 100)) * (Number(cr.weight) || 0);
+        const barPct   = Math.min((avg / (Number(cr.maxScore) || 100)) * 100, 100).toFixed(1);
+        totalWeighted += weighted;
+        return {
+          name:     cr.name,
+          weight:   cr.weight,
+          color:    CRITERIA_COLORS[i % CRITERIA_COLORS.length],
+          avg:      avg.toFixed(2),
+          weighted: weighted.toFixed(2),
+          barPct,
+        };
+      });
+      return {
+        ...c,
+        breakdown,
+        finalScore:        totalWeighted.toFixed(4),
+        finalScoreDisplay: totalWeighted.toFixed(2),
+      };
+    });
+
+    ranked.sort((a, b) => b.finalScore - a.finalScore);
+
+    applyTieBreaking(ranked, criteria);
+
+    const topScore = ranked.length ? parseFloat(ranked[0].finalScore) : 0;
+    ranked.forEach((c, i) => {
+      c.rank       = i + 1;
+      c.gapToFirst = (topScore - parseFloat(c.finalScore)).toFixed(2);
+    });
+
+    // Top 3 (or all if fewer than 3), reversed for reveal order (lowest → champion)
+    const top = ranked.slice(0, Math.min(ranked.length, 3));
+    top.reverse();
+
+    const placementsJson = JSON.stringify(top.map(c => ({
+      rank:              c.rank,
+      name:              c.name              || "",
+      barangay:          c.barangay          || "",
+      number:            c.number            || "",
+      photo:             c.photo             || "",
+      finalScoreDisplay: c.finalScoreDisplay,
+    })));
+
+    res.render("scoring/announce", {
+      title:       `Announce — ${ev.name}`,
+      event:       ev,
+      placementsJson,
+      userName:    req.session.userName,
+      userRole:    req.session.userRole,
+      userInitial: (req.session.userName || "U")[0].toUpperCase(),
+      isAdmin:     req.session.userRole === "admin",
+    });
+  } catch (err) {
+    console.error(err);
+    req.flash("error_msg", "Could not load announce page.");
+    res.redirect(`/events/${eventId}`);
+  }
+};
+
 // ─── Judge Scoring Progress (JSON endpoint) ───────────────────────────────────
 export const getScoringProgress = async (req, res) => {
   const { eventId } = req.params;
