@@ -98,6 +98,17 @@ router.get( "/events/:eventId/criteria",            requireAuth, requireRole("ad
 router.post("/events/:eventId/criteria",            requireAuth, requireRole("admin","organizer"), storeCriteria);
 router.post("/events/:eventId/criteria/:id/delete", requireAuth, requireRole("admin","organizer"), deleteCriteria);
 
+// ─── Audience Voting ──────────────────────────────────────────────────────────
+import {
+  votingPage, submitVote, voteResults, toggleVoting, voteCounts,
+} from "../controllers/votingController.js";
+
+router.get( "/events/:eventId/vote",         votingPage);
+router.post("/events/:eventId/vote",         submitVote);
+router.get( "/events/:eventId/vote/results", requireAuth,                                  voteResults);
+router.post("/events/:eventId/vote/toggle",  requireAuth, requireRole("admin","organizer"), toggleVoting);
+router.get( "/events/:eventId/vote/counts",  voteCounts);
+
 // ─── Scoring (judges can enter scores; all auth can view results) ─────────────
 import {
   scoringPage, submitScores, resultsPage, scoresJson, announcePage,
