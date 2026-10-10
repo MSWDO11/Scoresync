@@ -100,6 +100,7 @@ hbs.registerHelper("themeGradient", (theme) =>
 // Criteria colour by index (used in scoring pages)
 const CRITERIA_COLORS = ["#2563eb","#7c3aed","#059669","#dc2626","#d97706","#0891b2","#be185d","#65a30d"];
 hbs.registerHelper("criteriaColor", (idx) => CRITERIA_COLORS[Number(idx) % CRITERIA_COLORS.length]);
+hbs.registerHelper("lookup", (obj, key) => (obj && obj[key] !== undefined) ? obj[key] : 0);
 
 // ─── .xian engine (wraps hbs) ────────────────────────────────────────────────
 app.engine("xian", (filePath, options, callback) => {

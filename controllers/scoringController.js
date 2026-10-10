@@ -265,11 +265,12 @@ function applyTieBreaking(ranked, criteria) {
 export const resultsPage = async (req, res) => {
   const { eventId } = req.params;
   try {
-    const [eSnap, cSnap, crSnap, sSnap] = await Promise.all([
+    const [eSnap, cSnap, crSnap, sSnap, vSnap] = await Promise.all([
       getDoc(doc(db, "events", eventId)),
       getDocs(collection(db, "events", eventId, "contestants")),
       getDocs(collection(db, "events", eventId, "criteria")),
       getDocs(collection(db, "events", eventId, "scores")),
+      getDocs(collection(db, "events", eventId, "votes")),
     ]);
 
     if (!eSnap.exists()) return res.redirect("/events");
@@ -282,6 +283,13 @@ export const resultsPage = async (req, res) => {
       color: CRITERIA_COLORS[i % CRITERIA_COLORS.length],
     }));
     const allScores = sSnap.docs.map(d => d.data());
+
+    const allVotes = vSnap.docs.map(d => d.data());
+    const votesByContestant = {};
+    allVotes.forEach(v => {
+      if (v.contestantId) votesByContestant[v.contestantId] = (votesByContestant[v.contestantId] || 0) + 1;
+    });
+    const totalAudienceVotes = allVotes.length;
 
     const judgeMap = {};
     allScores.forEach(s => {
@@ -329,6 +337,15 @@ export const resultsPage = async (req, res) => {
     ranked.forEach((c, i) => {
       c.rank       = i + 1;
       c.gapToFirst = (topScore - parseFloat(c.finalScore)).toFixed(2);
+    });
+
+    // Attach audience vote counts and percentages to each ranked contestant
+    const maxAudienceVotes = Math.max(0, ...Object.values(votesByContestant).map(Number), 1);
+    ranked.forEach(c => {
+      c.audienceVoteCount = votesByContestant[c.id] || 0;
+      c.audienceVotePct   = totalAudienceVotes > 0
+        ? Math.round((c.audienceVoteCount / maxAudienceVotes) * 100)
+        : 0;
     });
 
     const judgeEntries   = Object.entries(judgeMap);
@@ -388,6 +405,8 @@ export const resultsPage = async (req, res) => {
       judgeCount,
       judgeBreakdown,
       judgeProgressData,
+      votesByContestant,
+      totalAudienceVotes,
       userName:    req.session.userName,
       userRole:    req.session.userRole,
       userInitial: (req.session.userName || "U")[0].toUpperCase(),
