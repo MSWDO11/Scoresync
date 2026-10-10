@@ -170,21 +170,22 @@
             </div>
 
             <!-- Progress bar + input row -->
-            <div style="display:flex;align-items:center;gap:10px">
+            <div style="display:flex;align-items:center;gap:8px;min-width:0">
               <!-- Progress bar -->
               <div style="flex:1;height:8px;border-radius:6px;overflow:hidden;background:rgba(255,255,255,0.06);min-width:0">
                 <div class="criteria-bar" style="height:100%;width:0%;border-radius:6px;background:linear-gradient(90deg,#8b6914,#c9a227,#f0c040);background-size:200% auto;animation:shimmer 2.5s linear infinite;transition:width 0.3s ease"></div>
               </div>
               <!-- Visible score input -->
-              <div style="display:flex;align-items:center;gap:5px;flex-shrink:0">
+              <div style="display:flex;align-items:center;gap:4px;flex-shrink:0">
                 <input type="number"
                   class="score-entry-input"
                   min="0" max="{{maxScore}}" step="0.01"
                   placeholder="0"
+                  value="{{value}}"
                   data-max="{{maxScore}}"
                   oninput="handleScoreInput(this)"
-                  style="width:100px;height:44px;font-size:1.4rem;font-weight:900;text-align:center;border-radius:12px;border:1.5px solid rgba(201,162,39,0.4);background:rgba(0,0,0,0.3);color:#f0c040;outline:none;-webkit-appearance:none;-moz-appearance:textfield"/>
-                <span style="font-size:0.72rem;font-weight:700;color:#94a3b8;white-space:nowrap">/{{maxScore}}</span>
+                  style="width:72px;height:40px;font-size:1.25rem;font-weight:900;text-align:center;border-radius:10px;border:1.5px solid rgba(201,162,39,0.4);background:rgba(0,0,0,0.35);color:#f0c040;outline:none;-webkit-appearance:none;-moz-appearance:textfield"/>
+                <span style="font-size:0.68rem;font-weight:700;color:#64748b;white-space:nowrap">/{{maxScore}}</span>
               </div>
             </div>
 
@@ -275,41 +276,47 @@
 .judge-card-inner {
   display: flex;
   flex-direction: row;
-  min-height: 360px;
+  align-items: stretch;
 }
 .judge-photo-col {
-  width: 280px;
+  width: 220px;
   flex-shrink: 0;
   padding: 16px 0 16px 16px;
 }
 .judge-photo-col img, .judge-photo-col > div {
+  width: 100%;
   height: 100%;
-  min-height: 300px;
+  min-height: 0;
+  aspect-ratio: 3/4;
+  object-fit: cover;
+  object-position: center top;
+  border-radius: 14px;
 }
 .judge-scoring-col {
   flex: 1;
   min-width: 0;
-  padding: 20px 20px 20px 16px;
+  overflow: hidden;
+  padding: 20px 16px 20px 16px;
   display: flex;
   flex-direction: column;
 }
 
 /* Mobile: stack photo on top */
-@media (max-width: 768px) {
+@media (max-width: 640px) {
   .judge-card-inner {
     flex-direction: column;
   }
   .judge-photo-col {
     width: 100%;
-    padding: 16px 16px 0 16px;
+    padding: 12px 12px 0 12px;
   }
   .judge-photo-col img, .judge-photo-col > div {
-    height: 180px !important;
-    min-height: 180px !important;
-    width: 100%;
+    aspect-ratio: 4/3;
+    height: 200px;
+    min-height: 0;
   }
   .judge-scoring-col {
-    padding: 16px;
+    padding: 12px;
   }
 }
 
@@ -560,7 +567,19 @@ main::-webkit-scrollbar { display:none; }
 
   /* ══ Init ══ */
   restoreDraft();
-  document.querySelectorAll('.criteria-panel').forEach(p => updateBox(p));
+  document.querySelectorAll('.criteria-panel').forEach(p => {
+    // Sync: if score-entry-input has a pre-filled value from server, push it to score-input
+    const entryEl = p.querySelector('.score-entry-input');
+    const input   = p.querySelector('.score-input');
+    if (entryEl && input && entryEl.value && !input.value) {
+      input.value = entryEl.value;
+    }
+    // If score-input has value but entry doesn't, fill entry
+    if (input && entryEl && input.value && !entryEl.value) {
+      entryEl.value = input.value;
+    }
+    updateBox(p);
+  });
   goToContestant(0);
 
   // Auto-close sidebar on mobile
