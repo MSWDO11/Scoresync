@@ -272,8 +272,12 @@
 
     <!-- Print title (hidden on screen) -->
     <div class="hidden print-show px-6 py-4 border-b border-slate-100">
-      <h2 class="font-extrabold text-lg text-slate-900">{{event.name}} — Official Score Sheet</h2>
-      <p class="text-sm text-slate-500">Judges: {{judgeCount}} &bull; Generated: <span id="print-date"></span></p>
+      <div style="text-align:center;margin-bottom:6px">
+        <img src="/scoresync-logo.png" style="width:40px;height:40px;border-radius:50%;display:inline-block;margin-bottom:6px"/>
+      </div>
+      <h2 class="font-extrabold text-lg text-slate-900" style="text-align:center">{{event.name}}</h2>
+      <p class="text-sm text-slate-500" style="text-align:center">Official Tabulation Sheet &bull; {{judgeCount}} Judge(s) &bull; Generated: <span id="print-date"></span></p>
+      {{#if event.date}}<p class="text-xs text-slate-400" style="text-align:center;margin-top:2px">{{event.date}}{{#if event.time}} at {{event.time}}{{/if}}{{#if event.venue}} &bull; {{event.venue}}{{/if}}</p>{{/if}}
     </div>
 
     <table class="data-table min-w-max w-full">
@@ -506,12 +510,101 @@
 
 <style>
 @media print {
+  /* ── Hide non-content elements ── */
   .no-print { display: none !important; }
   .print-show { display: block !important; }
-  body { background: white; }
-  .sidebar, nav { display: none !important; }
-  main { padding: 0 !important; }
-  .card-flat, .section-card { box-shadow: none !important; border: 1px solid #e2e8f0 !important; }
+  .sidebar, nav, header, footer { display: none !important; }
+
+  /* ── Page setup ── */
+  @page {
+    size: A4 landscape;
+    margin: 14mm 12mm 14mm 12mm;
+  }
+
+  html, body {
+    background: #fff !important;
+    color: #111 !important;
+    font-size: 11px !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* ── Center main content ── */
+  main {
+    padding: 0 !important;
+    margin: 0 auto !important;
+    max-width: 100% !important;
+    overflow: visible !important;
+  }
+
+  /* ── Cards ── */
+  .card-flat, .section-card {
+    box-shadow: none !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 8px !important;
+    background: #fff !important;
+    page-break-inside: avoid;
+    margin-bottom: 12px !important;
+  }
+
+  /* ── Text colors for white background ── */
+  h1, h2, h3, h4, .font-extrabold, .font-black, .font-bold {
+    color: #111 !important;
+  }
+  p, span, td, th, div {
+    color: #334155 !important;
+  }
+  .text-slate-400, .text-slate-500, .text-slate-600 {
+    color: #64748b !important;
+  }
+
+  /* ── Table ── */
+  table { width: 100% !important; border-collapse: collapse !important; }
+  th { background: #f1f5f9 !important; color: #334155 !important; font-size: 10px !important; padding: 6px 10px !important; border: 1px solid #e2e8f0 !important; }
+  td { padding: 6px 10px !important; border: 1px solid #f1f5f9 !important; color: #334155 !important; font-size: 11px !important; }
+  tbody tr:nth-child(even) { background: #f8fafc !important; }
+
+  /* ── Rank badges ── */
+  .badge { border: 1px solid #94a3b8 !important; background: #f1f5f9 !important; color: #334155 !important; }
+
+  /* ── Score bars ── */
+  .h-1\.5, [style*="height:6px"], [style*="height:8px"] { display: none !important; }
+
+  /* ── Print header (shown only on print) ── */
+  .print-show {
+    display: block !important;
+    text-align: center;
+    padding: 0 0 16px 0;
+    border-bottom: 2px solid #1e3a8a;
+    margin-bottom: 16px;
+  }
+  .print-show h2 {
+    font-size: 18px !important;
+    font-weight: 900 !important;
+    color: #1e3a8a !important;
+    text-align: center !important;
+    margin-bottom: 4px !important;
+  }
+  .print-show p {
+    font-size: 11px !important;
+    color: #64748b !important;
+    text-align: center !important;
+  }
+
+  /* ── Section headers ── */
+  .section-header {
+    background: #f8fafc !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    padding: 8px 16px !important;
+  }
+  .section-header h2 { color: #1e293b !important; font-size: 12px !important; }
+
+  /* ── Podium — hide on print, table is enough ── */
+  .animate-fadeup { display: none !important; }
+  .animate-fadeup-1 { display: block !important; }
+
+  /* ── Full standings table — show centered ── */
+  .overflow-x-auto { overflow: visible !important; }
 }
 .print-show { display: none; }
 </style>
