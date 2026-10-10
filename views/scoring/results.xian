@@ -26,16 +26,16 @@
         </div>
       </div>
       <div class="flex items-center gap-2 flex-shrink-0">
-        <!-- Auto-refresh -->
-        <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1)">
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
-          <select id="autoRefreshInterval" class="font-bold text-blue-400 outline-none cursor-pointer text-xs" style="background:transparent">
-            <option value="0">No refresh</option>
-            <option value="5" selected>5s</option>
-            <option value="10">10s</option>
-            <option value="30">30s</option>
-          </select>
-          <span id="refreshCountdown" class="font-mono min-w-[22px] text-right" style="color:#64748b">5s</span>
+        <!-- Live indicator -->
+        <div id="live-bar" class="flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs no-print"
+             style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1)">
+          <span id="live-dot" class="w-2 h-2 rounded-full bg-emerald-400 animate-ping inline-block"
+                style="flex-shrink:0"></span>
+          <span id="live-label" class="font-bold" style="color:#34d399">Live</span>
+          <button id="pause-btn" onclick="toggleLivePoll()"
+                  class="btn-sm btn-sm-gray text-xs ml-1" style="min-height:unset;padding:2px 8px">
+            Pause
+          </button>
         </div>
         {{#if isAdmin}}
         <a href="/analytics?eventId={{event.id}}" class="btn-sm btn-sm-purple text-xs">
@@ -51,6 +51,8 @@
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           Export CSV
         </a>
+        <a href="/events/{{event.id}}/announce"
+           class="btn-sm btn-sm-gold text-xs no-print">&#127881; Announce</a>
         <button onclick="window.print()" class="btn-sm btn-sm-gray text-xs no-print">
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
           Print
@@ -59,32 +61,134 @@
     </div>
   </div>
 
-  <!-- Auto-refresh script -->
+  <!-- Polling script -->
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const sel = document.getElementById("autoRefreshInterval");
-      const cd  = document.getElementById("refreshCountdown");
-      if (!sel || !cd) return;
-      let timer, secs;
-      function start() {
-        clearInterval(timer);
-        secs = parseInt(sel.value);
-        if (!secs) { cd.textContent = "—"; return; }
-        cd.textContent = secs + "s";
-        timer = setInterval(() => {
-          if (--secs <= 0) { clearInterval(timer); window.location.reload(); }
-          else cd.textContent = secs + "s";
-        }, 1000);
+  (function() {
+    const EVENT_ID = "{{event.id}}";
+    let paused = false;
+
+    function toggleLivePoll() {
+      paused = !paused;
+      const dot   = document.getElementById('live-dot');
+      const label = document.getElementById('live-label');
+      const btn   = document.getElementById('pause-btn');
+      if (paused) {
+        dot.style.background   = '#f59e0b';
+        dot.classList.remove('animate-ping');
+        label.textContent      = 'Paused';
+        label.style.color      = '#f59e0b';
+        btn.textContent        = 'Resume';
+      } else {
+        dot.style.background   = '';
+        dot.classList.add('animate-ping');
+        label.textContent      = 'Live';
+        label.style.color      = '#34d399';
+        btn.textContent        = 'Pause';
+        pollScores(); // immediate update on resume
       }
-      sel.addEventListener("change", start);
-      start();
+    }
+
+    async function pollScores() {
+      if (paused) return;
+      try {
+        const resp = await fetch('/events/' + EVENT_ID + '/scores-json');
+        if (!resp.ok) return;
+        const data = await resp.json();
+        renderPodium(data.ranked);
+        renderStandings(data.ranked);
+      } catch(e) { /* silent */ }
+    }
+
+    // Build podium DOM safely (no innerHTML with user data)
+    function renderPodium(ranked) {
+      const container = document.getElementById('podium-container');
+      if (!container) return;
+      const sig = ranked.map(r => r.rank + ':' + r.finalScoreDisplay).join(',');
+      if (container.dataset.sig === sig) return;
+      container.dataset.sig = sig;
+      const podiumBlocks = container.querySelector('[data-role="podium-blocks"]');
+      if (!podiumBlocks) return;
+      podiumBlocks.innerHTML = '';
+      const top3 = [2, 1, 3].map(rank => ranked.find(r => r.rank === rank)).filter(Boolean);
+      top3.forEach(c => {
+        const isFirst = c.rank === 1;
+        const wrapper = document.createElement('div');
+        wrapper.className = 'flex-1 text-center' + (isFirst ? ' -mt-6' : '') + (isFirst ? ' max-w-[200px]' : ' max-w-[180px]');
+        const score = document.createElement('div');
+        score.className = 'font-black mt-3 leading-none ' + (isFirst ? 'text-3xl' : 'text-2xl');
+        score.style.color = isFirst ? '#ca8a04' : (c.rank === 2 ? '#94a3b8' : '#ea580c');
+        score.textContent = c.finalScoreDisplay + '%';
+        wrapper.appendChild(score);
+        podiumBlocks.appendChild(wrapper);
+      });
+    }
+
+    // Build standings rows safely
+    function renderStandings(ranked) {
+      const container = document.getElementById('standings-container');
+      if (!container) return;
+      const sig = ranked.map(r => r.rank + ':' + r.finalScoreDisplay).join(',');
+      if (container.dataset.sig === sig) return;
+      container.dataset.sig = sig;
+      const header = container.querySelector('.flex.items-center.justify-between.px-1');
+      if (header) {
+        const badge = header.querySelector('.badge-blue');
+        if (badge) badge.textContent = ranked.length + ' contestants';
+      }
+      const cards = container.querySelectorAll('[data-contestant-card]');
+      cards.forEach(el => el.remove());
+      ranked.forEach(c => {
+        const card = document.createElement('div');
+        card.dataset.contestantCard = '1';
+        card.className = 'card-flat overflow-hidden hover:shadow-md transition-shadow';
+        const row = document.createElement('div');
+        row.className = 'px-5 py-4 flex items-center gap-4';
+        // Rank badge
+        const rankBadge = document.createElement('div');
+        rankBadge.className = 'flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center font-black text-sm shadow-sm';
+        rankBadge.textContent = c.rank;
+        if (c.rank === 1) rankBadge.style.cssText = 'background:linear-gradient(135deg,#b45309,#f59e0b);color:#fff';
+        else if (c.rank === 2) rankBadge.style.cssText = 'background:linear-gradient(135deg,#475569,#94a3b8);color:#fff';
+        else if (c.rank === 3) rankBadge.style.cssText = 'background:linear-gradient(135deg,#92400e,#f97316);color:#fff';
+        else rankBadge.style.cssText = 'background:#1e293b;color:#94a3b8';
+        // Name info
+        const info = document.createElement('div');
+        info.className = 'flex-1 min-w-0';
+        const name = document.createElement('div');
+        name.className = 'font-extrabold text-sm leading-tight truncate';
+        name.style.color = '#e2e8f0';
+        name.textContent = c.name || '';
+        info.appendChild(name);
+        // Score
+        const scoreEl = document.createElement('div');
+        scoreEl.className = 'flex-shrink-0 text-right';
+        const scoreNum = document.createElement('div');
+        scoreNum.className = 'font-black text-xl';
+        scoreNum.style.color = c.rank===1 ? '#ca8a04' : c.rank===2 ? '#94a3b8' : c.rank===3 ? '#ea580c' : '#3b82f6';
+        scoreNum.textContent = c.finalScoreDisplay + '%';
+        scoreEl.appendChild(scoreNum);
+        row.appendChild(rankBadge);
+        row.appendChild(info);
+        row.appendChild(scoreEl);
+        card.appendChild(row);
+        container.appendChild(card);
+      });
+    }
+
+    // Make toggleLivePoll available globally (called by onclick in HTML)
+    window.toggleLivePoll = toggleLivePoll;
+
+    document.addEventListener('DOMContentLoaded', function() {
+      pollScores();
+      setInterval(function() { if (!paused) pollScores(); }, 8000);
     });
+  })();
   </script>
 
   {{#if ranked.length}}
 
   <!-- ── Podium ── -->
-  <div class="card-flat overflow-hidden animate-fadeup">
+  <div id="podium-container" class="card-flat overflow-hidden animate-fadeup">
     <!-- Header -->
     <div class="px-6 pt-6 pb-3 text-center relative overflow-hidden" style="background:linear-gradient(135deg,#0f2156,#1a56db)">
       <div class="absolute inset-0" style="background:radial-gradient(ellipse at center,rgba(255,255,255,0.07) 0%,transparent 70%)"></div>
@@ -99,7 +203,7 @@
     </div>
 
     <!-- Podium Blocks -->
-    <div class="px-6 py-8" style="background:#0d1526">
+    <div class="px-6 py-8" data-role="podium-blocks" style="background:#0d1526">
       <div class="flex items-end justify-center gap-3 max-w-2xl mx-auto">
 
         <!-- 2nd Place -->
@@ -179,7 +283,7 @@
   </div>
 
   <!-- ── Full Ranked List with Criteria Bars ── -->
-  <div class="space-y-3 animate-fadeup-1">
+  <div id="standings-container" class="space-y-3 animate-fadeup-1">
     <div class="flex items-center justify-between px-1">
       <h3 class="font-extrabold text-base flex items-center gap-2" style="color:#e2e8f0">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>

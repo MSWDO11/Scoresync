@@ -95,7 +95,7 @@ router.post("/events/:eventId/criteria/:id/delete", requireAuth, requireRole("ad
 
 // ─── Scoring (judges can enter scores; all auth can view results) ─────────────
 import {
-  scoringPage, submitScores, resultsPage,
+  scoringPage, submitScores, resultsPage, scoresJson,
   displayBoard, publicResults, toggleScoreLock,
   exportResults, getScoringProgress, reportPage, confirmSignature,
 } from "../controllers/scoringController.js";
@@ -103,6 +103,7 @@ import {
 router.get( "/events/:eventId/scoring",          requireAuth, requireRole("admin","judge","organizer"), scoringPage);
 router.post("/events/:eventId/scoring",          requireAuth, requireRole("admin","judge","organizer"), submitScores);
 router.get( "/events/:eventId/results",          requireAuth,                               resultsPage);
+router.get( "/events/:eventId/scores-json",      requireAuth,                               scoresJson);
 router.get( "/events/:eventId/results/export",   requireAuth,                               exportResults);
 router.get( "/events/:eventId/scoring-progress", requireAuth,                               getScoringProgress);
 // Public routes — no login required
