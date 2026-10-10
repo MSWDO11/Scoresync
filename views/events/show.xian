@@ -1060,10 +1060,16 @@ window._onTimerEventEnd = function() {
 
 <script>
 function openAddJudgeModal() {
+  // Close all dropdowns first
+  if (window._portal) {
+    window._portal.querySelectorAll('[data-dropdown]').forEach(function(d) { d.style.display = 'none'; });
+    window._portal.style.pointerEvents = 'none';
+  }
   const m = document.getElementById('add-judge-modal');
   m.classList.remove('hidden');
   m.style.display = 'flex';
-  m.querySelector('input[name="name"]').focus();
+  var focusEl = m.querySelector('select, input[type="text"]');
+  if (focusEl) focusEl.focus();
 }
 function closeAddJudgeModal() {
   const m = document.getElementById('add-judge-modal');
