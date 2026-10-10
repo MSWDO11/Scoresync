@@ -148,12 +148,21 @@
               {{status}}
             </span>
             {{#if (eq status 'ongoing')}}
+            {{#if isAssigned}}
             <a href="/events/{{id}}/scoring"
               class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-extrabold text-sm text-white transition active:scale-95 shadow-lg"
               style="background:linear-gradient(135deg,#4f46e5,#7c3aed);box-shadow:0 4px 16px rgba(99,102,241,0.4)">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
               Score Now
             </a>
+            {{else}}
+            <span class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-extrabold text-xs cursor-not-allowed"
+              style="background:rgba(239,68,68,0.1);color:#fca5a5;border:1px solid rgba(239,68,68,0.25)"
+              title="You are not assigned to this event. Ask the organizer to assign you.">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+              Not Assigned
+            </span>
+            {{/if}}
             {{else}}{{#if (eq status 'completed')}}
             <a href="/events/{{id}}/results" class="btn-sm btn-sm-blue text-xs">
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
