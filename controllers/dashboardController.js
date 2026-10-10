@@ -120,8 +120,9 @@ export const dashboardPage = async (req, res) => {
             const myScores = sSnap.docs.filter(d => d.data().judgeId === req.session.userId);
             const scoredIds = new Set(myScores.map(d => d.data().contestantId));
             // Check if this judge is assigned to this event
+            // Empty assignedJudges means no one is assigned yet — block everyone
             const assignedJudges = ev.assignedJudges || [];
-            const isAssigned = assignedJudges.length === 0 || assignedJudges.includes(req.session.userId);
+            const isAssigned = assignedJudges.length > 0 && assignedJudges.includes(req.session.userId);
             return {
               ...ev,
               contestantCount: cSnap.size,

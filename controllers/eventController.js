@@ -84,6 +84,7 @@ export const storeEvent = async (req, res) => {
       paymentAccountName:   paymentAccountName   || "",
       paymentAccountNumber: paymentAccountNumber || "",
       paymentQR:            paymentQR            || "",
+      assignedJudges:       [],                        // no judges assigned on creation
       createdBy:            req.session.userId,
       createdAt:            serverTimestamp(),
     });
