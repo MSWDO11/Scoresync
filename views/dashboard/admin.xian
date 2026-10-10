@@ -281,6 +281,26 @@
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#374151" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
           </a>
 
+          <a href="/admin/backup"
+            class="flex items-center gap-3 p-3 rounded-xl transition"
+            style="border:1px solid transparent"
+            onmouseover="this.style.background='rgba(20,184,166,0.07)';this.style.borderColor='rgba(20,184,166,0.18)'"
+            onmouseout="this.style.background='';this.style.borderColor='transparent'">
+            <div class="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
+              style="background:linear-gradient(135deg,#134e4a,#14b8a6)">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+            </div>
+            <div class="flex-1">
+              <div class="text-xs font-bold" style="color:#e2e8f0">Download Backup</div>
+              <div class="text-[11px]" style="color:#374151">Full JSON export</div>
+            </div>
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#374151" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          </a>
+
         </div>
       </div>
 

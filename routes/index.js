@@ -50,6 +50,11 @@ router.post( "/users/:id/approve",    requireAuth, requireRole("admin"), approve
 router.post( "/users/:id/reject",     requireAuth, requireRole("admin"), rejectUser);
 router.post( "/users/:id/delete",     requireAuth, requireRole("admin"), deleteUser);
 
+// ─── Admin Backup ─────────────────────────────────────────────────────────────
+import { backupData } from "../controllers/backupController.js";
+
+router.get("/admin/backup", requireAuth, requireRole("admin"), backupData);
+
 // ─── Events (admin + organizer for mutations, all auth for reads) ─────────────
 import {
   listEvents, createEventPage, storeEvent,
