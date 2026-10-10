@@ -295,14 +295,6 @@
             <span style="color:#475569">Role</span>
             <span class="badge badge-green uppercase text-[10px]">{{userRole}}</span>
           </div>
-          <div class="flex items-center justify-between">
-            <span style="color:#475569">Database</span>
-            <span class="font-semibold" style="color:#e2e8f0">Firebase Firestore</span>
-          </div>
-          <div class="flex items-center justify-between">
-            <span style="color:#475569">Location</span>
-            <span class="font-semibold" style="color:#e2e8f0">Mansalay, Or. Mindoro</span>
-          </div>
           <div class="flex items-center justify-between pt-2" style="border-top:1px solid rgba(255,255,255,0.05)">
             <span style="color:#475569">Sync Status</span>
             <span class="inline-flex items-center gap-1.5 font-bold" style="color:#34d399">
