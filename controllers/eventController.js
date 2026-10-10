@@ -6,6 +6,7 @@ import {
 } from "firebase/firestore";
 import { applyAutoStatus } from "../utils/autoStatus.js";
 import { sanitizeText } from "../utils/sanitize.js";
+import { sendJudgeAssignedEmail } from "../utils/mailer.js";
 
 const EVENTS = "events";
 const PAYMENT_TYPES = ['cultural','choral','dance','culinary','booth','sports','academic','other'];
@@ -314,23 +315,21 @@ export const assignJudge = async (req, res) => {
       assignedJudges: [...current, judgeId],
     });
 
-    // Build Gmail notification link for the judge
+    // Automatically send notification email to the judge
     if (judgeSnap.exists()) {
-      const ev = evSnap.data();
-      const judge = judgeSnap.data();
-      const subject = encodeURIComponent(`You have been assigned as Judge — ${ev.name}`);
-      const body = encodeURIComponent(
-        `Dear ${judge.name || 'Judge'},\n\n` +
-        `You have been assigned as an official judge for:\n\n` +
-        `Event: ${ev.name}\n` +
-        `Date: ${ev.date || 'TBA'}\n` +
-        `Venue: ${ev.venue || 'TBA'}\n\n` +
-        `Please log in to ScoreSync to view your assigned event and submit scores when the event goes live.\n\n` +
-        `Login: https://scoresync.site/login\n\n` +
-        `Best regards,\nScoreSync Admin`
-      );
-      const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(judge.email)}&su=${subject}&body=${body}`;
-      req.flash("success_msg", `Judge assigned. <a href="${gmailUrl}" target="_blank" style="color:#60a5fa;text-decoration:underline">Click here to notify them via Gmail →</a>`);
+      const ev     = evSnap.data();
+      const judge  = judgeSnap.data();
+
+      // Send email automatically — fire-and-forget (don't block the response)
+      sendJudgeAssignedEmail({
+        judgeName:  judge.name  || judge.displayName || 'Judge',
+        judgeEmail: judge.email || '',
+        eventName:  ev.name,
+        eventDate:  ev.date  || '',
+        eventVenue: ev.venue || '',
+      }).catch(() => {}); // silent fail if email not configured
+
+      req.flash("success_msg", `Judge assigned and notified via email.`);
     } else {
       req.flash("success_msg", "Judge assigned to event.");
     }
