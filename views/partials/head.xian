@@ -182,22 +182,12 @@
       z-index: 50;
       display: flex;
       flex-direction: column;
-      height: calc(100vh - 56px);
+      height: 100vh;
       overflow: hidden;
     }
     /* Nav inside sidebar scrolls; footer stays pinned */
     .sidebar > nav { flex: 1; overflow-y: auto; min-height: 0; }
     .sidebar > div:last-child { flex-shrink: 0; }
-    @media (max-width: 767px) {
-      .sidebar { position: fixed; top: 0; bottom: 0; left: 0; height: 100vh; transform: translateX(-100%); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5); }
-      .sidebar.open { transform: translateX(0); }
-      main { padding: 12px !important; }
-      .flex-col-mobile { flex-direction: column !important; }
-      .hide-mobile { display: none !important; }
-    }
-    @media (min-width: 768px) {
-      .sidebar { position: sticky; top: 56px; flex-shrink: 0; transform: none !important; }
-    }
     @media (max-width: 767px) {
       .sidebar { position: fixed; top: 0; bottom: 0; left: 0; height: 100vh; transform: translateX(-100%); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5); }
       .sidebar.open { transform: translateX(0); }
