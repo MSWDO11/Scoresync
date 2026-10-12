@@ -365,7 +365,7 @@ main::-webkit-scrollbar { display:none; }
 /* Submit button */
 .submit-btn {
   background-size: 300% auto;
-  transition: background-position 0.5s ease, box-shadow 0.2s ease, opacity 0.15s ease;
+  transition: background-position 80ms ease, box-shadow 80ms ease, opacity 80ms ease;
 }
 .submit-btn:hover {
   background-position: right center;
