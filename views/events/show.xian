@@ -778,12 +778,25 @@ function toggleDropdown(id, btn) {
   portal.querySelectorAll('[data-dropdown]').forEach(function(el) { el.style.display = 'none'; });
 
   // Position it below the button using fixed coords
-  var rect = btn.getBoundingClientRect();
-  content.style.display   = 'block';
-  content.style.position  = 'fixed';
-  content.style.top       = (rect.bottom + 6) + 'px';
-  content.style.right     = (window.innerWidth - rect.right) + 'px';
-  content.style.left      = 'auto';
+  var rect      = btn.getBoundingClientRect();
+  var menuWidth = 200; // min-width of dropdown
+  var rightVal  = window.innerWidth - rect.right;
+
+  content.style.display  = 'block';
+  content.style.position = 'fixed';
+  content.style.top      = (rect.bottom + 6) + 'px';
+
+  // If anchoring to right would push menu off left edge, anchor left instead
+  if (rect.right - menuWidth < 8) {
+    content.style.left  = Math.max(8, rect.left) + 'px';
+    content.style.right = 'auto';
+  } else {
+    content.style.right = Math.max(4, rightVal) + 'px';
+    content.style.left  = 'auto';
+  }
+  // Ensure it never goes off screen bottom
+  content.style.maxHeight = (window.innerHeight - rect.bottom - 16) + 'px';
+  content.style.overflowY = 'auto';
   portal.style.pointerEvents = 'auto';
 
   // Move into portal if not already there
