@@ -27,17 +27,23 @@
       </div>
       <div class="flex items-center gap-2 flex-shrink-0 overflow-x-auto" style="-webkit-overflow-scrolling:touch;scrollbar-width:none;max-width:calc(100vw - 120px)">
       <style>.no-scroll-bar::-webkit-scrollbar{display:none}</style>
-        <!-- Live indicator -->
+        <!-- Live indicator — admin and organizer only -->
+        {{#if isAdmin}}
         <div id="live-bar" class="flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs no-print"
              style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1)">
-          <span id="live-dot" class="w-2 h-2 rounded-full bg-emerald-400 animate-ping inline-block"
-                style="flex-shrink:0"></span>
+          <span id="live-dot" class="w-2 h-2 rounded-full bg-emerald-400 animate-ping inline-block" style="flex-shrink:0"></span>
           <span id="live-label" class="font-bold" style="color:#34d399">Live</span>
-          <button id="pause-btn" onclick="toggleLivePoll()"
-                  class="btn-sm btn-sm-gray text-xs ml-1" style="min-height:unset;padding:2px 8px">
-            Pause
-          </button>
+          <button id="pause-btn" onclick="toggleLivePoll()" class="btn-sm btn-sm-gray text-xs ml-1" style="min-height:unset;padding:2px 8px">Pause</button>
         </div>
+        {{/if}}
+        {{#if isOrganizer}}
+        <div id="live-bar" class="flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs no-print"
+             style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1)">
+          <span id="live-dot" class="w-2 h-2 rounded-full bg-emerald-400 animate-ping inline-block" style="flex-shrink:0"></span>
+          <span id="live-label" class="font-bold" style="color:#34d399">Live</span>
+          <button id="pause-btn" onclick="toggleLivePoll()" class="btn-sm btn-sm-gray text-xs ml-1" style="min-height:unset;padding:2px 8px">Pause</button>
+        </div>
+        {{/if}}
         {{#if isAdmin}}
         <a href="/analytics?eventId={{event.id}}" class="btn-sm btn-sm-purple text-xs">
           <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
