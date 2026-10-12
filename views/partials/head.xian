@@ -192,7 +192,7 @@
       .hide-mobile { display: none !important; }
     }
     @media (min-width: 768px) {
-      .sidebar { position: sticky; top: 0; height: 100vh; flex-shrink: 0; transform: none !important; overflow: hidden; }
+      .sidebar { position: relative; min-height: 100vh; flex-shrink: 0; transform: none !important; }
     }
     .sidebar-link {
       display: flex; align-items: center; gap: 10px;
