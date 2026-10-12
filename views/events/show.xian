@@ -163,7 +163,7 @@
       {{#if contestants.length}}
       <div class="p-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
         {{#each contestants}}
-        <div class="group relative rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+        <div class="group relative rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition hover:-translate-y-1"
           style="aspect-ratio:3/4;border:1px solid rgba(255,255,255,0.08);background:#111827">
           <!-- Photo or gradient fallback -->
           {{#if photo}}
@@ -280,7 +280,7 @@
           </div>
           <!-- Weight bar -->
           <div class="h-1.5 rounded-full overflow-hidden" style="background:rgba(255,255,255,0.06)">
-            <div class="h-full rounded-full transition-all duration-500" style="width:{{weight}}%;background:linear-gradient(90deg,#7c3aed,#a855f7)"></div>
+            <div class="h-full rounded-full" style="width:{{weight}}%;background:linear-gradient(90deg,#7c3aed,#a855f7);transition:width 80ms ease"></div>
           </div>
         </div>
         {{/each}}
@@ -828,11 +828,11 @@ function setFinType(type) {
   const incBtn = document.getElementById('fin-income-btn');
   const expBtn = document.getElementById('fin-expense-btn');
   if (type === 'income') {
-    incBtn.style.cssText = 'background:rgba(16,185,129,0.2);color:#6ee7b7;border:2px solid rgba(16,185,129,0.4);padding:8px;border-radius:12px;font-size:0.75rem;font-weight:800;transition:all 0.15s';
-    expBtn.style.cssText = 'background:rgba(255,255,255,0.05);color:#64748b;border:2px solid rgba(255,255,255,0.08);padding:8px;border-radius:12px;font-size:0.75rem;font-weight:800;transition:all 0.15s';
+    incBtn.style.cssText = 'background:rgba(16,185,129,0.2);color:#6ee7b7;border:2px solid rgba(16,185,129,0.4);padding:8px;border-radius:12px;font-size:0.75rem;font-weight:800;transition:background 80ms ease,color 80ms ease,border-color 80ms ease';
+    expBtn.style.cssText = 'background:rgba(255,255,255,0.05);color:#64748b;border:2px solid rgba(255,255,255,0.08);padding:8px;border-radius:12px;font-size:0.75rem;font-weight:800;transition:background 80ms ease,color 80ms ease,border-color 80ms ease';
   } else {
-    expBtn.style.cssText = 'background:rgba(239,68,68,0.2);color:#fca5a5;border:2px solid rgba(239,68,68,0.4);padding:8px;border-radius:12px;font-size:0.75rem;font-weight:800;transition:all 0.15s';
-    incBtn.style.cssText = 'background:rgba(255,255,255,0.05);color:#64748b;border:2px solid rgba(255,255,255,0.08);padding:8px;border-radius:12px;font-size:0.75rem;font-weight:800;transition:all 0.15s';
+    expBtn.style.cssText = 'background:rgba(239,68,68,0.2);color:#fca5a5;border:2px solid rgba(239,68,68,0.4);padding:8px;border-radius:12px;font-size:0.75rem;font-weight:800;transition:background 80ms ease,color 80ms ease,border-color 80ms ease';
+    incBtn.style.cssText = 'background:rgba(255,255,255,0.05);color:#64748b;border:2px solid rgba(255,255,255,0.08);padding:8px;border-radius:12px;font-size:0.75rem;font-weight:800;transition:background 80ms ease,color 80ms ease,border-color 80ms ease';
   }
 }
 
