@@ -60,7 +60,7 @@
   {{/if}}
 
   <!-- ── KPI Cards ── -->
-  <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 animate-fadeup-1">
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 animate-fadeup-1">
 
     <!-- Total Events -->
     <div class="rounded-2xl p-4 sm:p-5 relative overflow-hidden"
@@ -71,8 +71,8 @@
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
         </div>
       </div>
-      <p class="text-3xl font-black" style="color:#f0fdf4">{{totalEvents}}</p>
-      <p class="text-xs font-semibold mt-1" style="color:#374151">Total Events</p>
+      <p class="text-3xl font-black" style="color:#f0fdf4;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{totalEvents}}</p>
+      <p class="text-xs font-semibold mt-1" style="color:#374151;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Total Events</p>
       <a href="/events" class="text-xs font-bold mt-2 inline-flex items-center gap-1" style="color:#34d399">
         View all <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
       </a>
@@ -87,8 +87,8 @@
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2.2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
         </div>
       </div>
-      <p class="text-3xl font-black" style="color:#f0fdf4">{{totalUsers}}</p>
-      <p class="text-xs font-semibold mt-1" style="color:#374151">Active Users</p>
+      <p class="text-3xl font-black" style="color:#f0fdf4;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{totalUsers}}</p>
+      <p class="text-xs font-semibold mt-1" style="color:#374151;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Active Users</p>
       <a href="/users" class="text-xs font-bold mt-2 inline-flex items-center gap-1" style="color:#60a5fa">
         Manage <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
       </a>
@@ -104,8 +104,8 @@
         </div>
         <span class="w-2 h-2 rounded-full bg-emerald-400" style="box-shadow:0 0 6px #10b981"></span>
       </div>
-      <p class="text-3xl font-black" style="color:#f0fdf4">{{ongoingCount}}</p>
-      <p class="text-xs font-semibold mt-1" style="color:#374151">Live Now</p>
+      <p class="text-3xl font-black" style="color:#f0fdf4;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ongoingCount}}</p>
+      <p class="text-xs font-semibold mt-1" style="color:#374151;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Live Now</p>
       <a href="/events" class="text-xs font-bold mt-2 inline-flex items-center gap-1" style="color:#a78bfa">
         Open events <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
       </a>

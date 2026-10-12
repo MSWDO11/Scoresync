@@ -170,7 +170,7 @@
             </div>
 
             <!-- Progress bar + input row -->
-            <div style="display:flex;align-items:center;gap:8px;min-width:0">
+            <div style="display:flex;align-items:center;gap:8px;min-width:0;flex-wrap:wrap">
               <!-- Progress bar -->
               <div style="flex:1;height:8px;border-radius:6px;overflow:hidden;background:rgba(255,255,255,0.06);min-width:0">
                 <div class="criteria-bar" style="height:100%;width:0%;border-radius:6px;background:linear-gradient(90deg,#8b6914,#c9a227,#f0c040);background-size:200% auto;animation:shimmer 2.5s linear infinite;transition:width 0.3s ease"></div>
@@ -184,7 +184,7 @@
                   value="{{value}}"
                   data-max="{{maxScore}}"
                   oninput="handleScoreInput(this)"
-                  style="width:72px;height:40px;font-size:1.25rem;font-weight:900;text-align:center;border-radius:10px;border:1.5px solid rgba(201,162,39,0.4);background:rgba(0,0,0,0.35);color:#f0c040;outline:none;-webkit-appearance:none;-moz-appearance:textfield"/>
+                  style="width:72px;height:44px;font-size:16px !important;font-weight:900;text-align:center;border-radius:10px;border:1.5px solid rgba(201,162,39,0.4);background:rgba(0,0,0,0.35);color:#f0c040;outline:none;-webkit-appearance:none;-moz-appearance:textfield;min-height:44px"/>
                 <span style="font-size:0.68rem;font-weight:700;color:#64748b;white-space:nowrap">/{{maxScore}}</span>
               </div>
             </div>
@@ -305,6 +305,7 @@
 @media (max-width: 640px) {
   .judge-card-inner {
     flex-direction: column;
+    grid-template-columns: 1fr;
   }
   .judge-photo-col {
     width: 100%;
@@ -317,6 +318,12 @@
   }
   .judge-scoring-col {
     padding: 12px;
+  }
+  /* Full-width score input on mobile */
+  .score-entry-input {
+    width: 100% !important;
+    min-height: 44px !important;
+    font-size: 16px !important;
   }
 }
 
