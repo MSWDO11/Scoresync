@@ -3,27 +3,33 @@
 
 <!-- Navbar -->
 <header class="sticky top-0 z-50 backdrop-blur-lg" style="background:rgba(10,15,30,0.92);border-bottom:1px solid rgba(255,255,255,0.07);box-shadow:0 4px 24px rgba(0,0,0,0.3)">
-  <div class="max-w-7xl mx-auto px-5 sm:px-6 h-16 flex items-center justify-between gap-4">
-    <!-- Brand -->
-    <a href="/" class="flex items-center gap-3 flex-shrink-0">
-      <div class="w-9 h-9 rounded-full overflow-hidden flex-shrink-0 shadow-lg" style="border:2px solid rgba(255,255,255,0.2)">
-        <img src="/scoresync-logo.png" alt="ScoreSync" class="w-full h-full object-cover" style="object-position:center center;transform:scale(1.35);transform-origin:center center"/>
+  <div class="max-w-7xl mx-auto px-5 sm:px-6">
+    <div class="h-9 flex items-center justify-between relative">
+      <div class="w-5 h-5 rounded-sm flex items-center justify-center" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12)">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M8 3h8v2H8zM5 7h14v12H5z"/>
+          <path d="M9 11h6M9 15h6"/>
+        </svg>
       </div>
-      <span class="font-black text-lg tracking-tight text-white">ScoreSync</span>
-    </a>
-    <!-- Nav links -->
-    <nav class="hidden md:flex items-center gap-1">
-      <a href="#features" class="px-3 py-2 text-sm font-medium rounded-lg transition" style="color:#94a3b8" onmouseover="this.style.color='#fff';this.style.background='rgba(255,255,255,0.07)'" onmouseout="this.style.color='#94a3b8';this.style.background=''">Features</a>
-      <a href="#how" class="px-3 py-2 text-sm font-medium rounded-lg transition" style="color:#94a3b8" onmouseover="this.style.color='#fff';this.style.background='rgba(255,255,255,0.07)'" onmouseout="this.style.color='#94a3b8';this.style.background=''">How it works</a>
-    </nav>
-    <!-- Actions -->
-    <div class="flex items-center gap-2 flex-shrink-0">
-      <a href="/login" class="hidden sm:inline-flex items-center px-4 py-2 rounded-xl text-sm font-bold transition"
-        style="color:#94a3b8;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.05)"
-        onmouseover="this.style.color='#fff';this.style.background='rgba(255,255,255,0.10)'"
-        onmouseout="this.style.color='#94a3b8';this.style.background='rgba(255,255,255,0.05)'">Sign In</a>
-      <a href="/register" class="inline-flex items-center px-4 py-2 rounded-xl text-sm font-extrabold text-white transition"
-        style="background:linear-gradient(135deg,#1d4ed8,#4f46e5);box-shadow:0 4px 12px rgba(37,99,235,0.35)">Get Started</a>
+      <div class="absolute left-1/2 -translate-x-1/2 text-[11px] font-semibold tracking-[0.18em] uppercase text-white/80" style="letter-spacing:0.18em;color:rgba(255,255,255,0.78)">scoresync.site</div>
+      <div class="w-6 h-6 rounded-md flex items-center justify-center" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12)">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M8 3h8v2H8zM5 7h14v12H5z"/>
+          <path d="M9 11h6M9 15h6"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="h-16 flex items-center justify-between gap-4">
+      <a href="/" class="flex items-center gap-3 flex-shrink-0">
+        <div class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 shadow-lg" style="border:2px solid rgba(255,255,255,0.2)">
+          <img src="/scoresync-logo.png" alt="ScoreSync" class="w-full h-full object-cover" style="object-position:center center;transform:scale(1.35);transform-origin:center center"/>
+        </div>
+        <span class="font-black text-[16px] tracking-tight text-white sm:text-[18px]">ScoreSync</span>
+      </a>
+
+      <a href="/register" class="inline-flex items-center justify-center px-5 py-2.5 rounded-xl text-sm font-extrabold text-white transition"
+        style="background:linear-gradient(135deg,#1d4ed8,#4f46e5);box-shadow:0 4px 12px rgba(37,99,235,0.35);min-width:120px">Get Started</a>
     </div>
   </div>
 </header>
