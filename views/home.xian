@@ -1,29 +1,6 @@
 {{> head }}
 <body class="flex flex-col min-h-screen" style="background:#0a0f1e">
 
-<div class="w-full" style="background:linear-gradient(140deg,#060e22 0%,#0f2156 35%,#1a4db5 70%,#2563eb 100%);border-bottom:1px solid rgba(255,255,255,0.08)">
-  <div class="max-w-6xl mx-auto flex items-center justify-center gap-3 sm:gap-6 py-3 sm:py-4 flex-wrap">
-    <div class="flex flex-col items-center gap-1.5">
-      <div class="w-10 h-10 sm:w-14 sm:h-14 rounded-full overflow-hidden shadow-xl" style="border:2px solid rgba(255,255,255,0.3)">
-        <img src="/minsu-logo.png" alt="Mindoro State University" class="w-full h-full object-cover" style="transform:scale(1.1);transform-origin:center"/>
-      </div>
-      <span class="text-[7px] sm:text-[8px] font-bold uppercase tracking-wider text-center" style="color:rgba(255,255,255,0.75);letter-spacing:0.12em">Mindoro<br/>State Univ.</span>
-    </div>
-    <div class="flex flex-col items-center gap-1.5">
-      <div class="w-10 h-10 sm:w-14 sm:h-14 rounded-full overflow-hidden shadow-xl" style="border:2px solid rgba(255,255,255,0.3)">
-        <img src="/scoresync-logo.png?v=4" alt="ScoreSync" class="w-full h-full object-cover" style="transform:scale(1.1);transform-origin:center"/>
-      </div>
-      <span class="text-[7px] sm:text-[9px] font-extrabold uppercase tracking-wider" style="color:rgba(255,255,255,0.9);letter-spacing:0.12em">ScoreSync</span>
-    </div>
-    <div class="flex flex-col items-center gap-1.5">
-      <div class="w-10 h-10 sm:w-14 sm:h-14 rounded-full overflow-hidden shadow-xl" style="border:2px solid rgba(255,255,255,0.3)">
-        <img src="/mansalay-logo.png?v=2" alt="Bayan ng Mansalay" class="w-full h-full object-cover" style="transform:scale(1.1);transform-origin:center"/>
-      </div>
-      <span class="text-[7px] sm:text-[8px] font-bold uppercase tracking-wider text-center" style="color:rgba(255,255,255,0.75);letter-spacing:0.12em">Bayan ng<br/>Mansalay</span>
-    </div>
-  </div>
-</div>
-
 <!-- Navbar -->
 <header class="sticky top-0 z-50 backdrop-blur-lg" style="background:rgba(10,15,30,0.92);border-bottom:1px solid rgba(255,255,255,0.07);box-shadow:0 4px 24px rgba(0,0,0,0.3)">
   <div class="max-w-7xl mx-auto px-5 sm:px-6 h-16 flex items-center justify-between gap-4">
@@ -73,6 +50,22 @@
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
         Sign In
       </a>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="relative max-w-3xl mx-auto mt-16 grid grid-cols-3 gap-4 px-4 animate-fadeup-1">
+    <div class="rounded-2xl p-4 text-center" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12)">
+      <div class="text-3xl font-black text-yellow-300">100%</div>
+      <div class="text-blue-200 text-xs mt-1 font-medium">Digital Scoring</div>
+    </div>
+    <div class="rounded-2xl p-4 text-center" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12)">
+      <div class="text-3xl font-black text-emerald-300">Live</div>
+      <div class="text-blue-200 text-xs mt-1 font-medium">Real-time Results</div>
+    </div>
+    <div class="rounded-2xl p-4 text-center" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12)">
+      <div class="text-3xl font-black text-purple-300">3</div>
+      <div class="text-blue-200 text-xs mt-1 font-medium">User Roles</div>
     </div>
   </div>
 </section>
