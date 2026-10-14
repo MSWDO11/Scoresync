@@ -34,28 +34,6 @@
   <div class="absolute bottom-0 right-0 w-80 h-80 rounded-full blur-3xl pointer-events-none" style="background:rgba(96,165,250,0.08);transform:translate(30%,30%)"></div>
 
   <div class="relative max-w-5xl mx-auto text-center animate-fadeup">
-    <!-- Three logos row -->
-    <div class="flex items-center justify-center gap-4 sm:gap-8 mb-6 sm:mb-8 flex-wrap">
-      <div class="flex flex-col items-center gap-2">
-        <div class="w-16 h-16 sm:w-24 sm:h-24 rounded-full overflow-hidden shadow-2xl" style="border:2px sm:border-3 solid rgba(255,255,255,0.3)">
-          <img src="/minsu-logo.png" alt="Mindoro State University" class="w-full h-full object-cover" style="transform:scale(1.1);transform-origin:center"/>
-        </div>
-        <span class="text-[8px] sm:text-[9px] font-bold uppercase tracking-wider text-center" style="color:rgba(255,255,255,0.5);letter-spacing:0.12em">Mindoro<br/>State Univ.</span>
-      </div>
-      <div class="flex flex-col items-center gap-2">
-        <div class="w-16 h-16 sm:w-24 sm:h-24 rounded-full overflow-hidden shadow-2xl" style="border:2px sm:border-3 solid rgba(255,255,255,0.3)">
-          <img src="/scoresync-logo.png?v=4" alt="ScoreSync" class="w-full h-full object-cover" style="transform:scale(1.1);transform-origin:center"/>
-        </div>
-        <span class="text-[8px] sm:text-[10px] font-extrabold uppercase tracking-wider" style="color:rgba(255,255,255,0.7);letter-spacing:0.12em">ScoreSync</span>
-      </div>
-      <div class="flex flex-col items-center gap-2">
-        <div class="w-16 h-16 sm:w-24 sm:h-24 rounded-full overflow-hidden shadow-2xl" style="border:2px sm:border-3 solid rgba(255,255,255,0.3)">
-          <img src="/mansalay-logo.png?v=2" alt="Bayan ng Mansalay" class="w-full h-full object-cover" style="transform:scale(1.1);transform-origin:center"/>
-        </div>
-        <span class="text-[8px] sm:text-[9px] font-bold uppercase tracking-wider text-center" style="color:rgba(255,255,255,0.5);letter-spacing:0.12em">Bayan ng<br/>Mansalay</span>
-      </div>
-    </div>
-
     <h1 class="text-3xl sm:text-5xl font-black leading-tight tracking-tight mb-6">
       Automated Tabulation<br/>
       <span class="text-yellow-300">&amp; Event Management</span>
