@@ -1,5 +1,46 @@
 {{> head }}
 <body class="flex flex-col min-h-screen" style="background:#0a0f1e">
+<style>
+  .home-hero {
+    position: relative;
+    isolation: isolate;
+    background:
+      radial-gradient(ellipse at 78% 42%, rgba(37,99,235,0.22), transparent 38%),
+      radial-gradient(ellipse at 15% 10%, rgba(14,165,233,0.12), transparent 32%),
+      linear-gradient(135deg, #070d1c 0%, #0b1530 52%, #101e3d 100%);
+  }
+  .home-preview {
+    background: linear-gradient(145deg, rgba(20,34,63,0.92), rgba(9,16,31,0.96));
+    border: 1px solid rgba(148,163,184,0.2);
+    box-shadow: 0 30px 90px rgba(0,0,0,0.42), inset 0 1px rgba(255,255,255,0.06);
+    backdrop-filter: blur(18px);
+  }
+  .home-feature-card {
+    background: linear-gradient(145deg, rgba(20,29,48,0.96), rgba(13,20,36,0.98));
+    border: 1px solid rgba(148,163,184,0.13);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.16);
+    transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+  }
+  .home-feature-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(96,165,250,0.36);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.28);
+  }
+  .home-step-card {
+    background: linear-gradient(145deg, rgba(17,27,47,0.9), rgba(11,17,31,0.96));
+    border: 1px solid rgba(148,163,184,0.14);
+  }
+  @media (max-width: 767px) {
+    .home-hero-layout { grid-template-columns: 1fr; text-align: center; }
+    .home-hero-copy { margin-left: auto; margin-right: auto; }
+    .home-hero-actions { justify-content: center; }
+    .home-preview { max-width: 480px; margin-left: auto; margin-right: auto; text-align: left; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .home-feature-card { transition: none; }
+    .home-feature-card:hover { transform: none; }
+  }
+</style>
 
 <!-- Navbar -->
 <header class="relative z-50" style="background:rgba(10,15,30,0.97);border-bottom:1px solid rgba(255,255,255,0.06);box-shadow:0 4px 24px rgba(0,0,0,0.28)">
@@ -32,110 +73,165 @@
 </header>
 
 <!-- Hero -->
-<section class="relative overflow-hidden text-white py-16 sm:py-28 px-4 sm:px-6" style="background:linear-gradient(140deg,#060e22 0%,#0f2156 35%,#1a4db5 70%,#2563eb 100%)">
-  <div class="absolute top-0 left-0 w-96 h-96 rounded-full blur-3xl pointer-events-none" style="background:rgba(255,255,255,0.04);transform:translate(-50%,-50%)"></div>
-  <div class="absolute bottom-0 right-0 w-80 h-80 rounded-full blur-3xl pointer-events-none" style="background:rgba(96,165,250,0.08);transform:translate(30%,30%)"></div>
+<section class="home-hero overflow-hidden text-white px-4 py-14 sm:px-6 sm:py-24">
+  <div class="max-w-6xl mx-auto">
+    <div class="home-hero-layout relative grid md:grid-cols-[1.05fr_0.95fr] items-center gap-12 lg:gap-20">
+      <div class="home-hero-copy max-w-2xl animate-fadeup">
+        <div class="inline-flex items-center gap-2 rounded-full px-3 py-1.5 mb-6 text-[11px] font-bold uppercase tracking-[0.16em]"
+          style="background:rgba(96,165,250,0.1);border:1px solid rgba(147,197,253,0.2);color:#bfdbfe">
+          <span class="w-1.5 h-1.5 rounded-full" style="background:#60a5fa;box-shadow:0 0 10px #60a5fa"></span>
+          Competition management, made clear
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black leading-[1.08] tracking-tight mb-6">
+          Every score.<br/>
+          <span style="color:#93c5fd">Every moment.</span><br/>
+          <span style="color:#f8fafc">In sync.</span>
+        </h1>
+        <p class="text-base sm:text-lg max-w-xl mb-8 leading-relaxed" style="color:#b7c5da">
+          Run competitions with confident scoring, transparent tabulation, and results your audience can trust.
+        </p>
+        <div class="home-hero-actions flex flex-wrap items-center gap-3">
+          <a href="/register" class="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-sm font-extrabold text-white transition hover:-translate-y-0.5"
+            style="background:linear-gradient(135deg,#2563eb,#4f46e5);box-shadow:0 10px 28px rgba(37,99,235,0.32)">
+            Get Started
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+          <a href="/login" class="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-sm font-bold text-white transition hover:bg-white/10"
+            style="border:1px solid rgba(203,213,225,0.24);background:rgba(15,23,42,0.32)">
+            Sign In
+          </a>
+        </div>
+        <div class="mt-8 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-medium" style="color:#9aabc3">
+          <span class="inline-flex items-center gap-2"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z"/><path d="m9 12 2 2 4-4"/></svg>Clear, accountable scoring</span>
+          <span class="inline-flex items-center gap-2"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Results as events happen</span>
+        </div>
+      </div>
 
-  <div class="relative max-w-5xl mx-auto text-center animate-fadeup">
-    <h1 class="text-3xl sm:text-5xl font-black leading-tight tracking-tight mb-6">
-      Automated Tabulation<br/>
-      <span class="text-yellow-300">&amp; Event Management</span>
-    </h1>
-    <p class="text-blue-100 text-base max-w-2xl mx-auto mb-10 leading-relaxed">
-      ScoreSync powers municipal competitions with real-time scoring, transparent tabulation, and instant results — built for Mansalay and beyond.
-    </p>
-    <div class="flex flex-wrap gap-3 justify-center">
-      <a href="/register" class="inline-flex items-center gap-2 bg-yellow-400 hover:bg-yellow-300 text-slate-900 font-black px-8 py-4 rounded-xl shadow-2xl transition text-sm">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12l5 5L20 7"/></svg>
-        Get Started
-      </a>
-      <a href="/login" class="inline-flex items-center gap-2 text-white font-semibold px-8 py-4 rounded-xl transition text-sm" style="background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.20)">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
-        Sign In
-      </a>
+      <div class="home-preview relative rounded-3xl p-5 sm:p-7 animate-fadeup-1">
+        <div class="absolute -top-12 -right-10 w-40 h-40 rounded-full blur-3xl pointer-events-none" style="background:rgba(59,130,246,0.16)"></div>
+        <div class="relative flex items-center justify-between gap-3 pb-5" style="border-bottom:1px solid rgba(148,163,184,0.15)">
+          <div>
+            <div class="text-[10px] uppercase tracking-[0.18em] font-bold mb-1" style="color:#93c5fd">ScoreSync preview</div>
+            <div class="text-white text-base font-bold">A clearer way to tabulate</div>
+          </div>
+          <span class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold" style="color:#a7f3d0;background:rgba(16,185,129,0.1);border:1px solid rgba(52,211,153,0.18)">
+            <span class="w-1.5 h-1.5 rounded-full" style="background:#34d399"></span> LIVE SCORING
+          </span>
+        </div>
+        <div class="relative mt-5 rounded-2xl p-4 sm:p-5" style="background:rgba(5,10,21,0.58);border:1px solid rgba(148,163,184,0.12)">
+          <div class="flex items-center justify-between mb-5">
+            <div class="text-xs font-semibold" style="color:#cbd5e1">Weighted criteria</div>
+            <div class="text-[10px] font-semibold" style="color:#64748b">SCORING OVERVIEW</div>
+          </div>
+          <div class="space-y-4">
+            <div>
+              <div class="flex justify-between text-xs mb-2"><span style="color:#cbd5e1">Performance</span><span class="font-semibold" style="color:#e2e8f0">40%</span></div>
+              <div class="h-1.5 rounded-full overflow-hidden" style="background:#1e293b"><div class="h-full rounded-full" style="width:78%;background:linear-gradient(90deg,#2563eb,#60a5fa)"></div></div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs mb-2"><span style="color:#cbd5e1">Presentation</span><span class="font-semibold" style="color:#e2e8f0">35%</span></div>
+              <div class="h-1.5 rounded-full overflow-hidden" style="background:#1e293b"><div class="h-full rounded-full" style="width:65%;background:linear-gradient(90deg,#7c3aed,#a78bfa)"></div></div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs mb-2"><span style="color:#cbd5e1">Creativity</span><span class="font-semibold" style="color:#e2e8f0">25%</span></div>
+              <div class="h-1.5 rounded-full overflow-hidden" style="background:#1e293b"><div class="h-full rounded-full" style="width:52%;background:linear-gradient(90deg,#0d9488,#5eead4)"></div></div>
+            </div>
+          </div>
+          <div class="flex items-center gap-3 mt-6 pt-4" style="border-top:1px solid rgba(148,163,184,0.12)">
+            <div class="flex -space-x-2">
+              <span class="w-7 h-7 rounded-full flex items-center justify-center text-[9px] font-bold text-white" style="background:#3156a5;border:2px solid #111a2b">J1</span>
+              <span class="w-7 h-7 rounded-full flex items-center justify-center text-[9px] font-bold text-white" style="background:#6644a6;border:2px solid #111a2b">J2</span>
+              <span class="w-7 h-7 rounded-full flex items-center justify-center text-[9px] font-bold text-white" style="background:#147b78;border:2px solid #111a2b">J3</span>
+            </div>
+            <div class="text-[11px] leading-snug" style="color:#94a3b8">Judges score independently.<br/><span style="color:#e2e8f0">Results stay organized.</span></div>
+          </div>
+        </div>
+        <div class="relative grid grid-cols-3 gap-2 mt-4 text-center">
+          <div class="rounded-xl px-2 py-3" style="background:rgba(255,255,255,0.035);border:1px solid rgba(148,163,184,0.1)"><div class="text-[10px] font-bold text-blue-200">DEFINE</div><div class="text-[9px] mt-1" style="color:#718096">Your criteria</div></div>
+          <div class="rounded-xl px-2 py-3" style="background:rgba(255,255,255,0.035);border:1px solid rgba(148,163,184,0.1)"><div class="text-[10px] font-bold text-purple-200">SCORE</div><div class="text-[9px] mt-1" style="color:#718096">With confidence</div></div>
+          <div class="rounded-xl px-2 py-3" style="background:rgba(255,255,255,0.035);border:1px solid rgba(148,163,184,0.1)"><div class="text-[10px] font-bold text-emerald-200">ANNOUNCE</div><div class="text-[9px] mt-1" style="color:#718096">Clear results</div></div>
+        </div>
+        <div class="absolute -bottom-5 -left-5 hidden sm:flex items-center gap-2 rounded-xl px-3 py-2 text-[11px] font-semibold text-white" style="background:#111d33;border:1px solid rgba(148,163,184,0.18);box-shadow:0 12px 30px rgba(0,0,0,0.28)">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.5"><path d="m5 12 4 4L19 6"/></svg>
+          Transparent by design
+        </div>
+      </div>
     </div>
-  </div>
 
-  <!-- Stats -->
-  <div class="relative max-w-3xl mx-auto mt-16 grid grid-cols-3 gap-4 px-4 animate-fadeup-1">
-    <div class="rounded-2xl p-4 text-center" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12)">
-      <div class="text-3xl font-black text-yellow-300">100%</div>
-      <div class="text-blue-200 text-xs mt-1 font-medium">Digital Scoring</div>
-    </div>
-    <div class="rounded-2xl p-4 text-center" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12)">
-      <div class="text-3xl font-black text-emerald-300">Live</div>
-      <div class="text-blue-200 text-xs mt-1 font-medium">Real-time Results</div>
-    </div>
-    <div class="rounded-2xl p-4 text-center" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12)">
-      <div class="text-3xl font-black text-purple-300">3</div>
-      <div class="text-blue-200 text-xs mt-1 font-medium">User Roles</div>
+    <div class="mt-16 grid grid-cols-3 rounded-2xl overflow-hidden" style="background:rgba(255,255,255,0.035);border:1px solid rgba(148,163,184,0.15)">
+      <div class="p-4 sm:p-5 text-center" style="border-right:1px solid rgba(148,163,184,0.12)">
+        <div class="text-2xl sm:text-3xl font-black text-blue-200">100%</div>
+        <div class="text-[10px] sm:text-xs mt-1 font-medium" style="color:#94a3b8">Digital Scoring</div>
+      </div>
+      <div class="p-4 sm:p-5 text-center" style="border-right:1px solid rgba(148,163,184,0.12)">
+        <div class="text-2xl sm:text-3xl font-black text-emerald-200">Live</div>
+        <div class="text-[10px] sm:text-xs mt-1 font-medium" style="color:#94a3b8">Real-time Results</div>
+      </div>
+      <div class="p-4 sm:p-5 text-center">
+        <div class="text-2xl sm:text-3xl font-black text-purple-200">3</div>
+        <div class="text-[10px] sm:text-xs mt-1 font-medium" style="color:#94a3b8">User Roles</div>
+      </div>
     </div>
   </div>
 </section>
 
 <!-- Features -->
-<section id="features" class="py-24 px-6" style="background:#0d1424">
+<section id="features" class="relative overflow-hidden py-20 sm:py-24 px-4 sm:px-6" style="background:radial-gradient(ellipse at 50% 0%,rgba(30,64,175,0.12),transparent 45%),#0b1120">
   <div class="max-w-6xl mx-auto">
     <div class="text-center mb-16">
-      <span class="inline-block text-xs font-bold px-3 py-1 rounded-full mb-4 uppercase tracking-widest"
-        style="background:rgba(59,130,246,0.15);color:#93c5fd;border:1px solid rgba(59,130,246,0.25)">Features</span>
-      <h2 class="text-3xl font-black tracking-tight" style="color:#f1f5f9">Everything You Need</h2>
-      <p class="mt-3 text-base max-w-lg mx-auto" style="color:#475569">Built for pageants, sports fests, talent shows, and any scored competition.</p>
+      <span class="inline-flex items-center gap-2 text-[10px] font-extrabold px-3 py-1.5 rounded-full mb-4 uppercase tracking-[0.16em]"
+        style="background:rgba(59,130,246,0.1);color:#93c5fd;border:1px solid rgba(96,165,250,0.2)">The platform</span>
+      <h2 class="text-3xl sm:text-4xl font-black tracking-tight" style="color:#f1f5f9">Everything your event needs</h2>
+      <p class="mt-4 text-sm sm:text-base max-w-xl mx-auto leading-relaxed" style="color:#a3b1c5">From the first event setup to the final results, keep every part of your competition clear and connected.</p>
     </div>
-    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
 
-      <div class="rounded-2xl p-7 hover:-translate-y-1.5 transition-transform duration-200"
-        style="background:#111827;border:1px solid rgba(255,255,255,0.08);box-shadow:0 4px 20px rgba(0,0,0,0.3)">
+      <div class="home-feature-card rounded-2xl p-6 sm:p-7">
         <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-5 shadow-md" style="background:linear-gradient(135deg,#1e3a8a,#2563eb)">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><polyline points="9 16 11 18 15 14"/></svg>
         </div>
         <h3 class="font-bold mb-2" style="color:#e2e8f0">Event Management</h3>
-        <p class="text-sm leading-relaxed" style="color:#475569">Create multiple competition events with categories, schedules, venues, prizes, and contestant rosters.</p>
+        <p class="text-sm leading-relaxed" style="color:#a3b1c5">Create multiple competition events with categories, schedules, venues, prizes, and contestant rosters.</p>
       </div>
 
-      <div class="rounded-2xl p-7 hover:-translate-y-1.5 transition-transform duration-200"
-        style="background:#111827;border:1px solid rgba(255,255,255,0.08);box-shadow:0 4px 20px rgba(0,0,0,0.3)">
+      <div class="home-feature-card rounded-2xl p-6 sm:p-7">
         <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-5 shadow-md" style="background:linear-gradient(135deg,#4c1d95,#7c3aed)">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
         </div>
         <h3 class="font-bold mb-2" style="color:#e2e8f0">Custom Scoring Criteria</h3>
-        <p class="text-sm leading-relaxed" style="color:#475569">Define weighted criteria per event — beauty, talent, intelligence, and any custom category.</p>
+        <p class="text-sm leading-relaxed" style="color:#a3b1c5">Define weighted criteria per event — beauty, talent, intelligence, and any custom category.</p>
       </div>
 
-      <div class="rounded-2xl p-7 hover:-translate-y-1.5 transition-transform duration-200"
-        style="background:#111827;border:1px solid rgba(255,255,255,0.08);box-shadow:0 4px 20px rgba(0,0,0,0.3)">
+      <div class="home-feature-card rounded-2xl p-6 sm:p-7">
         <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-5 shadow-md" style="background:linear-gradient(135deg,#064e3b,#059669)">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
         </div>
         <h3 class="font-bold mb-2" style="color:#e2e8f0">Live Tabulation</h3>
-        <p class="text-sm leading-relaxed" style="color:#475569">Scores aggregated and ranked in real-time as judges submit. No manual tallying needed.</p>
+        <p class="text-sm leading-relaxed" style="color:#a3b1c5">Scores aggregated and ranked in real-time as judges submit. No manual tallying needed.</p>
       </div>
 
-      <div class="rounded-2xl p-7 hover:-translate-y-1.5 transition-transform duration-200"
-        style="background:#111827;border:1px solid rgba(255,255,255,0.08);box-shadow:0 4px 20px rgba(0,0,0,0.3)">
+      <div class="home-feature-card rounded-2xl p-6 sm:p-7">
         <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-5 shadow-md" style="background:linear-gradient(135deg,#1e40af,#3b82f6)">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
         </div>
         <h3 class="font-bold mb-2" style="color:#e2e8f0">Role-Based Access</h3>
-        <p class="text-sm leading-relaxed" style="color:#475569">Separate portals for Administrators, Judges, and Participants with the right permissions.</p>
+        <p class="text-sm leading-relaxed" style="color:#a3b1c5">Separate portals for Administrators, Judges, and Participants with the right permissions.</p>
       </div>
 
-      <div class="rounded-2xl p-7 hover:-translate-y-1.5 transition-transform duration-200"
-        style="background:#111827;border:1px solid rgba(255,255,255,0.08);box-shadow:0 4px 20px rgba(0,0,0,0.3)">
+      <div class="home-feature-card rounded-2xl p-6 sm:p-7">
         <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-5 shadow-md" style="background:linear-gradient(135deg,#92400e,#d97706)">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
         </div>
         <h3 class="font-bold mb-2" style="color:#e2e8f0">Leaderboard &amp; Results</h3>
-        <p class="text-sm leading-relaxed" style="color:#475569">Official rankings with podium display and printable tabulation sheets.</p>
+        <p class="text-sm leading-relaxed" style="color:#a3b1c5">Official rankings with podium display and printable tabulation sheets.</p>
       </div>
 
-      <div class="rounded-2xl p-7 hover:-translate-y-1.5 transition-transform duration-200"
-        style="background:#111827;border:1px solid rgba(255,255,255,0.08);box-shadow:0 4px 20px rgba(0,0,0,0.3)">
+      <div class="home-feature-card rounded-2xl p-6 sm:p-7">
         <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-5 shadow-md" style="background:linear-gradient(135deg,#134e4a,#0d9488)">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
         </div>
         <h3 class="font-bold mb-2" style="color:#e2e8f0">Cloud-Powered</h3>
-        <p class="text-sm leading-relaxed" style="color:#475569">Built on Firebase — secure, synced across devices, always available during events.</p>
+        <p class="text-sm leading-relaxed" style="color:#a3b1c5">Built on Firebase — secure, synced across devices, always available during events.</p>
       </div>
 
     </div>
@@ -143,45 +239,46 @@
 </section>
 
 <!-- How it works -->
-<section id="how" class="py-24 px-6" style="background:#0a0f1e">
+<section id="how" class="py-20 sm:py-24 px-4 sm:px-6" style="background:#090f1c">
   <div class="max-w-4xl mx-auto text-center mb-14">
-    <span class="inline-block text-xs font-bold px-3 py-1 rounded-full mb-4 uppercase tracking-widest"
-      style="background:rgba(16,185,129,0.15);color:#6ee7b7;border:1px solid rgba(16,185,129,0.25)">How It Works</span>
-    <h2 class="text-3xl font-black tracking-tight" style="color:#f1f5f9">Up &amp; running in minutes</h2>
+    <span class="inline-flex items-center text-[10px] font-extrabold px-3 py-1.5 rounded-full mb-4 uppercase tracking-[0.16em]"
+      style="background:rgba(16,185,129,0.09);color:#6ee7b7;border:1px solid rgba(52,211,153,0.18)">A simple workflow</span>
+    <h2 class="text-3xl sm:text-4xl font-black tracking-tight" style="color:#f1f5f9">From setup to results</h2>
+    <p class="mt-4 text-sm sm:text-base max-w-lg mx-auto leading-relaxed" style="color:#a3b1c5">A straightforward process that keeps organizers, judges, and results in sync.</p>
   </div>
-  <div class="max-w-4xl mx-auto grid md:grid-cols-3 gap-8">
-    <div class="text-center">
+  <div class="max-w-5xl mx-auto grid md:grid-cols-3 gap-4 sm:gap-5">
+    <div class="home-step-card rounded-2xl p-6 sm:p-7 text-center">
       <div class="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-xl" style="background:linear-gradient(135deg,#1e3a8a,#2563eb)">
         <span class="text-white font-black text-xl">1</span>
       </div>
       <h3 class="font-bold mb-2" style="color:#e2e8f0">Create an Event</h3>
-      <p class="text-sm leading-relaxed" style="color:#475569">Admin sets up the event, adds contestants, defines scoring criteria with weights.</p>
+      <p class="text-sm leading-relaxed" style="color:#a3b1c5">Admin sets up the event, adds contestants, defines scoring criteria with weights.</p>
     </div>
-    <div class="text-center">
+    <div class="home-step-card rounded-2xl p-6 sm:p-7 text-center">
       <div class="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-xl" style="background:linear-gradient(135deg,#4c1d95,#7c3aed)">
         <span class="text-white font-black text-xl">2</span>
       </div>
       <h3 class="font-bold mb-2" style="color:#e2e8f0">Judges Score</h3>
-      <p class="text-sm leading-relaxed" style="color:#475569">Judges log in and enter scores per contestant per criteria from any device.</p>
+      <p class="text-sm leading-relaxed" style="color:#a3b1c5">Judges log in and enter scores per contestant per criteria from any device.</p>
     </div>
-    <div class="text-center">
+    <div class="home-step-card rounded-2xl p-6 sm:p-7 text-center">
       <div class="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-xl" style="background:linear-gradient(135deg,#92400e,#d97706)">
         <span class="text-white font-black text-xl">3</span>
       </div>
       <h3 class="font-bold mb-2" style="color:#e2e8f0">Results Instantly</h3>
-      <p class="text-sm leading-relaxed" style="color:#475569">ScoreSync computes weighted averages, ranks contestants, shows official results.</p>
+      <p class="text-sm leading-relaxed" style="color:#a3b1c5">ScoreSync computes weighted averages, ranks contestants, shows official results.</p>
     </div>
   </div>
 </section>
 
 <!-- CTA -->
-<section class="py-20 px-6 relative overflow-hidden text-white" style="background:linear-gradient(140deg,#060e22 0%,#0f2156 40%,#1a4db5 80%,#2563eb 100%)">
+<section class="py-16 sm:py-20 px-4 sm:px-6 relative overflow-hidden text-white" style="background:radial-gradient(ellipse at 50% 0%,rgba(59,130,246,0.23),transparent 55%),linear-gradient(135deg,#0d172b,#101e3b)">
   <div class="relative max-w-2xl mx-auto text-center">
-    <div class="w-16 h-16 rounded-full overflow-hidden flex items-center justify-center mx-auto mb-6 shadow-xl" style="border:3px solid rgba(255,255,255,0.25)">
+    <div class="w-14 h-14 rounded-2xl overflow-hidden flex items-center justify-center mx-auto mb-6 shadow-xl" style="border:1px solid rgba(191,219,254,0.3);background:rgba(255,255,255,0.06);box-shadow:0 12px 36px rgba(0,0,0,0.24)">
       <img src="/scoresync-logo.png" alt="ScoreSync" class="w-full h-full object-cover" style="object-position:center center;transform:scale(1.35);transform-origin:center center"/>
     </div>
-    <h2 class="text-3xl font-black mb-4 tracking-tight">Ready to run your next competition?</h2>
-    <p class="text-blue-100 mb-8 text-base">Join ScoreSync and bring efficiency and transparency to Mansalay's events.</p>
+    <h2 class="text-3xl sm:text-4xl font-black mb-4 tracking-tight">Make your next event run smoothly.</h2>
+    <p class="text-sm sm:text-base mb-8 leading-relaxed" style="color:#b7c5da">Bring confident scoring and clear results to competitions in Mansalay and beyond.</p>
     <div class="flex gap-3 justify-center flex-wrap">
       <a href="/register" class="inline-flex items-center gap-2 bg-yellow-400 hover:bg-yellow-300 text-slate-900 font-black px-10 py-4 rounded-xl shadow-xl transition text-sm">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12l5 5L20 7"/></svg>
