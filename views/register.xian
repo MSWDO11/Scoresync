@@ -149,7 +149,18 @@
     pointer-events: none;
     mask-image: linear-gradient(to bottom, black, transparent 78%);
   }
-  .auth-shell { position: relative; z-index: 1; max-width: 400px; }
+  .auth-shell {
+    position: relative;
+    z-index: 1;
+    max-width: 400px;
+    margin-block: auto;
+  }
+  .auth-page {
+    min-height: 100vh;
+    min-height: 100svh;
+    padding-top: clamp(24px, 4vh, 40px);
+    padding-bottom: 28px;
+  }
   .auth-logo {
     border: 1px solid rgba(199,210,254,0.42);
     background: linear-gradient(145deg, rgba(255,255,255,0.16), rgba(99,102,241,0.12));
@@ -362,7 +373,6 @@ function togglePwd(){
 </script>
 </body>
 </html>
-
 
 
 
