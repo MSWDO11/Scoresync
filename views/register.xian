@@ -224,13 +224,57 @@
     transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
   }
   .role-card:hover { background: rgba(30,41,59,0.82); transform: translateY(-1px); }
+  .auth-form > * + * { margin-top: 12px !important; }
+  @media (max-height: 900px) {
+    .auth-page {
+      justify-content: flex-start;
+      padding-top: 12px;
+      padding-bottom: 12px;
+    }
+    .auth-shell { margin-block: 0; }
+    .auth-heading { margin-bottom: 12px !important; }
+    .auth-logo {
+      width: 68px !important;
+      height: 68px !important;
+      margin-bottom: 10px !important;
+    }
+    .auth-kicker { margin-bottom: 5px; }
+    .auth-title { font-size: 1.4rem; }
+    .auth-subtitle { margin-top: 4px; }
+    .auth-tab-wrap { margin-bottom: 12px; }
+    .auth-card { padding: 18px 18px; }
+    .auth-form > * + * { margin-top: 9px !important; }
+    .auth-input { min-height: 44px; padding-top: 9px; padding-bottom: 9px; }
+    .auth-label { margin-bottom: 4px; }
+    .role-card { padding: 8px; }
+    .auth-btn { min-height: 46px; padding-top: 10px; padding-bottom: 10px; }
+    .auth-footer { margin-top: 10px !important; }
+    .auth-home-link { min-height: 38px; }
+  }
+  @media (max-height: 760px) {
+    .auth-page { padding-top: 8px; padding-bottom: 8px; }
+    .auth-logo {
+      width: 56px !important;
+      height: 56px !important;
+      margin-bottom: 7px !important;
+    }
+    .auth-heading { margin-bottom: 8px !important; }
+    .auth-kicker { font-size: 0.58rem; margin-bottom: 3px; }
+    .auth-title { font-size: 1.25rem; }
+    .auth-subtitle { font-size: 0.74rem; margin-top: 2px; }
+    .auth-tab-wrap { margin-bottom: 8px; }
+    .auth-card { padding: 14px; }
+    .auth-form > * + * { margin-top: 7px !important; }
+    .role-card { padding: 6px; }
+    .auth-footer { margin-top: 7px !important; }
+  }
 </style>
-<body class="auth-page min-h-screen flex items-center justify-center px-4 py-10">
+<body class="auth-page min-h-screen flex flex-col items-center justify-center px-4">
 
   <div class="auth-shell w-full animate-fadeup">
 
     <!-- Logo -->
-    <div class="flex flex-col items-center mb-6">
+    <div class="auth-heading flex flex-col items-center mb-6">
       <div class="auth-logo w-20 h-20 sm:w-28 sm:h-28 rounded-full overflow-hidden mb-4 flex-shrink-0">
         <img src="/scoresync-logo.png" alt="ScoreSync" class="w-full h-full object-cover" style="object-position:center center;transform:scale(1.1);transform-origin:center center"/>
       </div>
@@ -259,7 +303,7 @@
     {{/if}}
 
     <div class="auth-card">
-      <form method="POST" action="/register" class="space-y-4">
+      <form method="POST" action="/register" class="auth-form space-y-4">
     <input type="hidden" name="_csrf" value="{{csrfToken}}">
 
         <!-- Full Name -->
@@ -373,7 +417,6 @@ function togglePwd(){
 </script>
 </body>
 </html>
-
 
 
 
