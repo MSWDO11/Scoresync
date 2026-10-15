@@ -192,7 +192,22 @@
       .hide-mobile { display: none !important; }
     }
     @media (min-width: 768px) {
-      .sidebar { position: sticky; top: 0; align-self: flex-start; max-height: 100vh; max-height: 100dvh; flex-shrink: 0; transform: none !important; overflow: hidden; display: flex; flex-direction: column; min-height: 100vh; min-height: 100dvh; }
+      .sidebar {
+        position: sticky;
+        top: 56px;
+        align-self: flex-start;
+        height: calc(100vh - 56px);
+        height: calc(100dvh - 56px);
+        min-height: calc(100vh - 56px);
+        min-height: calc(100dvh - 56px);
+        max-height: calc(100vh - 56px);
+        max-height: calc(100dvh - 56px);
+        flex-shrink: 0;
+        transform: none !important;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
     }
     /* Sidebar nav scrolls, footer pinned */
     .sidebar > nav { flex: 1 !important; overflow-y: auto !important; min-height: 0 !important; }
