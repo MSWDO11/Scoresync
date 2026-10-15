@@ -11,6 +11,7 @@ import {
 } from "firebase/firestore";
 import { recordFailedLogin, clearFailedLogins } from "../middleware/rateLimit.js";
 import { sanitizeText, sanitizeEmail, sanitizeRole } from "../utils/sanitize.js";
+import { setCachedUserAvatar } from "../utils/userAvatarCache.js";
 
 // ─── Page renderers ───────────────────────────────────────────────────────────
 
@@ -126,10 +127,10 @@ export const loginUser = async (req, res) => {
     // Successful login — clear failed attempt counter
     clearFailedLogins(ip);
 
+    setCachedUserAvatar(uid, profile.avatar || profile.photoURL || profile.photo || "");
     req.session.userId    = uid;
     req.session.userName  = profile.name   || email;
     req.session.userRole  = profile.role   || "encoder";
-    // Note: avatar NOT stored in session (too large for cookie) — loaded from Firestore per request
 
     res.redirect("/dashboard");
   } catch (err) {

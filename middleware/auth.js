@@ -1,5 +1,6 @@
 import { db } from "../models/firebaseConfig.js";
 import { doc, getDoc } from "firebase/firestore";
+import { getCachedUserAvatar } from "../utils/userAvatarCache.js";
 
 // Middleware: require a logged-in session
 export const requireAuth = (req, res, next) => {
@@ -37,17 +38,17 @@ export const injectUser = async (req, res, next) => {
   res.locals.isEncoder     = req.session?.userRole === "encoder";
   res.locals.isOrganizer   = req.session?.userRole === "organizer";
 
-  // Fetch avatar from Firestore so it shows in navbar on ALL pages
   res.locals.userAvatar = "";
   if (req.session?.userId) {
     try {
-      const snap = await getDoc(doc(db, "users", req.session.userId));
-      if (snap.exists()) {
+      res.locals.userAvatar = await getCachedUserAvatar(req.session.userId, async () => {
+        const snap = await getDoc(doc(db, "users", req.session.userId));
+        if (!snap.exists()) return "";
         const data = snap.data();
-        res.locals.userAvatar = data.avatar || data.photoURL || data.photo || "";
-      }
-    } catch (e) {
-      // Silent fail — navbar will show initial letter instead
+        return data.avatar || data.photoURL || data.photo || "";
+      });
+    } catch (error) {
+      console.error("User avatar lookup failed:", error.message);
     }
   }
   next();

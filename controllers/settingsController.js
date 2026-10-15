@@ -1,6 +1,7 @@
 import { db } from "../models/firebaseConfig.js";
 import { doc, getDoc, updateDoc, collection, getDocs, addDoc, serverTimestamp, query, orderBy, limit } from "firebase/firestore";
 import { sanitizeText } from "../utils/sanitize.js";
+import { setCachedUserAvatar } from "../utils/userAvatarCache.js";
 
 export const settingsPage = async (req, res) => {
   try {
@@ -92,6 +93,9 @@ export const updateSettings = async (req, res) => {
 
       if (Object.keys(updates).length > 0) {
         await updateDoc(doc(db, "users", req.session.userId), updates);
+        if (Object.hasOwn(updates, "avatar")) {
+          setCachedUserAvatar(req.session.userId, updates.avatar);
+        }
       }
       req.flash("success_msg", "Profile updated successfully!");
     }
@@ -127,4 +131,3 @@ export const suggestFeature = async (req, res) => {
     res.redirect("/settings");
   }
 };
-
