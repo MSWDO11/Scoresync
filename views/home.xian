@@ -14,10 +14,10 @@
         </a>
       </div>
 
-      <div class="hidden md:flex flex-1 items-center justify-center">
-        <nav class="flex items-center gap-8 text-sm font-medium" style="color:#dbe7ff">
-          <a href="#features" class="whitespace-nowrap transition hover:text-white">Features</a>
-          <a href="#how" class="whitespace-nowrap transition hover:text-white">How it works</a>
+      <div class="hidden md:flex h-full flex-1 items-center justify-center">
+        <nav class="flex h-full items-center gap-8 text-sm font-medium" style="color:#dbe7ff">
+          <a href="#features" class="inline-flex h-full items-center whitespace-nowrap transition hover:text-white">Features</a>
+          <a href="#how" class="inline-flex h-full items-center whitespace-nowrap transition hover:text-white">How it works</a>
         </nav>
       </div>
 
