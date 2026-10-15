@@ -2,46 +2,26 @@
 <body class="flex flex-col min-h-screen" style="background:#0a0f1e">
 
 <!-- Navbar -->
-<header class="sticky top-0 z-50" style="background:rgba(10,15,30,0.97);border-bottom:1px solid rgba(255,255,255,0.06);box-shadow:0 4px 24px rgba(0,0,0,0.28)">
+<header class="relative z-50" style="background:rgba(10,15,30,0.97);border-bottom:1px solid rgba(255,255,255,0.06);box-shadow:0 4px 24px rgba(0,0,0,0.28)">
   <div class="max-w-[1280px] mx-auto px-3 sm:px-6">
-    <div class="flex items-center justify-between h-10 border-b border-white/5" style="background:rgba(12,18,28,0.7)">
-      <div class="flex items-center gap-2 min-w-0">
-        <button type="button" class="flex items-center justify-center w-7 h-7 rounded-full bg-white/5 border border-white/10 text-white/80">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-        </button>
-        <div class="flex items-center justify-center w-7 h-7 rounded-full bg-white/5 border border-white/10 text-[10px] font-black text-white">G</div>
+    <div class="flex items-center h-16 px-1 sm:px-2">
+      <div class="w-[28%] min-w-[180px] flex items-center justify-start">
+        <a href="/" class="flex items-center gap-3 flex-shrink-0">
+          <div class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 shadow-lg" style="border:2px solid rgba(255,255,255,0.2)">
+            <img src="/scoresync-logo.png" alt="ScoreSync" class="w-full h-full object-cover" style="object-position:center center;transform:scale(1.35);transform-origin:center center"/>
+          </div>
+          <span class="font-black text-[16px] tracking-tight text-white sm:text-[18px]">ScoreSync</span>
+        </a>
       </div>
 
-      <div class="flex-1 flex justify-center px-3">
-        <div class="flex items-center h-7 max-w-[540px] w-full rounded-full border border-white/10 bg-white/5 text-white/70 text-[11px] font-medium px-3">
-          <span class="truncate">scoresync.site</span>
-        </div>
+      <div class="flex-1 flex items-center justify-center">
+        <nav class="flex items-center gap-8 text-sm font-medium" style="color:#dbe7ff">
+          <a href="#features" class="transition hover:text-white">Features</a>
+          <a href="#how" class="transition hover:text-white">How it works</a>
+        </nav>
       </div>
 
-      <div class="flex items-center gap-2">
-        <button type="button" class="w-7 h-7 rounded-full border border-white/10 bg-white/5 text-white/80 flex items-center justify-center">
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
-        </button>
-        <button type="button" class="w-7 h-7 rounded-full border border-white/10 bg-white/5 text-white/80 flex items-center justify-center">
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6v2H9zM7 7h10v12H7z"/><path d="M9 11h6M9 15h6"/></svg>
-        </button>
-      </div>
-    </div>
-
-    <div class="flex items-center justify-between h-16 gap-4 px-1 sm:px-2">
-      <a href="/" class="flex items-center gap-3 flex-shrink-0">
-        <div class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 shadow-lg" style="border:2px solid rgba(255,255,255,0.2)">
-          <img src="/scoresync-logo.png" alt="ScoreSync" class="w-full h-full object-cover" style="object-position:center center;transform:scale(1.35);transform-origin:center center"/>
-        </div>
-        <span class="font-black text-[16px] tracking-tight text-white sm:text-[18px]">ScoreSync</span>
-      </a>
-
-      <nav class="hidden md:flex items-center gap-8 text-sm font-medium" style="color:#dbe7ff">
-        <a href="#features" class="transition hover:text-white">Features</a>
-        <a href="#how" class="transition hover:text-white">How it works</a>
-      </nav>
-
-      <div class="flex items-center gap-3 flex-shrink-0">
+      <div class="w-[28%] min-w-[200px] flex items-center justify-end gap-3">
         <a href="/login" class="inline-flex items-center justify-center px-5 py-2.5 rounded-xl text-sm font-bold transition"
           style="color:#e2e8f0;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.08);min-width:110px">Sign In</a>
         <a href="/register" class="inline-flex items-center justify-center px-5 py-2.5 rounded-xl text-sm font-extrabold text-white transition"
@@ -218,4 +198,3 @@
 {{> footer }}
 </body>
 </html>
-

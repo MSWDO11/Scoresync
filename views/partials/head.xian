@@ -104,7 +104,7 @@
       /* Section headers: stack on mobile */
       .section-header { flex-direction: column !important; align-items: flex-start !important; gap: 8px !important; }
       /* Sticky elements: less sticky offset */
-      .sticky { top: 56px !important; }
+      .sticky:not(.top-0) { top: 56px !important; }
       /* Inputs and selects: full width */
       input, select, textarea { max-width: 100% !important; }
       /* Badges: smaller */

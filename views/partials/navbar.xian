@@ -1,28 +1,5 @@
 <div id="sidebar-overlay" onclick="toggleMobileSidebar()" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-40 hidden transition-opacity"></div>
 
-<div class="w-full" style="background:linear-gradient(140deg,#060e22 0%,#0f2156 35%,#1a4db5 70%,#2563eb 100%);border-bottom:1px solid rgba(255,255,255,0.08)">
-  <div class="max-w-6xl mx-auto flex items-center justify-center gap-3 sm:gap-6 py-3 sm:py-4 flex-wrap">
-    <div class="flex flex-col items-center gap-1.5">
-      <div class="w-10 h-10 sm:w-14 sm:h-14 rounded-full overflow-hidden shadow-xl" style="border:2px solid rgba(255,255,255,0.3)">
-        <img src="/minsu-logo.png" alt="Mindoro State University" class="w-full h-full object-cover" style="transform:scale(1.1);transform-origin:center"/>
-      </div>
-      <span class="text-[7px] sm:text-[8px] font-bold uppercase tracking-wider text-center" style="color:rgba(255,255,255,0.75);letter-spacing:0.12em">Mindoro<br/>State Univ.</span>
-    </div>
-    <div class="flex flex-col items-center gap-1.5">
-      <div class="w-10 h-10 sm:w-14 sm:h-14 rounded-full overflow-hidden shadow-xl" style="border:2px solid rgba(255,255,255,0.3)">
-        <img src="/scoresync-logo.png?v=4" alt="ScoreSync" class="w-full h-full object-cover" style="transform:scale(1.1);transform-origin:center"/>
-      </div>
-      <span class="text-[7px] sm:text-[9px] font-extrabold uppercase tracking-wider" style="color:rgba(255,255,255,0.9);letter-spacing:0.12em">ScoreSync</span>
-    </div>
-    <div class="flex flex-col items-center gap-1.5">
-      <div class="w-10 h-10 sm:w-14 sm:h-14 rounded-full overflow-hidden shadow-xl" style="border:2px solid rgba(255,255,255,0.3)">
-        <img src="/mansalay-logo.png?v=2" alt="Bayan ng Mansalay" class="w-full h-full object-cover" style="transform:scale(1.1);transform-origin:center"/>
-      </div>
-      <span class="text-[7px] sm:text-[8px] font-bold uppercase tracking-wider text-center" style="color:rgba(255,255,255,0.75);letter-spacing:0.12em">Bayan ng<br/>Mansalay</span>
-    </div>
-  </div>
-</div>
-
 <nav class="h-14 border-b flex items-center px-3 sm:px-5 gap-2.5 sticky top-0 left-0 right-0 z-30"
   style="background:#0d1424;border-bottom-color:rgba(255,255,255,0.06);box-shadow:0 1px 0 rgba(255,255,255,0.04),0 4px 24px rgba(0,0,0,0.4)">
 
