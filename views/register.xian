@@ -65,13 +65,58 @@
     flex: 1; padding: 10px; border-radius: 11px;
     font-size: 0.85rem; font-weight: 700;
     text-align: center; text-decoration: none;
-    transition: background 60ms ease, color 60ms ease;
-    color: #475569;
+    color: #cbd5e1;
+    transition: background 160ms ease, color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+  }
+  .auth-tab:not(.active):hover {
+    color: #fff;
+    background: rgba(255,255,255,0.08);
+  }
+  .auth-tab:focus-visible, .auth-home-link:focus-visible, .auth-footer a:focus-visible {
+    outline: 2px solid #a5b4fc;
+    outline-offset: 3px;
   }
   .auth-tab.active {
     background: linear-gradient(135deg,#4f46e5,#6366f1);
     color: #fff;
-    box-shadow: 0 3px 12px rgba(79,70,229,0.35);
+    box-shadow: 0 4px 16px rgba(79,70,229,0.4), inset 0 1px 0 rgba(255,255,255,0.2);
+  }
+  .auth-home-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 40px;
+    padding: 0 16px;
+    border: 1px solid rgba(165,180,252,0.24);
+    border-radius: 999px;
+    background: rgba(99,102,241,0.09);
+    color: #c7d2fe;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 160ms ease, border-color 160ms ease, color 160ms ease, transform 160ms ease;
+  }
+  .auth-home-link:hover {
+    background: rgba(99,102,241,0.18);
+    border-color: rgba(165,180,252,0.5);
+    color: #fff;
+    transform: translateY(-1px);
+  }
+  .auth-home-link svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+  }
+  .auth-footer {
+    color: #94a3b8;
+  }
+  .auth-footer a:not(.auth-home-link) {
+    color: #a5b4fc !important;
+    transition: color 160ms ease;
+  }
+  .auth-footer a:not(.auth-home-link):hover {
+    color: #c7d2fe !important;
   }
   .input-icon-wrap { position: relative; }
   .input-icon {
@@ -102,7 +147,7 @@
     <!-- Tab switcher -->
     <div class="auth-tab-wrap">
       <a href="/login" class="auth-tab">Sign In</a>
-      <a href="/register" class="auth-tab active">Register</a>
+      <a href="/register" class="auth-tab active" aria-current="page">Register</a>
     </div>
 
     {{#if error_msg}}
@@ -209,14 +254,14 @@
       </form>
     </div>
 
-    <div class="mt-5 text-center space-y-2">
-      <p class="text-xs" style="color:#374151">
+    <div class="auth-footer mt-5 text-center space-y-3">
+      <p class="text-xs">
         Already have an account?
-        <a href="/login" class="font-bold ml-1" style="color:#818cf8">Sign in</a>
+        <a href="/login" class="font-bold ml-1">Sign in</a>
       </p>
-      <a href="/" class="inline-flex items-center gap-1 text-xs font-medium" style="color:#374151">
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-        Back to Home
+      <a href="/" class="auth-home-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 10 9-7 9 7"/><path d="M5 9v11h14V9"/><path d="M9 20v-6h6v6"/></svg>
+        Back to homepage
       </a>
     </div>
 
@@ -233,7 +278,6 @@ function togglePwd(){
 </script>
 </body>
 </html>
-
 
 
 
