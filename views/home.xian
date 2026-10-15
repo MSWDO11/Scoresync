@@ -4,28 +4,28 @@
 <!-- Navbar -->
 <header class="relative z-50" style="background:rgba(10,15,30,0.97);border-bottom:1px solid rgba(255,255,255,0.06);box-shadow:0 4px 24px rgba(0,0,0,0.28)">
   <div class="max-w-[1280px] mx-auto px-3 sm:px-6">
-    <div class="flex items-center h-16 px-1 sm:px-2">
-      <div class="w-[28%] min-w-[180px] flex items-center justify-start">
-        <a href="/" class="flex items-center gap-3 flex-shrink-0">
-          <div class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 shadow-lg" style="border:2px solid rgba(255,255,255,0.2)">
+    <div class="flex items-center justify-between h-16 gap-2 px-1 sm:px-2">
+      <div class="md:w-[28%] md:min-w-[180px] flex items-center justify-start flex-shrink-0">
+        <a href="/" class="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+          <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-full overflow-hidden flex-shrink-0 shadow-lg" style="border:2px solid rgba(255,255,255,0.2)">
             <img src="/scoresync-logo.png" alt="ScoreSync" class="w-full h-full object-cover" style="object-position:center center;transform:scale(1.35);transform-origin:center center"/>
           </div>
-          <span class="font-black text-[16px] tracking-tight text-white sm:text-[18px]">ScoreSync</span>
+          <span class="font-black text-[15px] sm:text-[18px] tracking-tight text-white">ScoreSync</span>
         </a>
       </div>
 
-      <div class="flex-1 flex items-center justify-center">
+      <div class="hidden md:flex flex-1 items-center justify-center">
         <nav class="flex items-center gap-8 text-sm font-medium" style="color:#dbe7ff">
           <a href="#features" class="transition hover:text-white">Features</a>
           <a href="#how" class="transition hover:text-white">How it works</a>
         </nav>
       </div>
 
-      <div class="w-[28%] min-w-[200px] flex items-center justify-end gap-3">
-        <a href="/login" class="inline-flex items-center justify-center px-5 py-2.5 rounded-xl text-sm font-bold transition"
-          style="color:#e2e8f0;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.08);min-width:110px">Sign In</a>
-        <a href="/register" class="inline-flex items-center justify-center px-5 py-2.5 rounded-xl text-sm font-extrabold text-white transition"
-          style="background:linear-gradient(135deg,#1d4ed8,#4f46e5);box-shadow:0 4px 12px rgba(37,99,235,0.35);min-width:120px">Get Started</a>
+      <div class="md:w-[28%] md:min-w-[200px] flex items-center justify-end gap-1.5 sm:gap-3 flex-shrink-0">
+        <a href="/login" class="inline-flex items-center justify-center px-2.5 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition md:min-w-[110px]"
+          style="color:#e2e8f0;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.08)">Sign In</a>
+        <a href="/register" class="inline-flex items-center justify-center px-2.5 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold text-white transition md:min-w-[120px]"
+          style="background:linear-gradient(135deg,#1d4ed8,#4f46e5);box-shadow:0 4px 12px rgba(37,99,235,0.35)">Get Started</a>
       </div>
     </div>
   </div>
