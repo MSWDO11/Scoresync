@@ -36,6 +36,9 @@
     .home-hero-actions { justify-content: center; }
     .home-preview { max-width: 480px; margin-left: auto; margin-right: auto; text-align: left; }
   }
+  @media (max-width: 380px) {
+    .home-hero-title { font-size: clamp(1.75rem, 9vw, 2.25rem) !important; }
+  }
   @media (prefers-reduced-motion: reduce) {
     .home-feature-card { transition: none; }
     .home-feature-card:hover { transform: none; }
@@ -82,10 +85,10 @@
           <span class="w-1.5 h-1.5 rounded-full" style="background:#60a5fa;box-shadow:0 0 10px #60a5fa"></span>
           Competition management, made clear
         </div>
-        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black leading-[1.08] tracking-tight mb-6">
+        <h1 class="home-hero-title text-4xl sm:text-5xl lg:text-6xl font-black leading-[1.08] tracking-tight mb-6">
           Every score.<br/>
           <span style="color:#93c5fd">Every moment.</span><br/>
-          <span style="color:#f8fafc">In sync.</span>
+          <span style="color:#f8fafc">ScoreSync.</span>
         </h1>
         <p class="text-base sm:text-lg max-w-xl mb-8 leading-relaxed" style="color:#b7c5da">
           Run competitions with confident scoring, transparent tabulation, and results your audience can trust.
