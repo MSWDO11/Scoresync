@@ -37,7 +37,7 @@
       </div>
     </div>
     <!-- Action toolbar -->
-    <div class="px-4 py-3 flex flex-wrap items-center gap-2 {{#if (eq event.status 'completed')}}justify-center{{/if}}" style="border-top:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.03);position:relative;overflow:visible;z-index:20">
+    <div class="px-4 py-3 flex flex-wrap items-center gap-2" style="border-top:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.03);position:relative;overflow:visible;z-index:20">
       {{#if isAdmin}}
 
       <!-- Primary actions — always visible -->
@@ -60,7 +60,7 @@
       </form>
       {{/if}}
       {{#if (eq event.status 'completed')}}
-      <form method="POST" action="/events/{{event.id}}/status" class="inline">
+      <form method="POST" action="/events/{{event.id}}/status" class="flex items-center">
         <input type="hidden" name="_csrf" value="{{csrfToken}}">
         <input type="hidden" name="status" value="ongoing">
         <button type="submit" class="btn-sm btn-sm-gray flex items-center gap-1.5" style="min-height:44px;padding:8px 12px">
