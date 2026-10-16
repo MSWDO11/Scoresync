@@ -37,11 +37,10 @@
           <div class="text-[10px] font-bold uppercase tracking-wider mt-0.5" style="color:rgba(196,181,253,0.7)">Events</div>
         </div>
         <div class="rounded-2xl px-5 py-4 text-center min-w-[90px]" style="background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.2)">
-          {{#each recentEvents}}{{#if (eq status 'ongoing')}}<div class="text-2xl font-black" style="color:#6ee7b7">{{/if}}{{/each}}
           <div class="text-2xl font-black" style="color:#6ee7b7">
-            {{#each recentEvents}}{{#if (eq status 'ongoing')}}✓{{/if}}{{/each}}
+            {{readyEventCount}}
           </div>
-          <div class="text-[10px] font-bold uppercase tracking-wider mt-0.5" style="color:rgba(110,231,183,0.7)">Active</div>
+          <div class="text-[10px] font-bold uppercase tracking-wider mt-0.5" style="color:rgba(110,231,183,0.7)">Ready to score</div>
         </div>
       </div>
     </div>
@@ -70,15 +69,46 @@
   <div class="space-y-4 animate-fadeup-2">
     <div class="flex items-center justify-between px-1">
       <h2 class="font-extrabold text-base" style="color:#e2e8f0">Events Available for Scoring</h2>
-      <span class="text-xs font-bold" style="color:#64748b">{{recentEvents.length}} event(s)</span>
+      <span id="judge-event-count" class="text-xs font-bold" style="color:#64748b" aria-live="polite">{{recentEvents.length}} event(s)</span>
     </div>
 
     {{#if recentEvents.length}}
-    <div class="space-y-3">
+    <div class="rounded-2xl p-3 sm:p-4 space-y-3" style="background:#111827;border:1px solid rgba(255,255,255,0.07)">
+      <div class="flex flex-col sm:flex-row gap-3">
+        <label class="relative flex-1">
+          <span class="sr-only">Search events</span>
+          <svg class="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input id="judge-event-search" type="search" autocomplete="off" placeholder="Search by event, venue, or type"
+            class="w-full rounded-xl pl-10 pr-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-indigo-500"
+            style="background:#0a0f1e;border:1px solid rgba(255,255,255,0.1);color:#e2e8f0">
+        </label>
+        <div class="flex gap-2 overflow-x-auto pb-1" role="group" aria-label="Filter events">
+          <button type="button" data-event-filter="all" aria-pressed="true" class="judge-event-filter whitespace-nowrap rounded-xl px-3 py-2 text-xs font-bold transition"
+            style="background:rgba(99,102,241,0.2);border:1px solid rgba(99,102,241,0.4);color:#c7d2fe">
+            All <span data-filter-count="all">{{recentEvents.length}}</span>
+          </button>
+          <button type="button" data-event-filter="ready" aria-pressed="false" class="judge-event-filter whitespace-nowrap rounded-xl px-3 py-2 text-xs font-bold transition"
+            style="background:transparent;border:1px solid rgba(255,255,255,0.1);color:#94a3b8">
+            Ready to score <span data-filter-count="ready">{{readyEventCount}}</span>
+          </button>
+          <button type="button" data-event-filter="ongoing" aria-pressed="false" class="judge-event-filter whitespace-nowrap rounded-xl px-3 py-2 text-xs font-bold transition"
+            style="background:transparent;border:1px solid rgba(255,255,255,0.1);color:#94a3b8">
+            Ongoing <span data-filter-count="ongoing">{{ongoingCount}}</span>
+          </button>
+          <button type="button" data-event-filter="completed" aria-pressed="false" class="judge-event-filter whitespace-nowrap rounded-xl px-3 py-2 text-xs font-bold transition"
+            style="background:transparent;border:1px solid rgba(255,255,255,0.1);color:#94a3b8">
+            Completed <span data-filter-count="completed">{{completedEventCount}}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="judge-event-list" class="space-y-3">
       {{#each recentEvents}}
 
       <div class="rounded-2xl overflow-hidden transition-all duration-300
         {{#if (eq status 'ongoing')}}hover:-translate-y-0.5 hover:shadow-xl{{/if}}"
+        data-judge-event data-status="{{status}}" data-assigned="{{isAssigned}}"
         style="background:#111827;border:1px solid {{#if (eq status 'ongoing')}}rgba(16,185,129,0.3){{else}}{{#if (eq status 'completed')}}rgba(59,130,246,0.2){{else}}rgba(255,255,255,0.07){{/if}}{{/if}};box-shadow:{{#if (eq status 'ongoing')}}0 4px 24px rgba(16,185,129,0.1){{else}}none{{/if}}">
 
         <div class="px-5 sm:px-6 py-4 flex flex-col sm:flex-row sm:items-center gap-4">
@@ -153,7 +183,7 @@
               class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-extrabold text-sm text-white transition active:scale-95 shadow-lg"
               style="background:linear-gradient(135deg,#4f46e5,#7c3aed);box-shadow:0 4px 16px rgba(99,102,241,0.4)">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-              Score Now
+              {{#if (gte completionPct 100)}}Review Scores{{else}}{{#if myScoreCount}}Continue Scoring{{else}}Score Now{{/if}}{{/if}}
             </a>
             {{else}}
             <span class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-extrabold text-xs cursor-not-allowed"
@@ -184,6 +214,13 @@
       </div>
 
       {{/each}}
+      <div id="judge-no-matches" class="hidden rounded-2xl py-10 text-center px-4"
+        style="background:#111827;border:1px solid rgba(255,255,255,0.06)" role="status">
+        <h3 class="font-bold text-sm mb-1" style="color:#e2e8f0">No matching events</h3>
+        <p class="text-xs mb-4" style="color:#64748b">Try another search or show all events.</p>
+        <button type="button" id="judge-clear-filters" class="rounded-xl px-4 py-2 text-xs font-bold"
+          style="background:rgba(99,102,241,0.2);color:#c7d2fe">Show all events</button>
+      </div>
     </div>
 
     {{else}}
@@ -236,5 +273,64 @@
 </main>
 </div>
 {{> footer }}
+<script>
+  (() => {
+    const cards = Array.from(document.querySelectorAll("[data-judge-event]"));
+    const search = document.getElementById("judge-event-search");
+    const filters = Array.from(document.querySelectorAll(".judge-event-filter"));
+    const count = document.getElementById("judge-event-count");
+    const noMatches = document.getElementById("judge-no-matches");
+    const clearFilters = document.getElementById("judge-clear-filters");
+    let activeFilter = "all";
+
+    if (!cards.length || !search || !count || !noMatches) return;
+
+    const getStatusCount = (status) => cards.filter((card) => card.dataset.status === status).length;
+    document.querySelector('[data-filter-count="ongoing"]').textContent = getStatusCount("ongoing");
+    document.querySelector('[data-filter-count="completed"]').textContent = getStatusCount("completed");
+
+    const updateEvents = () => {
+      const term = search.value.trim().toLocaleLowerCase();
+      let visibleCount = 0;
+
+      cards.forEach((card) => {
+        const status = card.dataset.status;
+        const isAssigned = card.dataset.assigned === "true";
+        const matchesFilter = activeFilter === "all"
+          || (activeFilter === "ready" && status === "ongoing" && isAssigned)
+          || status === activeFilter;
+        const matchesSearch = card.textContent.toLocaleLowerCase().includes(term);
+        const visible = matchesFilter && matchesSearch;
+        card.hidden = !visible;
+        if (visible) visibleCount += 1;
+      });
+
+      count.textContent = `${visibleCount} of ${cards.length} event(s)`;
+      noMatches.classList.toggle("hidden", visibleCount !== 0);
+    };
+
+    filters.forEach((button) => {
+      button.addEventListener("click", () => {
+        activeFilter = button.dataset.eventFilter;
+        filters.forEach((filter) => {
+          const selected = filter === button;
+          filter.setAttribute("aria-pressed", String(selected));
+          filter.style.background = selected ? "rgba(99,102,241,0.2)" : "transparent";
+          filter.style.borderColor = selected ? "rgba(99,102,241,0.4)" : "rgba(255,255,255,0.1)";
+          filter.style.color = selected ? "#c7d2fe" : "#94a3b8";
+        });
+        updateEvents();
+      });
+    });
+
+    search.addEventListener("input", updateEvents);
+    clearFilters.addEventListener("click", () => {
+      activeFilter = "all";
+      search.value = "";
+      filters[0].click();
+      search.focus();
+    });
+  })();
+</script>
 </body>
 </html>

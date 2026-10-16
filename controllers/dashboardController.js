@@ -11,9 +11,11 @@ export const dashboardPage = async (req, res) => {
   res.setHeader('Pragma', 'no-cache');
   res.setHeader('Expires', '0');
   try {
-    // Load recent events for all roles
-    const q = query(collection(db, "events"), orderBy("createdAt", "desc"), limit(5));
-    const snap = await getDocs(q);
+    // Load all events for judges, but only recent events for other roles.
+    const eventsQuery = role === "judge"
+      ? query(collection(db, "events"), orderBy("createdAt", "desc"))
+      : query(collection(db, "events"), orderBy("createdAt", "desc"), limit(5));
+    const snap = await getDocs(eventsQuery);
     const recentEvents = snap.docs.map(d => ({ id: d.id, ...d.data() }));
 
     // Count totals for admin
@@ -108,7 +110,7 @@ export const dashboardPage = async (req, res) => {
 
     if (role === "admin")     return res.render("dashboard/admin",     viewData);
     if (role === "judge") {
-      // Load contestant + criteria counts per event for richer judge dashboard
+      // Show all events to judges so they can find ongoing scoring assignments.
       const judgeEvents = await Promise.all(
         recentEvents.map(async (ev) => {
           try {
@@ -134,7 +136,16 @@ export const dashboardPage = async (req, res) => {
           } catch (_) { return ev; }
         })
       );
-      return res.render("dashboard/judge", { ...viewData, recentEvents: judgeEvents });
+      const judgeOngoingCount = judgeEvents.filter(ev => ev.status === "ongoing").length;
+      const readyEventCount = judgeEvents.filter(ev => ev.status === "ongoing" && ev.isAssigned).length;
+      const completedEventCount = judgeEvents.filter(ev => ev.status === "completed").length;
+      return res.render("dashboard/judge", {
+        ...viewData,
+        recentEvents: judgeEvents,
+        ongoingCount: judgeOngoingCount,
+        readyEventCount,
+        completedEventCount,
+      });
     }
     if (role === "organizer") return res.render("dashboard/organizer", viewData);
     return res.render("dashboard/encoder", viewData);
