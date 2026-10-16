@@ -9,8 +9,12 @@ export async function applyAutoStatus(eventId, event) {
 
   if (newStatus !== event.status) {
     try {
-      await updateDoc(doc(db, "events", eventId), { status: newStatus });
+      await updateDoc(doc(db, "events", eventId), {
+        status: newStatus,
+        statusManuallySet: false,
+      });
       event.status = newStatus;
+      event.statusManuallySet = false;
     } catch (err) {
       console.error("applyAutoStatus error:", err);
       throw err;

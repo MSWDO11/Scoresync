@@ -41,6 +41,22 @@ test("does not automatically change cancelled or manually overridden events", ()
     getScheduledEventStatus({ date: eventDate, time: "15:00", status: "completed", statusManuallySet: true }, now),
     "completed"
   );
+  assert.equal(
+    getScheduledEventStatus({ date: eventDate, time: "15:00", status: "ongoing", statusManuallySet: true }, now),
+    "ongoing"
+  );
+});
+
+test("starts upcoming events on schedule even if their status was manually set", () => {
+  assert.equal(
+    getScheduledEventStatus({
+      date: eventDate,
+      time: "15:00",
+      status: "upcoming",
+      statusManuallySet: true,
+    }, new Date("2026-10-16T07:00:00Z")),
+    "ongoing"
+  );
 });
 
 test("leaves status unchanged for invalid schedule dates", () => {
