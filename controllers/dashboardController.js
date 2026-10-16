@@ -111,6 +111,11 @@ export const dashboardPage = async (req, res) => {
     if (role === "admin")     return res.render("dashboard/admin",     viewData);
     if (role === "judge") {
       // Show all events to judges so they can find ongoing scoring assignments.
+      await Promise.all(
+        recentEvents
+          .filter(ev => ev.date && ev.status !== "cancelled")
+          .map(ev => applyAutoStatus(ev.id, ev))
+      );
       const judgeEvents = await Promise.all(
         recentEvents.map(async (ev) => {
           try {

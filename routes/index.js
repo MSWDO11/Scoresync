@@ -4,6 +4,11 @@ const router = express.Router();
 import { requireAuth, requireRole } from "../middleware/auth.js";
 import { loginRateLimit } from "../middleware/rateLimit.js";
 
+// ─── Scheduled jobs (authenticated with CRON_SECRET) ─────────────────────────
+import { updateScheduledEventStatuses } from "../controllers/cronController.js";
+
+router.get("/api/cron/event-status", updateScheduledEventStatuses);
+
 // ─── Public routes ────────────────────────────────────────────────────────────
 import { homePage } from "../controllers/homeController.js";
 import {

@@ -237,9 +237,14 @@ export const updateEvent = async (req, res) => {
       return res.redirect("/events");
     }
     const existingData = existingEvent.data();
+    const scheduleChanged = date !== existingData.date
+      || time !== existingData.time
+      || (endTime || "") !== (existingData.endTime || "");
     await updateDoc(doc(db, EVENTS, req.params.id), {
       name, description, date, time, venue, type, status,
-      statusManuallySet: existingData.statusManuallySet || status !== existingData.status,
+      statusManuallySet: scheduleChanged
+        ? false
+        : existingData.statusManuallySet || status !== existingData.status,
       endTime:              endTime              || "",
       otherType:            otherType            || "",
       organizer:            organizer            || "",
