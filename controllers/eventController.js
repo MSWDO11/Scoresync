@@ -230,8 +230,16 @@ export const updateEvent = async (req, res) => {
     otherType, coverPhoto,
   } = req.body;
   try {
+    const eventRef = doc(db, EVENTS, req.params.id);
+    const existingEvent = await getDoc(eventRef);
+    if (!existingEvent.exists()) {
+      req.flash("error_msg", "Event not found.");
+      return res.redirect("/events");
+    }
+    const existingData = existingEvent.data();
     await updateDoc(doc(db, EVENTS, req.params.id), {
       name, description, date, time, venue, type, status,
+      statusManuallySet: existingData.statusManuallySet || status !== existingData.status,
       endTime:              endTime              || "",
       otherType:            otherType            || "",
       organizer:            organizer            || "",
@@ -276,7 +284,7 @@ export const updateEventStatus = async (req, res) => {
       req.flash("error_msg", "Invalid status value.");
       return res.redirect(`/events/${id}`);
     }
-    await updateDoc(doc(db, EVENTS, id), { status });
+    await updateDoc(doc(db, EVENTS, id), { status, statusManuallySet: true });
     const statusLabels = {
       ongoing:   "started (Ongoing)",
       completed: "manually ended (Completed)",

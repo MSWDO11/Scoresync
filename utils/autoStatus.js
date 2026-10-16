@@ -4,7 +4,7 @@ import { db } from "../models/firebaseConfig.js";
 import { doc, updateDoc } from "firebase/firestore";
 
 export async function applyAutoStatus(eventId, event) {
-  if (!event.date || event.status === 'cancelled') return event.status;
+  if (!event.date || event.status === 'cancelled' || event.statusManuallySet) return event.status;
 
   const now = new Date();
 
