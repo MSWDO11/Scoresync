@@ -898,47 +898,6 @@ if (window.location.hash === '#finance') {
 </script>
 
 <script>
-/* ── Auto-status reload: fires when start or end time arrives ── */
-(function() {
-  const eventDate    = "{{event.date}}";
-  const eventTime    = "{{event.time}}";
-  const eventEndTime = "{{event.endTime}}";
-  const eventStatus  = "{{event.status}}";
-  if (!eventDate) return;
-
-  const now = new Date();
-
-  // Parse as PHT (UTC+8) to match server-side logic
-  function parsePHT(date, time) {
-    if (!date) return null;
-    const t = time || '00:00';
-    const dt = new Date(date + 'T' + t + ':00+08:00');
-    return isNaN(dt) ? null : dt;
-  }
-
-  const startDt = parsePHT(eventDate, eventTime);
-  const endDt   = eventEndTime ? parsePHT(eventDate, eventEndTime) : null;
-
-  function scheduleReload(dt, label) {
-    if (!dt) return;
-    const ms = dt - now;
-    if (ms <= 0) {
-      // Already passed — reload immediately so server updates status
-      window.location.reload();
-    } else if (ms < 24 * 3600 * 1000) {
-      console.log('[ScoreSync] Auto-reload scheduled at ' + label + ' in ' + Math.round(ms / 1000) + 's');
-      setTimeout(() => window.location.reload(), ms);
-    }
-  }
-
-  if (eventStatus === 'upcoming') {
-    scheduleReload(startDt, 'start time');
-  }
-  if (eventStatus === 'upcoming' || eventStatus === 'ongoing') {
-    scheduleReload(endDt, 'end time');
-  }
-})();
-
 /* ── Timer-end finance auto-record ── */
 window._timerEndRecorded = false;
 window._onTimerEventEnd = function() {

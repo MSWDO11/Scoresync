@@ -4,6 +4,7 @@ import {
   setDoc, updateDoc, addDoc, serverTimestamp,
 } from "firebase/firestore";
 import { sanitizeText } from "../utils/sanitize.js";
+import { applyAutoStatus } from "../utils/autoStatus.js";
 
 const CRITERIA_COLORS = [
   "#2563eb","#7c3aed","#059669","#dc2626",
@@ -25,6 +26,10 @@ export const scoringPage = async (req, res) => {
     if (!eSnap.exists()) return res.redirect("/events");
 
     const ev = { id: eSnap.id, ...eSnap.data() };
+
+    if (req.session.userRole === 'judge') {
+      await applyAutoStatus(eventId, ev);
+    }
 
     // Block scoring when event is not ongoing (judges only)
     if (req.session.userRole === 'judge' && ev.status !== 'ongoing') {
@@ -117,12 +122,22 @@ export const submitScores = async (req, res) => {
   try {
     if (req.session.userRole === 'judge') {
       const eSnap = await getDoc(doc(db, "events", eventId));
-      if (eSnap.exists() && eSnap.data().status !== 'ongoing') {
+      if (!eSnap.exists()) {
+        req.flash("error_msg", "Event not found.");
+        return res.redirect("/dashboard");
+      }
+      const event = { id: eSnap.id, ...eSnap.data() };
+      await applyAutoStatus(eventId, event);
+      if (event.status !== 'ongoing') {
         req.flash("error_msg", "Scoring is only allowed while the event is ongoing.");
         return res.redirect("/dashboard");
       }
     }
-  } catch (_) {}
+  } catch (err) {
+    console.error("Could not verify event status before score submission:", err);
+    req.flash("error_msg", "Could not verify the event status. Please try again.");
+    return res.redirect(`/events/${eventId}/scoring`);
+  }
 
   try {
     // Block scoring if locked
