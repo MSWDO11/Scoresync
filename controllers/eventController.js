@@ -133,6 +133,8 @@ export const showEvent = async (req, res) => {
     ev.isPaymentType   = PAYMENT_TYPES.includes(ev.type);
     ev.isPrizeType     = PRIZE_TYPES.includes(ev.type);
     ev.canManageFinance = ['admin','organizer'].includes(req.session.userRole);
+    ev.canManageVoting = req.session.userRole === "admin" ||
+      (req.session.userRole === "organizer" && ev.createdBy === req.session.userId);
 
     await applyAutoStatus(req.params.id, ev);
 

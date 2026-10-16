@@ -6,14 +6,27 @@ import fs from "fs";
 import hbs from "hbs";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
+import { randomBytes } from "crypto";
 import { injectUser } from "./middleware/auth.js";
-import { csrfMiddleware, csrfProtect } from "./middleware/csrf.js";
+import { csrfMiddleware } from "./middleware/csrf.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname  = dirname(__filename);
 
 const app  = express();
 const PORT = process.env.PORT || 3000;
+const sessionSecret = process.env.SESSION_SECRET;
+if (process.env.NODE_ENV === "production" && (!sessionSecret || sessionSecret.length < 32)) {
+  throw new Error("SESSION_SECRET must contain at least 32 characters in production.");
+}
+const sessionSigningKey = sessionSecret || randomBytes(48).toString("hex");
+const configuredProxyHops = Number.parseInt(process.env.TRUST_PROXY_HOPS || "1", 10);
+app.set(
+  "trust proxy",
+  Number.isInteger(configuredProxyHops) && configuredProxyHops >= 0
+    ? configuredProxyHops
+    : 1
+);
 
 // ─── Body / Static ────────────────────────────────────────────────────────────
 app.use(express.json({ limit: '5mb' }));
@@ -37,8 +50,7 @@ app.use(express.static(path.join(process.cwd(), "public"), staticOpts));
 // ─── Session (cookie-based — survives Vercel cold starts, no server store) ───
 app.use(cookieSession({
   name:     "ss_sid",
-  keys:     [process.env.SESSION_SECRET || "change-this-in-production",
-             "scoresync-fallback-key-9x7z"],
+  keys:     [sessionSigningKey],
   maxAge:   1000 * 60 * 60 * 8, // 8 hours
   secure:   false,   // Vercel handles HTTPS at edge — cookie must work over proxy
   sameSite: "lax",
@@ -72,7 +84,6 @@ app.use((req, res, next) => {
 });
 app.use(injectUser);
 app.use(csrfMiddleware);  // generates + exposes csrfToken to all views
-app.use(csrfProtect);     // validates token on every POST/PUT/DELETE
 
 // ─── Handlebars helpers ───────────────────────────────────────────────────────
 hbs.registerHelper("eq",  (a, b) => a === b);
@@ -100,7 +111,6 @@ hbs.registerHelper("themeGradient", (theme) =>
 // Criteria colour by index (used in scoring pages)
 const CRITERIA_COLORS = ["#2563eb","#7c3aed","#059669","#dc2626","#d97706","#0891b2","#be185d","#65a30d"];
 hbs.registerHelper("criteriaColor", (idx) => CRITERIA_COLORS[Number(idx) % CRITERIA_COLORS.length]);
-hbs.registerHelper("lookup", (obj, key) => (obj && obj[key] !== undefined) ? obj[key] : 0);
 
 // ─── .xian engine (wraps hbs) ────────────────────────────────────────────────
 app.engine("xian", (filePath, options, callback) => {

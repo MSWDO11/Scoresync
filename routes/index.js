@@ -2,6 +2,7 @@ import express from "express";
 const router = express.Router();
 
 import { requireAuth, requireRole } from "../middleware/auth.js";
+import { csrfProtect } from "../middleware/csrf.js";
 import { loginRateLimit } from "../middleware/rateLimit.js";
 
 // ─── Public routes ────────────────────────────────────────────────────────────
@@ -104,9 +105,9 @@ import {
 } from "../controllers/votingController.js";
 
 router.get( "/events/:eventId/vote",         votingPage);
-router.post("/events/:eventId/vote",         submitVote);
+router.post("/events/:eventId/vote",         csrfProtect, submitVote);
 router.get( "/events/:eventId/vote/results", requireAuth,                                  voteResults);
-router.post("/events/:eventId/vote/toggle",  requireAuth, requireRole("admin","organizer"), toggleVoting);
+router.post("/events/:eventId/vote/toggle",  requireAuth, requireRole("admin","organizer"), csrfProtect, toggleVoting);
 router.get( "/events/:eventId/vote/counts",  voteCounts);
 
 // ─── Scoring (judges can enter scores; all auth can view results) ─────────────

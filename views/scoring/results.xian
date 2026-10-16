@@ -562,6 +562,7 @@
   {{/if}}
 
   <!-- ── People's Choice — Audience Vote ── -->
+  {{#if audienceResultsAvailable}}
   {{#if totalAudienceVotes}}
   <div class="section-card animate-fadeup-2 no-print">
     <div class="section-header">
@@ -573,20 +574,21 @@
       <span class="badge badge-gray text-xs">{{totalAudienceVotes}} votes cast</span>
     </div>
     <div class="px-5 py-4 space-y-3">
-      {{#each ranked}}
+      {{#each audienceRanked}}
       <div class="flex items-center gap-3">
-        <div class="w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-extrabold flex-shrink-0 shadow-sm" style="background:linear-gradient(135deg,#881337,#e11d48)">{{number}}</div>
+        <div class="w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-extrabold flex-shrink-0 shadow-sm" style="background:linear-gradient(135deg,#881337,#e11d48)">{{audienceRank}}</div>
         <div class="flex-1 min-w-0">
           <div class="font-bold text-sm truncate" style="color:#e2e8f0">{{name}}</div>
           <div class="mt-1 h-2 rounded-full overflow-hidden" style="background:rgba(255,255,255,0.08)">
-            <div class="h-full rounded-full transition-all duration-700" style="background:linear-gradient(90deg,#be185d,#f43f5e);width:{{#if ../totalAudienceVotes}}{{audienceVotePct}}%{{else}}0%{{/if}}"></div>
+            <div class="h-full rounded-full transition-all duration-700" style="background:linear-gradient(90deg,#be185d,#f43f5e);width:{{audienceVotePct}}%"></div>
           </div>
         </div>
-        <div class="text-sm font-extrabold flex-shrink-0" style="color:#f43f5e">{{lookup ../votesByContestant id}} votes</div>
+        <div class="text-sm font-extrabold flex-shrink-0" style="color:#f43f5e">{{audienceVoteCount}} votes</div>
       </div>
       {{/each}}
     </div>
   </div>
+  {{/if}}
   {{/if}}
 
   <!-- ── Per-Judge Breakdown ── -->
