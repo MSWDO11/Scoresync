@@ -64,7 +64,7 @@
         <input type="hidden" name="_csrf" value="{{csrfToken}}">
         <input type="hidden" name="status" value="ongoing">
       </form>
-      <button type="submit" form="reopen-event-form" class="btn-sm btn-sm-gray flex items-center gap-1.5" style="min-height:44px;padding:8px 12px">
+      <button type="submit" form="reopen-event-form" class="btn-sm btn-sm-gray flex items-center gap-1.5 relative top-2" style="min-height:44px;padding:8px 12px">
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg> Re-open
       </button>
       {{/if}}
