@@ -60,7 +60,7 @@
       </form>
       {{/if}}
       {{#if (eq event.status 'completed')}}
-      <form method="POST" action="/events/{{event.id}}/status" class="flex items-center">
+      <form method="POST" action="/events/{{event.id}}/status" class="inline-flex items-center shrink-0">
         <input type="hidden" name="_csrf" value="{{csrfToken}}">
         <input type="hidden" name="status" value="ongoing">
         <button type="submit" class="btn-sm btn-sm-gray flex items-center gap-1.5" style="min-height:44px;padding:8px 12px">
