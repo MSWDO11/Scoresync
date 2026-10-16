@@ -37,7 +37,7 @@
           {{else}}
           <span class="badge badge-gray">Voting Closed</span>
           {{/if}}
-          {{#unless votingOpen}}<span class="badge badge-blue">{{totalVotes}} votes cast</span>{{/unless}}
+          <span class="badge badge-blue">{{totalVotes}} votes cast</span>
         </div>
         <h1 class="text-2xl sm:text-3xl font-black text-white tracking-tight leading-tight">{{event.name}}</h1>
         <p class="mt-1 text-sm font-semibold" style="color:rgba(255,255,255,0.7)">
@@ -64,7 +64,7 @@
   {{#if contestants}}
   <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 animate-fadeup-1">
     {{#each contestants}}
-    <div class="card-flat overflow-hidden flex flex-col" data-contestant-id="{{id}}" style="border-radius:16px">
+    <div class="card-flat overflow-hidden flex flex-col" style="border-radius:16px">
 
       <!-- Photo / Placeholder -->
       <div class="relative" style="aspect-ratio:3/4;background:rgba(0,0,0,0.3)">
@@ -91,21 +91,20 @@
           {{/if}}
         </div>
 
-        <!-- Audience tallies are withheld until voting closes -->
-        <div class="vote-result" style="display:{{#if ../audienceResultsAvailable}}block{{else}}none{{/if}}">
-          <div style="height:4px;background:rgba(255,255,255,0.08);border-radius:999px;overflow:hidden">
-            <div id="bar-{{id}}"
-                 style="height:100%;background:#e11d48;border-radius:999px;width:{{voteBarPct}}%;transition:width 0.6s ease">
-            </div>
+        <!-- Vote bar -->
+        <div style="height:4px;background:rgba(255,255,255,0.08);border-radius:999px;overflow:hidden">
+          <div id="bar-{{id}}"
+               style="height:100%;background:#e11d48;border-radius:999px;width:{{voteBarPct}}%;transition:width 0.6s ease">
           </div>
-          <span id="count-{{id}}" class="text-xs font-semibold" style="color:#94a3b8">
-            {{voteCount}} vote{{#unless (eq voteCount 1)}}s{{/unless}}
-          </span>
         </div>
+
+        <!-- Vote count -->
+        <span id="count-{{id}}" class="text-xs font-semibold" style="color:#94a3b8">
+          {{voteCount}} vote{{#unless (eq voteCount 1)}}s{{/unless}}
+        </span>
 
         <!-- Vote button -->
         <form method="POST" action="/events/{{../event.id}}/vote" style="margin-top:auto">
-          <input type="hidden" name="_csrf" value="{{../csrfToken}}">
           <input type="hidden" name="contestantId" value="{{id}}">
           <button type="submit"
                   class="vote-btn btn-primary w-full text-sm"
@@ -131,7 +130,6 @@
       <div class="font-bold text-sm" style="color:#e2e8f0">Share this voting page</div>
       <div class="text-xs mt-1 break-all" style="color:#64748b" id="vote-url"></div>
     </div>
-    <p id="vote-refresh-status" class="text-xs" role="status" aria-live="polite"></p>
     <button type="button"
             onclick="showQR()"
             class="btn-secondary flex-shrink-0"
@@ -149,20 +147,13 @@
   <script>
   (function () {
     // Show current URL under QR section
-    var voteUrl = window.location.origin + window.location.pathname;
     var urlEl = document.getElementById('vote-url');
-    if (urlEl) urlEl.textContent = voteUrl;
+    if (urlEl) urlEl.textContent = window.location.href;
 
     var STORAGE_KEY = 'ss_voted_' + '{{event.id}}';
 
     // If already voted, disable buttons + show banner
-    var alreadyVoted = false;
-    try {
-      alreadyVoted = localStorage.getItem(STORAGE_KEY) === '1';
-    } catch (error) {
-      console.warn('Unable to read the local voting hint.', error);
-    }
-    if (alreadyVoted) {
+    if (localStorage.getItem(STORAGE_KEY)) {
       document.getElementById('voted-banner').style.display = '';
       document.querySelectorAll('.vote-btn').forEach(function (b) {
         b.disabled = true;
@@ -171,118 +162,59 @@
     }
 
     // After success flash, mark voted in localStorage
-    var successEl = document.querySelector('.alert-success:not(#voted-banner)');
+    var successEl = document.querySelector('.alert-success');
     if (successEl && successEl.textContent.indexOf('vote has been cast') !== -1) {
-      try {
-        localStorage.setItem(STORAGE_KEY, '1');
-      } catch (error) {
-        console.warn('Unable to save the local voting hint.', error);
-      }
+      localStorage.setItem(STORAGE_KEY, '1');
       document.querySelectorAll('.vote-btn').forEach(function (b) {
         b.disabled = true;
         b.textContent = '✓ Voted';
       });
     }
 
-    // Results remain hidden until the server confirms voting has closed.
+    // Live vote count refresh every 10 seconds
     var EVENT_ID = '{{event.id}}';
     function refreshCounts() {
       fetch('/events/' + EVENT_ID + '/vote/counts')
-        .then(function (r) {
-          if (!r.ok) throw new Error('Vote-results request failed: ' + r.status);
-          return r.json();
-        })
+        .then(function (r) { return r.json(); })
         .then(function (data) {
-          if (!data.resultsAvailable) return;
-          var votes = data.votes || {};
+          var votes  = data.votes  || {};
+          var total  = data.total  || 0;
           var vals   = Object.values(votes).map(Number);
           var maxVal = vals.length ? Math.max.apply(null, vals) : 1;
           if (maxVal < 1) maxVal = 1;
-          document.querySelectorAll('[data-contestant-id]').forEach(function (card) {
-            var cid = card.dataset.contestantId;
-            var count = Number(votes[cid] || 0);
+          Object.keys(votes).forEach(function (cid) {
             var countEl = document.getElementById('count-' + cid);
             var barEl   = document.getElementById('bar-'   + cid);
-            if (countEl) countEl.textContent = count + (count === 1 ? ' vote' : ' votes');
-            if (barEl) barEl.style.width = Math.round((count / maxVal) * 100) + '%';
-            var result = card.querySelector('.vote-result');
-            if (result) result.style.display = '';
+            if (countEl) countEl.textContent = votes[cid] + (votes[cid] === 1 ? ' vote' : ' votes');
+            if (barEl)   barEl.style.width   = Math.round((votes[cid] / maxVal) * 100) + '%';
           });
-          var status = document.getElementById('vote-refresh-status');
-          if (status) status.textContent = 'Final audience results are available.';
         })
-        .catch(function (error) {
-          console.error('Unable to refresh audience vote results.', error);
-          var status = document.getElementById('vote-refresh-status');
-          if (status) status.textContent = 'Vote results could not be refreshed. Retrying soon.';
-        });
+        .catch(function () {});
     }
 
-    var refreshTimer;
-    function startRefreshing() {
-      if (refreshTimer) return;
+    document.addEventListener('DOMContentLoaded', function () {
       refreshCounts();
-      refreshTimer = setInterval(refreshCounts, 10000);
-    }
-    document.addEventListener('visibilitychange', function () {
-      if (document.hidden) {
-        clearInterval(refreshTimer);
-        refreshTimer = null;
-      } else {
-        startRefreshing();
-      }
+      setInterval(refreshCounts, 10000);
     });
-    startRefreshing();
+    // Also run immediately in case DOMContentLoaded already fired
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+      refreshCounts();
+    }
   })();
 
   // ── QR overlay ──
-  var qrState = 'idle';
   function showQR() {
-    var overlay = document.getElementById('qr-overlay');
-    var errorEl = document.getElementById('qr-error');
-    overlay.style.display = 'flex';
-    errorEl.textContent = '';
-    if (qrState === 'loading') return;
-    function renderQR() {
-      qrState = 'loading';
-      try {
-        var container = document.getElementById('qr-container');
-        container.textContent = '';
-        new window.QRCode(container, {
-          text: window.location.origin + window.location.pathname,
-          width: 280,
-          height: 280,
-          colorDark: '#1e3a8a',
-          colorLight: '#ffffff',
-          correctLevel: window.QRCode.CorrectLevel.H
-        });
-        qrState = 'loaded';
-      } catch (error) {
-        qrState = 'idle';
-        errorEl.textContent = 'QR code could not be generated. Try again.';
-        console.error('QR generation failed.', error);
-      }
-    }
-    if (window.QRCode) {
-      renderQR();
-    } else {
-      qrState = 'loading';
+    document.getElementById('qr-overlay').style.display = 'flex';
+    if (!window._qrLoaded) {
       var s = document.createElement('script');
-      s.src = 'https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js';
-      s.crossOrigin = 'anonymous';
-      s.integrity = 'sha256-xUHvBjJ4hahBW8qN9gceFBibSFUzbe9PNttUvehITzY=';
+      s.src = 'https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js';
       s.onload = function () {
-        qrState = 'idle';
-        if (window.QRCode) renderQR();
-        else {
-          errorEl.textContent = 'QR code library loaded incorrectly. Try again.';
-          console.error('QR library loaded without exposing its API.');
-        }
-      };
-      s.onerror = function () {
-        qrState = 'idle';
-        errorEl.textContent = 'QR code could not load. Check your connection and try again.';
-        console.error('QR library failed to load.');
+        window._qrLoaded = true;
+        QRCode.toCanvas(
+          document.getElementById('qr-canvas'),
+          window.location.href,
+          { width: 280, color: { dark: '#1e3a8a', light: '#ffffff' } }
+        );
       };
       document.head.appendChild(s);
     }
@@ -307,9 +239,8 @@
               padding:28px 24px;max-width:calc(100vw - 32px);width:100%;text-align:center;
               box-shadow:0 24px 64px rgba(0,0,0,0.7)">
     <p class="font-bold text-sm mb-4" style="color:#e2e8f0">Scan to vote</p>
-    <div id="qr-container" style="display:flex;justify-content:center;min-height:280px"></div>
+    <canvas id="qr-canvas" style="display:block;margin:0 auto;border-radius:10px"></canvas>
     <p class="text-xs mt-3 break-all" style="color:#64748b" id="qr-url-label"></p>
-    <p id="qr-error" class="text-sm mt-2" style="color:#fca5a5" role="alert"></p>
     <button type="button"
             onclick="hideQR()"
             class="btn-secondary mt-4"
@@ -324,7 +255,7 @@
 // Populate QR overlay URL label
 (function () {
   var el = document.getElementById('qr-url-label');
-  if (el) el.textContent = window.location.origin + window.location.pathname;
+  if (el) el.textContent = window.location.href;
 })();
 </script>
 

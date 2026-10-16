@@ -4,7 +4,6 @@ import {
   setDoc, updateDoc, addDoc, serverTimestamp,
 } from "firebase/firestore";
 import { sanitizeText } from "../utils/sanitize.js";
-import { buildAudienceRanking, countVotesByContestant } from "../utils/audienceVoting.js";
 
 const CRITERIA_COLORS = [
   "#2563eb","#7c3aed","#059669","#dc2626",
@@ -266,11 +265,12 @@ function applyTieBreaking(ranked, criteria) {
 export const resultsPage = async (req, res) => {
   const { eventId } = req.params;
   try {
-    const [eSnap, cSnap, crSnap, sSnap] = await Promise.all([
+    const [eSnap, cSnap, crSnap, sSnap, vSnap] = await Promise.all([
       getDoc(doc(db, "events", eventId)),
       getDocs(collection(db, "events", eventId, "contestants")),
       getDocs(collection(db, "events", eventId, "criteria")),
       getDocs(collection(db, "events", eventId, "scores")),
+      getDocs(collection(db, "events", eventId, "votes")),
     ]);
 
     if (!eSnap.exists()) return res.redirect("/events");
@@ -284,24 +284,12 @@ export const resultsPage = async (req, res) => {
     }));
     const allScores = sSnap.docs.map(d => d.data());
 
-    let audienceResultsAvailable = ev.votingOpen !== true;
-    let allVotes = [];
-    if (audienceResultsAvailable) {
-      allVotes = (await getDocs(collection(db, "events", eventId, "votes")))
-        .docs.map(d => d.data());
-      const latestEventSnap = await getDoc(doc(db, "events", eventId));
-      if (!latestEventSnap.exists()) return res.redirect("/events");
-      if (latestEventSnap.data().votingOpen === true) {
-        audienceResultsAvailable = false;
-        allVotes = [];
-      }
-    }
-    const votesByContestant = countVotesByContestant(
-      allVotes,
-      contestants.map(contestant => contestant.id)
-    );
-    const totalAudienceVotes = Object.values(votesByContestant)
-      .reduce((total, count) => total + count, 0);
+    const allVotes = vSnap.docs.map(d => d.data());
+    const votesByContestant = {};
+    allVotes.forEach(v => {
+      if (v.contestantId) votesByContestant[v.contestantId] = (votesByContestant[v.contestantId] || 0) + 1;
+    });
+    const totalAudienceVotes = allVotes.length;
 
     const judgeMap = {};
     allScores.forEach(s => {
@@ -351,7 +339,14 @@ export const resultsPage = async (req, res) => {
       c.gapToFirst = (topScore - parseFloat(c.finalScore)).toFixed(2);
     });
 
-    const audienceRanked = buildAudienceRanking(contestants, votesByContestant);
+    // Attach audience vote counts and percentages to each ranked contestant
+    const maxAudienceVotes = Math.max(0, ...Object.values(votesByContestant).map(Number), 1);
+    ranked.forEach(c => {
+      c.audienceVoteCount = votesByContestant[c.id] || 0;
+      c.audienceVotePct   = totalAudienceVotes > 0
+        ? Math.round((c.audienceVoteCount / maxAudienceVotes) * 100)
+        : 0;
+    });
 
     const judgeEntries   = Object.entries(judgeMap);
     const judgeBreakdown = judgeEntries.map(([jId, jName], idx) => {
@@ -412,8 +407,6 @@ export const resultsPage = async (req, res) => {
       judgeProgressData,
       votesByContestant,
       totalAudienceVotes,
-      audienceRanked,
-      audienceResultsAvailable,
       userName:    req.session.userName,
       userRole:    req.session.userRole,
       userInitial: (req.session.userName || "U")[0].toUpperCase(),
