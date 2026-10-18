@@ -3,7 +3,7 @@
   "crons": [
     {
       "path": "/api/cron/event-status",
-      "schedule": "* * * * *"
+      "schedule": "0 0 * * *"
     }
   ],
   "builds": [
