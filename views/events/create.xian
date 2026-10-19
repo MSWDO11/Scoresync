@@ -226,26 +226,6 @@
 
       <div class="space-y-5">
         <div class="card-flat">
-          <div class="px-6 py-4 border-b border-slate-100 flex items-center gap-3">
-            <div class="w-8 h-8 grad-purple rounded-lg flex items-center justify-center shadow-sm">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="19" cy="17" r="2.5"/><circle cx="6.5" cy="17" r="2.5"/></svg>
-            </div>
-            <h2 class="font-bold text-slate-800">Event Theme</h2>
-          </div>
-          <div class="px-6 py-5">
-            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-3">Card Color</label>
-            <div class="grid grid-cols-3 gap-2">
-              <label class="cursor-pointer"><input type="radio" name="theme" value="blue" class="sr-only peer" checked/><div class="h-10 rounded-lg peer-checked:ring-2 peer-checked:ring-blue-500 peer-checked:ring-offset-2 transition" style="background:linear-gradient(135deg,#1e3a8a,#3b82f6)"></div><p class="text-center text-xs text-slate-500 mt-1">Blue</p></label>
-              <label class="cursor-pointer"><input type="radio" name="theme" value="purple" class="sr-only peer"/><div class="h-10 rounded-lg peer-checked:ring-2 peer-checked:ring-purple-500 peer-checked:ring-offset-2 transition" style="background:linear-gradient(135deg,#4c1d95,#8b5cf6)"></div><p class="text-center text-xs text-slate-500 mt-1">Purple</p></label>
-              <label class="cursor-pointer"><input type="radio" name="theme" value="green" class="sr-only peer"/><div class="h-10 rounded-lg peer-checked:ring-2 peer-checked:ring-emerald-500 peer-checked:ring-offset-2 transition" style="background:linear-gradient(135deg,#064e3b,#10b981)"></div><p class="text-center text-xs text-slate-500 mt-1">Green</p></label>
-              <label class="cursor-pointer"><input type="radio" name="theme" value="gold" class="sr-only peer"/><div class="h-10 rounded-lg peer-checked:ring-2 peer-checked:ring-yellow-400 peer-checked:ring-offset-2 transition" style="background:linear-gradient(135deg,#92400e,#fbbf24)"></div><p class="text-center text-xs text-slate-500 mt-1">Gold</p></label>
-              <label class="cursor-pointer"><input type="radio" name="theme" value="rose" class="sr-only peer"/><div class="h-10 rounded-lg peer-checked:ring-2 peer-checked:ring-rose-500 peer-checked:ring-offset-2 transition" style="background:linear-gradient(135deg,#881337,#f43f5e)"></div><p class="text-center text-xs text-slate-500 mt-1">Rose</p></label>
-              <label class="cursor-pointer"><input type="radio" name="theme" value="slate" class="sr-only peer"/><div class="h-10 rounded-lg peer-checked:ring-2 peer-checked:ring-slate-500 peer-checked:ring-offset-2 transition" style="background:linear-gradient(135deg,#1e293b,#64748b)"></div><p class="text-center text-xs text-slate-500 mt-1">Dark</p></label>
-            </div>
-          </div>
-        </div>
-
-        <div class="card-flat">
           <div class="px-6 py-4 border-b border-slate-100"><h2 class="font-bold text-slate-800 text-sm flex items-center gap-2"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Ready to Create</h2></div>
           <div class="px-6 py-4 space-y-2 text-sm text-slate-600">
             <div class="flex items-center gap-2"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Saved to Firebase Firestore</div>
