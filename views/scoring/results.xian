@@ -3,7 +3,7 @@
 {{> navbar }}
 <div class="flex flex-1 overflow-hidden">
 {{> sidebar }}
-<main class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-5">
+<main class="flex-1 min-w-0 overflow-y-auto p-4 sm:p-6 space-y-5">
 
   <!-- ── Sticky Top Bar ── -->
   <div class="sticky top-0 z-20 -mx-4 sm:-mx-6 px-4 sm:px-6 py-3 no-print" style="background:rgba(10,15,30,0.96);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.07);box-shadow:0 4px 24px rgba(0,0,0,0.4)">
@@ -129,20 +129,9 @@
       const sig = ranked.map(r => r.rank + ':' + r.finalScoreDisplay).join(',');
       if (container.dataset.sig === sig) return;
       container.dataset.sig = sig;
-      const podiumBlocks = container.querySelector('[data-role="podium-blocks"]');
-      if (!podiumBlocks) return;
-      podiumBlocks.innerHTML = '';
-      const top3 = [2, 1, 3].map(rank => ranked.find(r => r.rank === rank)).filter(Boolean);
-      top3.forEach(c => {
-        const isFirst = c.rank === 1;
-        const wrapper = document.createElement('div');
-        wrapper.className = 'flex-1 text-center' + (isFirst ? ' -mt-6' : '') + (isFirst ? ' max-w-[200px]' : ' max-w-[180px]');
-        const score = document.createElement('div');
-        score.className = 'font-black mt-3 leading-none ' + (isFirst ? 'text-3xl' : 'text-2xl');
-        score.style.color = isFirst ? '#ca8a04' : (c.rank === 2 ? '#94a3b8' : '#ea580c');
-        score.textContent = c.finalScoreDisplay + '%';
-        wrapper.appendChild(score);
-        podiumBlocks.appendChild(wrapper);
+      ranked.forEach(c => {
+        const score = container.querySelector('[data-podium-rank="' + c.rank + '"] [data-podium-score]');
+        if (score) score.textContent = c.finalScoreDisplay;
       });
     }
 
@@ -231,7 +220,7 @@
 
         <!-- 2nd Place -->
         {{#each ranked}}{{#if (eq rank 2)}}
-        <div class="flex-1 text-center max-w-[180px]">
+        <div class="flex-1 text-center max-w-[180px]" data-podium-rank="2">
           <div class="text-4xl mb-2 animate-fadeup-1">🥈</div>
           <div class="rounded-2xl p-4 border-2 shadow-sm hover:shadow-md transition" style="border-color:rgba(100,116,139,0.4);background:#1a2035">
             <div class="text-[10px] uppercase font-black tracking-widest mb-1" style="color:#94a3b8">2nd Place</div>
@@ -244,7 +233,7 @@
             </div>
             <div class="font-extrabold text-sm leading-tight" style="color:#e2e8f0">{{name}}</div>
             {{#if barangay}}<div class="text-[11px] mt-0.5" style="color:#94a3b8">Brgy. {{barangay}}</div>{{/if}}
-            <div class="text-2xl font-black mt-3 leading-none" style="color:#cbd5e1">{{finalScoreDisplay}}<span class="text-sm font-normal" style="color:#64748b">%</span></div>
+            <div class="text-2xl font-black mt-3 leading-none" style="color:#cbd5e1"><span data-podium-score>{{finalScoreDisplay}}</span><span class="text-sm font-normal" style="color:#64748b">%</span></div>
             <div class="mt-2 h-1.5 rounded-full overflow-hidden" style="background:rgba(255,255,255,0.08)">
               <div class="h-full rounded-full bg-slate-400 transition-all duration-700" style="width:{{finalScoreDisplay}}%"></div>
             </div>
@@ -255,7 +244,7 @@
 
         <!-- 1st Place -->
         {{#each ranked}}{{#if (eq rank 1)}}
-        <div class="flex-1 text-center max-w-[200px] -mt-6">
+        <div class="flex-1 text-center max-w-[200px] -mt-6" data-podium-rank="1">
           <div class="text-5xl mb-2 animate-fadeup" style="filter:drop-shadow(0 4px 8px rgba(251,191,36,0.4))">🏆</div>
           <div class="rounded-2xl p-5 border-2 border-yellow-300 shadow-xl hover:shadow-2xl transition" style="background:linear-gradient(160deg,#fffbeb,#fef3c7)">
             <div class="text-[10px] text-yellow-600 uppercase font-black tracking-widest mb-1">Champion</div>
@@ -268,7 +257,7 @@
             </div>
             <div class="font-extrabold text-slate-900 text-base leading-tight">{{name}}</div>
             {{#if barangay}}<div class="text-slate-500 text-xs mt-0.5">Brgy. {{barangay}}</div>{{/if}}
-            <div class="text-3xl font-black text-yellow-600 mt-3 leading-none">{{finalScoreDisplay}}<span class="text-base font-normal text-yellow-400">%</span></div>
+            <div class="text-3xl font-black text-yellow-600 mt-3 leading-none"><span data-podium-score>{{finalScoreDisplay}}</span><span class="text-base font-normal text-yellow-400">%</span></div>
             <div class="mt-2 h-2 rounded-full overflow-hidden" style="background:rgba(255,255,255,0.08)">
               <div class="h-full rounded-full transition-all duration-700" style="width:{{finalScoreDisplay}}%;background:linear-gradient(90deg,#f59e0b,#fbbf24)"></div>
             </div>
@@ -279,7 +268,7 @@
 
         <!-- 3rd Place -->
         {{#each ranked}}{{#if (eq rank 3)}}
-        <div class="flex-1 text-center max-w-[180px]">
+        <div class="flex-1 text-center max-w-[180px]" data-podium-rank="3">
           <div class="text-4xl mb-2 animate-fadeup-1">🥉</div>
           <div class="rounded-2xl p-4 border-2 shadow-sm hover:shadow-md transition" style="border-color:rgba(249,115,22,0.4);background:#1c1408">
             <div class="text-[10px] text-orange-400 uppercase font-black tracking-widest mb-1">3rd Place</div>
@@ -292,7 +281,7 @@
             </div>
             <div class="font-extrabold text-sm leading-tight" style="color:#e2e8f0">{{name}}</div>
             {{#if barangay}}<div class="text-[11px] mt-0.5" style="color:#94a3b8">Brgy. {{barangay}}</div>{{/if}}
-            <div class="text-2xl font-black text-orange-500 mt-3 leading-none">{{finalScoreDisplay}}<span class="text-sm font-normal text-orange-700">%</span></div>
+            <div class="text-2xl font-black text-orange-500 mt-3 leading-none"><span data-podium-score>{{finalScoreDisplay}}</span><span class="text-sm font-normal text-orange-700">%</span></div>
             <div class="mt-2 h-1.5 rounded-full overflow-hidden" style="background:rgba(255,255,255,0.08)">
               <div class="h-full rounded-full bg-orange-400 transition-all duration-700" style="width:{{finalScoreDisplay}}%"></div>
             </div>
