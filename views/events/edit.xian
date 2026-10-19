@@ -66,7 +66,7 @@
                 class="form-input-bare"/>
               <p class="text-[11px] mt-1.5 text-slate-400">Describe the type of LGU competition not listed above.</p>
             </div>
-            <div><label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Organizer</label><input type="text" name="organizer" value="{{event.organizer}}" placeholder="e.g. Municipality of Mansalay" class="form-input-bare"/></div>
+            <div><label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Organizer</label><input type="text" name="organizer" value="{{event.organizer}}" placeholder="e.g. Municipality of Gloria" class="form-input-bare"/></div>
 
             <!-- Event Cover Photo -->
             <div>
@@ -112,30 +112,39 @@
               </div>
             </div>
 
-            <!-- Venue dropdown with Mansalay presets + custom fallback -->
+            <!-- Venue dropdown with Gloria barangays + custom fallback -->
             <div>
-              <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Venue</label>
+              <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Event Location</label>
               <select id="venue-select" name="venue" onchange="handleVenueSelect(this)" class="form-input-bare bg-white">
                 <option value="">— Select a venue —</option>
-                <optgroup label="Mansalay Official Venues">
-                  <option value="Mansalay Town Plaza"                   {{#if (eq event.venue 'Mansalay Town Plaza')}}selected{{/if}}>Mansalay Town Plaza</option>
-                  <option value="Mansalay Cultural Center"              {{#if (eq event.venue 'Mansalay Cultural Center')}}selected{{/if}}>Mansalay Cultural Center</option>
-                  <option value="Mansalay Municipal Gymnasium"          {{#if (eq event.venue 'Mansalay Municipal Gymnasium')}}selected{{/if}}>Mansalay Municipal Gymnasium</option>
-                  <option value="Mansalay Sports Complex"               {{#if (eq event.venue 'Mansalay Sports Complex')}}selected{{/if}}>Mansalay Sports Complex</option>
-                  <option value="Mansalay Covered Court"                {{#if (eq event.venue 'Mansalay Covered Court')}}selected{{/if}}>Mansalay Covered Court</option>
-                  <option value="Mansalay Public Market"                {{#if (eq event.venue 'Mansalay Public Market')}}selected{{/if}}>Mansalay Public Market</option>
-                  <option value="Mansalay Baywalk Park"                 {{#if (eq event.venue 'Mansalay Baywalk Park')}}selected{{/if}}>Mansalay Baywalk Park</option>
-                  <option value="Mansalay Elementary School Grounds"    {{#if (eq event.venue 'Mansalay Elementary School Grounds')}}selected{{/if}}>Mansalay Elementary School Grounds</option>
-                  <option value="Mansalay National High School Grounds" {{#if (eq event.venue 'Mansalay National High School Grounds')}}selected{{/if}}>Mansalay National High School Grounds</option>
-                  <option value="Mansalay Church Grounds"               {{#if (eq event.venue 'Mansalay Church Grounds')}}selected{{/if}}>Mansalay Church Grounds</option>
-                  <option value="Mansalay Tourism Office"               {{#if (eq event.venue 'Mansalay Tourism Office')}}selected{{/if}}>Mansalay Tourism Office</option>
-                </optgroup>
-                <optgroup label="Barangay Venues">
-                  <option value="Brgy. Poblacion Covered Court"  {{#if (eq event.venue 'Brgy. Poblacion Covered Court')}}selected{{/if}}>Brgy. Poblacion Covered Court</option>
-                  <option value="Brgy. Panaytayan Covered Court" {{#if (eq event.venue 'Brgy. Panaytayan Covered Court')}}selected{{/if}}>Brgy. Panaytayan Covered Court</option>
-                  <option value="Brgy. Waygan Barangay Hall"     {{#if (eq event.venue 'Brgy. Waygan Barangay Hall')}}selected{{/if}}>Brgy. Waygan Barangay Hall</option>
-                  <option value="Brgy. Tacligan Barangay Hall"   {{#if (eq event.venue 'Brgy. Tacligan Barangay Hall')}}selected{{/if}}>Brgy. Tacligan Barangay Hall</option>
-                  <option value="Brgy. Pag-asa Covered Court"    {{#if (eq event.venue 'Brgy. Pag-asa Covered Court')}}selected{{/if}}>Brgy. Pag-asa Covered Court</option>
+                <optgroup label="Barangays in Gloria">
+                  <option value="Brgy. Agsalin" {{#if (eq event.venue 'Brgy. Agsalin')}}selected{{/if}}>Brgy. Agsalin</option>
+                  <option value="Brgy. Agos" {{#if (eq event.venue 'Brgy. Agos')}}selected{{/if}}>Brgy. Agos</option>
+                  <option value="Brgy. Alma Villa" {{#if (eq event.venue 'Brgy. Alma Villa')}}selected{{/if}}>Brgy. Alma Villa</option>
+                  <option value="Brgy. Andres Bonifacio" {{#if (eq event.venue 'Brgy. Andres Bonifacio')}}selected{{/if}}>Brgy. Andres Bonifacio</option>
+                  <option value="Brgy. Balete" {{#if (eq event.venue 'Brgy. Balete')}}selected{{/if}}>Brgy. Balete</option>
+                  <option value="Brgy. Banus" {{#if (eq event.venue 'Brgy. Banus')}}selected{{/if}}>Brgy. Banus</option>
+                  <option value="Brgy. Banutan" {{#if (eq event.venue 'Brgy. Banutan')}}selected{{/if}}>Brgy. Banutan</option>
+                  <option value="Brgy. Buong Lupa" {{#if (eq event.venue 'Brgy. Buong Lupa')}}selected{{/if}}>Brgy. Buong Lupa</option>
+                  <option value="Brgy. Bulaklakan" {{#if (eq event.venue 'Brgy. Bulaklakan')}}selected{{/if}}>Brgy. Bulaklakan</option>
+                  <option value="Brgy. Gaudencio Antonino" {{#if (eq event.venue 'Brgy. Gaudencio Antonino')}}selected{{/if}}>Brgy. Gaudencio Antonino</option>
+                  <option value="Brgy. Guimbonan" {{#if (eq event.venue 'Brgy. Guimbonan')}}selected{{/if}}>Brgy. Guimbonan</option>
+                  <option value="Brgy. Kawit" {{#if (eq event.venue 'Brgy. Kawit')}}selected{{/if}}>Brgy. Kawit</option>
+                  <option value="Brgy. Lucio Laurel" {{#if (eq event.venue 'Brgy. Lucio Laurel')}}selected{{/if}}>Brgy. Lucio Laurel</option>
+                  <option value="Brgy. Macario Adriatico" {{#if (eq event.venue 'Brgy. Macario Adriatico')}}selected{{/if}}>Brgy. Macario Adriatico</option>
+                  <option value="Brgy. Malamig" {{#if (eq event.venue 'Brgy. Malamig')}}selected{{/if}}>Brgy. Malamig</option>
+                  <option value="Brgy. Malayong" {{#if (eq event.venue 'Brgy. Malayong')}}selected{{/if}}>Brgy. Malayong</option>
+                  <option value="Brgy. Maligaya (Pob.)" {{#if (eq event.venue 'Brgy. Maligaya (Pob.)')}}selected{{/if}}>Brgy. Maligaya (Pob.)</option>
+                  <option value="Brgy. Malubay" {{#if (eq event.venue 'Brgy. Malubay')}}selected{{/if}}>Brgy. Malubay</option>
+                  <option value="Brgy. Manguyang" {{#if (eq event.venue 'Brgy. Manguyang')}}selected{{/if}}>Brgy. Manguyang</option>
+                  <option value="Brgy. Maragooc" {{#if (eq event.venue 'Brgy. Maragooc')}}selected{{/if}}>Brgy. Maragooc</option>
+                  <option value="Brgy. Mirayan" {{#if (eq event.venue 'Brgy. Mirayan')}}selected{{/if}}>Brgy. Mirayan</option>
+                  <option value="Brgy. Narra" {{#if (eq event.venue 'Brgy. Narra')}}selected{{/if}}>Brgy. Narra</option>
+                  <option value="Brgy. Papandungin" {{#if (eq event.venue 'Brgy. Papandungin')}}selected{{/if}}>Brgy. Papandungin</option>
+                  <option value="Brgy. San Antonio" {{#if (eq event.venue 'Brgy. San Antonio')}}selected{{/if}}>Brgy. San Antonio</option>
+                  <option value="Brgy. Santa Maria" {{#if (eq event.venue 'Brgy. Santa Maria')}}selected{{/if}}>Brgy. Santa Maria</option>
+                  <option value="Brgy. Santa Theresa" {{#if (eq event.venue 'Brgy. Santa Theresa')}}selected{{/if}}>Brgy. Santa Theresa</option>
+                  <option value="Brgy. Tambong" {{#if (eq event.venue 'Brgy. Tambong')}}selected{{/if}}>Brgy. Tambong</option>
                 </optgroup>
                 <optgroup label="Other">
                   <option value="__custom__">Type a custom venue…</option>
@@ -321,13 +330,13 @@ function autoSetStatus() {
 
 /* ── Venue dropdown ── */
 const PRESET_VENUES = [
-  'Mansalay Town Plaza','Mansalay Cultural Center','Mansalay Municipal Gymnasium',
-  'Mansalay Sports Complex','Mansalay Covered Court','Mansalay Public Market',
-  'Mansalay Baywalk Park','Mansalay Elementary School Grounds',
-  'Mansalay National High School Grounds','Mansalay Church Grounds',
-  'Mansalay Tourism Office','Brgy. Poblacion Covered Court',
-  'Brgy. Panaytayan Covered Court','Brgy. Waygan Barangay Hall',
-  'Brgy. Tacligan Barangay Hall','Brgy. Pag-asa Covered Court',
+  'Brgy. Agsalin','Brgy. Agos','Brgy. Alma Villa','Brgy. Andres Bonifacio',
+  'Brgy. Balete','Brgy. Banus','Brgy. Banutan','Brgy. Buong Lupa',
+  'Brgy. Bulaklakan','Brgy. Gaudencio Antonino','Brgy. Guimbonan','Brgy. Kawit',
+  'Brgy. Lucio Laurel','Brgy. Macario Adriatico','Brgy. Malamig','Brgy. Malayong',
+  'Brgy. Maligaya (Pob.)','Brgy. Malubay','Brgy. Manguyang','Brgy. Maragooc',
+  'Brgy. Mirayan','Brgy. Narra','Brgy. Papandungin','Brgy. San Antonio',
+  'Brgy. Santa Maria','Brgy. Santa Theresa','Brgy. Tambong',
 ];
 
 function handleVenueSelect(sel) {

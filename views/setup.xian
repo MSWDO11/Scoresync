@@ -4,7 +4,7 @@
     <div class="relative z-10">
       <div class="flex items-center gap-3 mb-14">
         <div class="w-14 h-14 rounded-full overflow-hidden flex-shrink-0 shadow-2xl" style="border:3px solid rgba(255,255,255,0.25)">
-          <img src="/mansalay-logo.png?v=2" alt="Mansalay Seal" class="w-full h-full object-cover"/>
+          <img src="/scoresync-logo.png" alt="ScoreSync" class="w-full h-full object-cover"/>
         </div>
         <div>
           <div class="text-white font-black text-xl tracking-tight leading-none">ScoreSync</div>
@@ -19,7 +19,7 @@
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         <span class="text-blue-100 text-sm">This runs <strong>once</strong> — after an admin exists, this page is locked.</span>
       </div>
-      <p class="text-blue-300 text-xs" style="opacity:0.6">&copy; 2026 ScoreSync &mdash; Mansalay, Oriental Mindoro</p>
+      <p class="text-blue-300 text-xs" style="opacity:0.6">&copy; 2026 ScoreSync &mdash; Gloria, Oriental Mindoro</p>
     </div>
   </div>
 
@@ -40,7 +40,7 @@
       {{else}}
       <div class="flex items-center gap-3 justify-center mb-7 lg:hidden">
         <div class="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 shadow-xl" style="border:2px solid rgba(255,255,255,0.2)">
-          <img src="/mansalay-logo.png?v=2" alt="Mansalay Seal" class="w-full h-full object-cover"/>
+          <img src="/scoresync-logo.png" alt="ScoreSync" class="w-full h-full object-cover"/>
         </div>
         <div>
           <div class="font-black text-xl text-white tracking-tight">ScoreSync</div>
@@ -115,4 +115,3 @@
   </div>
 </body>
 </html>
-

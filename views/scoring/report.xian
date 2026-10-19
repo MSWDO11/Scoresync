@@ -224,7 +224,7 @@
       <div class="header-top">
         <div class="header-logos">
           <img src="/scoresync-logo.png" alt="ScoreSync" class="header-logo"/>
-          <img src="/mansalay-logo.png" alt="Mansalay" class="header-logo"/>
+          <img src="/scoresync-logo.png" alt="ScoreSync" class="header-logo"/>
         </div>
         <div class="header-brand">
           ScoreSync
@@ -347,7 +347,7 @@
     {{/if}}
 
     <div class="report-footer">
-      ScoreSync — Official Competition Report &bull; Municipality of Mansalay, Oriental Mindoro &bull; {{generatedAt}}
+      ScoreSync — Official Competition Report &bull; Municipality of Gloria, Oriental Mindoro &bull; {{generatedAt}}
     </div>
   </div>
 

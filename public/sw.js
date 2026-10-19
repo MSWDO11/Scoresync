@@ -1,7 +1,7 @@
-// ScoreSync Service Worker — v7
+// ScoreSync Service Worker — v8
 // Full offline support: caches scoring page + serves offline-scoring.html when no internet
 
-const CACHE_STATIC = 'scoresync-static-v7';
+const CACHE_STATIC = 'scoresync-static-v8';
 const CACHE_PAGES  = 'scoresync-pages-v7';
 const CACHE_FONTS  = 'scoresync-fonts-v7';
 
@@ -11,7 +11,6 @@ const STATIC_ASSETS = [
   '/fa.min.css',
   '/manifest.json',
   '/scoresync-logo.png',
-  '/mansalay-logo.png',
   '/minsu-logo.png',
   '/icon.png',
   '/offlineScores.js',
