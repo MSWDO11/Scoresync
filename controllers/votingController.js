@@ -4,6 +4,7 @@ import {
   addDoc, updateDoc, query, where, serverTimestamp,
 } from "firebase/firestore";
 import crypto from "crypto";
+import { sortContestantsByNumber } from "../utils/contestantOrder.js";
 
 // ─── Public voting page ───────────────────────────────────────────────────────
 export const votingPage = async (req, res) => {
@@ -32,14 +33,13 @@ export const votingPage = async (req, res) => {
     const totalVotes = vSnap.docs.length;
     const maxVotes   = Math.max(0, ...Object.values(votesByContestant));
 
-    const contestants = cSnap.docs
+    const contestants = sortContestantsByNumber(cSnap.docs
       .map(d => {
         const c         = { id: d.id, ...d.data() };
         const voteCount = votesByContestant[c.id] || 0;
         const voteBarPct = maxVotes > 0 ? Math.round((voteCount / maxVotes) * 100) : 0;
         return { ...c, voteCount, voteBarPct };
-      })
-      .sort((a, b) => Number(a.number) - Number(b.number));
+      }));
 
     res.render("voting/index", {
       title:             `Vote — ${ev.name}`,

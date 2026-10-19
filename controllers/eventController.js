@@ -7,6 +7,7 @@ import {
 import { applyAutoStatus } from "../utils/autoStatus.js";
 import { sanitizeText } from "../utils/sanitize.js";
 import { sendJudgeAssignedEmail } from "../utils/mailer.js";
+import { sortContestantsByNumber } from "../utils/contestantOrder.js";
 
 const EVENTS = "events";
 const PAYMENT_TYPES = ['cultural','choral','dance','culinary','booth','sports','academic','other'];
@@ -143,7 +144,7 @@ export const showEvent = async (req, res) => {
       getDocs(collection(db, "users")),
       getDocs(collection(db, EVENTS, req.params.id, "audit_log")),
     ]);
-    const contestants = cSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const contestants = sortContestantsByNumber(cSnap.docs.map(d => ({ id: d.id, ...d.data() })));
     const criteria    = crSnap.docs.map(d => ({ id: d.id, ...d.data() }));
 
     // Audit log — sorted newest first

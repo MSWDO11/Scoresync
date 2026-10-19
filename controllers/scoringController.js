@@ -5,6 +5,7 @@ import {
 } from "firebase/firestore";
 import { sanitizeText } from "../utils/sanitize.js";
 import { applyAutoStatus } from "../utils/autoStatus.js";
+import { sortContestantsByNumber } from "../utils/contestantOrder.js";
 
 const CRITERIA_COLORS = [
   "#2563eb","#7c3aed","#059669","#dc2626",
@@ -60,7 +61,7 @@ export const scoringPage = async (req, res) => {
       }
     }
 
-    const contestants = cSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const contestants = sortContestantsByNumber(cSnap.docs.map(d => ({ id: d.id, ...d.data() })));
     const criteria    = crSnap.docs.map((d, i) => ({
       id: d.id,
       ...d.data(),
