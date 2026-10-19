@@ -8,6 +8,7 @@ import { applyAutoStatus } from "../utils/autoStatus.js";
 import { sanitizeText } from "../utils/sanitize.js";
 import { sendJudgeAssignedEmail } from "../utils/mailer.js";
 import { sortContestantsByNumber } from "../utils/contestantOrder.js";
+import { parseEventCriteria } from "../utils/eventCriteria.js";
 
 const EVENTS = "events";
 const PAYMENT_TYPES = ['cultural','choral','dance','culinary','booth','sports','academic','other'];
@@ -92,25 +93,12 @@ export const storeEvent = async (req, res) => {
     });
 
     // ── Save inline criteria submitted from create form ──────────────────────
-    const criteriaNames   = [].concat(req.body['criteria[name]']   || []);
-    const criteriaWeights = [].concat(req.body['criteria[weight]'] || []);
-    const criteriaMaxes   = [].concat(req.body['criteria[max]']    || []);
-    const criteriaDescs   = [].concat(req.body['criteria[desc]']   || []);
-    if (criteriaNames.length > 0) {
-      const saves = criteriaNames
-        .map((n, i) => ({
-          name:        n.trim(),
-          description: (criteriaDescs[i] || "").trim(),
-          weight:      Number(criteriaWeights[i]) || 0,
-          maxScore:    Number(criteriaMaxes[i])   || 100,
-        }))
-        .filter(c => c.name && c.weight > 0);
-      await Promise.all(
-        saves.map(c => addDoc(collection(db, EVENTS, evRef.id, "criteria"), {
-          ...c, createdAt: serverTimestamp(),
-        }))
-      );
-    }
+    const criteria = parseEventCriteria(req.body);
+    await Promise.all(
+      criteria.map(criterion => addDoc(collection(db, EVENTS, evRef.id, "criteria"), {
+        ...criterion, createdAt: serverTimestamp(),
+      }))
+    );
 
     req.flash("success_msg", `Event "${name}" created successfully.`);
     res.redirect(`/events/${evRef.id}`);
